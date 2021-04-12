@@ -8,7 +8,7 @@
 import UIKit
 import Charts
 
-class WelcomeViewController: UIViewController, ChartViewDelegate, UITableViewDelegate, UITableViewDataSource, UITextViewDelegate {
+class WelcomeViewController: UIViewController {
     
     let service = NetworkingService()
     
@@ -20,7 +20,7 @@ class WelcomeViewController: UIViewController, ChartViewDelegate, UITableViewDel
     
     var yValuesForMain: [ChartDataEntry] = [] {
         didSet {
-            setDataForMain()
+            setDataForMainGraph()
         }
     }
     var yValuesForCal1: [ChartDataEntry] = [] {
@@ -41,25 +41,29 @@ class WelcomeViewController: UIViewController, ChartViewDelegate, UITableViewDel
     @IBOutlet weak var potential: UILabel!
     @IBOutlet weak var concTextView: UITextField!
     
+    // MARK: - Lifecyle
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         setUI()
-        mainChartView.delegate = self
-        concentrationTable.delegate = self
-        concentrationTable.allowsMultipleSelectionDuringEditing = true
-        concentrationTable.setEditing(true, animated: false)
-
-        concentrationTable.dataSource = self
-        concentrationTable.register(UINib(nibName: ConcentrationTableViewCell.nibName, bundle: nil), forCellReuseIdentifier: ConcentrationTableViewCell.nibName)
         getAnalytes(by: "6074328935a6870015ec8de8")
     
     }
     
+    // MARK: - IBAction
     @IBAction func addConc(_ sender: UIButton) {
-        let sol = Solution(concentration: Double(concTextView.text!)!, concLog: log10(Double(concTextView.text!)!), potential: Double(potential.text!)!)
+        
+        guard let conc1 = concTextView.text, let pot1 = potential.text else { return }
+        
+        
+        guard let con2 = Double(conc1), let pot2 = Double(pot1) else {
+            
+            potential.text = "Invalid entry"
+            return
+        }
+        
+        let sol = Solution(concentration: con2, concLog: log10(con2), potential: Double(pot2))
         concSolutions.append(sol)
-        print("ADD")
     }
     
     @IBAction func drawLinearGraph(_ sender: Any) {
@@ -76,17 +80,33 @@ class WelcomeViewController: UIViewController, ChartViewDelegate, UITableViewDel
         }
     }
     
+    @IBAction func clearSelected(_ sender: UIButton) {
+  
+        if let indexPaths = concentrationTable.indexPathsForSelectedRows  {
+            let sortedPaths = indexPaths.sorted {$0.row > $1.row}
+            for indexPath in sortedPaths {
+                let count = concSolutions.count
+                let i = count - 1
+                for i in stride(from: i, through: 0, by: -1) {
+                    if(indexPath.row == i){
+                        concSolutions.remove(at: i)
+                    }
+                }
+            }
+        }
+    }
+    
     @IBAction func clearList(_ sender: UIButton) {
         concSolutions = []
     }
+    
     @IBAction func refButPressed(_ sender: UIButton) {
+        yValuesForCal1 = []
+        yValuesForCal2 = []
         getAnalytes(by: "6074328935a6870015ec8de8")
     }
     
-    func chartValueSelected(_ chartView: ChartViewBase, entry: ChartDataEntry, highlight: Highlight) {
-        potential.text = String(entry.y)
-    }
-    
+
     @IBAction func drawCalGraphs(_ sender: UIButton) {
         
         let entries = concSolutions.map { (solution) -> ChartDataEntry in
@@ -95,13 +115,21 @@ class WelcomeViewController: UIViewController, ChartViewDelegate, UITableViewDel
         yValuesForCal1 = entries
         
     }
-    
+
+// MARK: - UI
     private func setUI() {
    
         setView(for: mainChartView)
         setView(for: calGraphView1)
         setView(for: calGraphView2)
     
+        mainChartView.delegate = self
+        concentrationTable.delegate = self
+        concentrationTable.allowsMultipleSelectionDuringEditing = true
+        concentrationTable.setEditing(true, animated: true)
+        concentrationTable.dataSource = self
+        concentrationTable.register(UINib(nibName: ConcentrationTableViewCell.nibName, bundle: nil), forCellReuseIdentifier: ConcentrationTableViewCell.nibName)
+        
     }
     
     private func setView(for lineChartView: LineChartView) {
@@ -125,7 +153,7 @@ class WelcomeViewController: UIViewController, ChartViewDelegate, UITableViewDel
     }
     
     
-    private func setDataForMain() {
+    private func setDataForMainGraph() {
         let set1 = LineChartDataSet(entries: yValuesForMain, label: "Raw Data from Server ")
         set1.mode = .cubicBezier
         set1.drawCirclesEnabled = false
@@ -164,10 +192,10 @@ class WelcomeViewController: UIViewController, ChartViewDelegate, UITableViewDel
     }
     
     private func setDataForCal2(){
-        let set1 = LineChartDataSet(entries: yValuesForCal2, label: "Linear Calibration Graph")
+        let set1 = LineChartDataSet(entries: yValuesForCal2, label: "Linear Calibration Graph Points")
         set1.mode = .cubicBezier
         set1.drawCirclesEnabled = true
-        set1.lineWidth = 5
+        set1.lineWidth = 0
         set1.setCircleColor(.systemRed)
 
         set1.setColor(.systemBlue)
@@ -175,14 +203,64 @@ class WelcomeViewController: UIViewController, ChartViewDelegate, UITableViewDel
         set1.drawHorizontalHighlightIndicatorEnabled = false
         set1.highlightColor = .systemRed
         
-        let data = LineChartData(dataSet: set1)
+        
+        
+        
+        var lrgValuesArray: [ChartDataEntry] = []
+        
+        // Regression
+        var totalX: Double = 0
+        var totalY: Double = 0
+        yValuesForCal2.forEach { entry in
+            totalX += entry.x
+            totalY += entry.y
+        }
+        
+        let meanX = totalX / Double(yValuesForCal2.count)
+        let meanY = totalY / Double(yValuesForCal2.count)
+        
+        var Sxx: Double = 0
+        var Syy: Double = 0
+        yValuesForCal2.forEach { entry in
+            Sxx += pow((entry.x - meanX), 2)
+            Syy += pow((entry.y - meanY), 2)
+        }
+        
+        var Sxy: Double = 0
+        yValuesForCal2.forEach { entry in
+            Sxy += ((entry.x - meanX)*(entry.y - meanY))
+        }
+        
+        let B = Sxy / Sxx
+        let A = meanY - (B*meanX)
+        
+        // y = A + Bx
+    
+        yValuesForCal2.forEach { entry in
+            lrgValuesArray.append(ChartDataEntry(x: entry.x, y: (A + (B*entry.x))))
+        }
+    
+        let set2 = LineChartDataSet(entries: lrgValuesArray, label: "Linear Regression Line")
+        set2.mode = .cubicBezier
+        set2.drawCirclesEnabled = true
+        set2.lineWidth = 5
+        set2.setCircleColor(.systemRed)
+
+        set2.setColor(.systemBlue)
+
+        set2.drawHorizontalHighlightIndicatorEnabled = false
+        set2.highlightColor = .systemRed
+        
+        let sets = [set1, set2]
+        let data = LineChartData(dataSets: sets)
         data.setDrawValues(true)
         calGraphView2.data = data
         calGraphView2.animate(xAxisDuration: 0.1)
     }
     
+// MARK: - Operations
     private func getAnalytes(by id: String){
-        AnalyteDataAPI().getAnalyteData(by: id) { (result) in
+        AnalyteDataAPI().getAnalyteData(by: id) { [weak self] result  in
             switch result {
             case .success(let data):
                 let data = AnalyteData(description: data.description, measurements: data.measurements)
@@ -202,22 +280,64 @@ class WelcomeViewController: UIViewController, ChartViewDelegate, UITableViewDel
                     let entry = ChartDataEntry(x: Double(str)!, y: measurement.value)
                     return entry
                 }
-                self.yValuesForMain = chartPoints
+                self?.yValuesForMain = chartPoints
             case .failure(let error):
                 print(error.localizedDescription)
             }
         }
     }
+}
+
+// MARK: - MODELS
+
+struct Solution {
+    let concentration: Double
+    let concLog: Double
+    let potential: Double
+}
+
+
+// MARK: - Chart View Delegate Extension
+
+extension WelcomeViewController: ChartViewDelegate {
     
+    func chartValueSelected(_ chartView: ChartViewBase, entry: ChartDataEntry, highlight: Highlight) {
+        potential.text = String(entry.y)
+    }
     
-    
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print(indexPath)
+}
+
+// MARK: - Table View Delegate Extension
+
+extension WelcomeViewController: UITableViewDelegate {
+
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
     }
 
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath)
+            -> UISwipeActionsConfiguration? {
+            let deleteAction = UIContextualAction(style: .destructive, title: nil) { (_, _, completionHandler) in
+                self.concSolutions.remove(at: indexPath.row)
+                completionHandler(true)
+            }
+            deleteAction.image = UIImage(systemName: "trash")
+            deleteAction.backgroundColor = .systemRed
+            let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
+            return configuration
+    }
+    
+//    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+//        if (editingStyle == .delete) {
+//            concSolutions.remove(at: indexPath.row)
+//        }
+//    }
+}
 
-    //data
+// MARK: - Table View Datasource Extension
+
+extension WelcomeViewController: UITableViewDataSource {
+        
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return concSolutions.count
     }
@@ -231,25 +351,5 @@ class WelcomeViewController: UIViewController, ChartViewDelegate, UITableViewDel
         cell.potential.text = String(concSolutions[indexPath.row].potential)
         
         return cell
-        
     }
-    
-    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        return true
-    }
-
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if (editingStyle == .delete) {
-            concSolutions.remove(at: indexPath.row)
-            
-            // handle delete (by removing the data from your array and updating the tableview)
-        }
-    }
-}
-
-
-struct Solution {
-    let concentration: Double
-    let concLog: Double
-    let potential: Double
 }
