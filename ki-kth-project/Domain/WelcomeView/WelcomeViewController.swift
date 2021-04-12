@@ -233,6 +233,18 @@ class WelcomeViewController: UIViewController, ChartViewDelegate, UITableViewDel
         return cell
         
     }
+    
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if (editingStyle == .delete) {
+            concSolutions.remove(at: indexPath.row)
+            
+            // handle delete (by removing the data from your array and updating the tableview)
+        }
+    }
 }
 
 
