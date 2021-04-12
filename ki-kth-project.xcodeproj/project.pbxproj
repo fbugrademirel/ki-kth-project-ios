@@ -3,29 +3,41 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7C4E33F72624754000C42669 /* ConcentrationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C4E33F52624754000C42669 /* ConcentrationTableViewCell.swift */; };
+		7C4E33F82624754100C42669 /* ConcentrationTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7C4E33F62624754000C42669 /* ConcentrationTableViewCell.xib */; };
+		7CDA38002623B0D700874665 /* AnalyteDataAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CDA37FF2623B0D700874665 /* AnalyteDataAPI.swift */; };
 		7CDC8E1E2623AE6B00430BD7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CDC8E1D2623AE6B00430BD7 /* AppDelegate.swift */; };
 		7CDC8E202623AE6B00430BD7 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CDC8E1F2623AE6B00430BD7 /* SceneDelegate.swift */; };
-		7CDC8E222623AE6B00430BD7 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CDC8E212623AE6B00430BD7 /* ViewController.swift */; };
-		7CDC8E252623AE6B00430BD7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7CDC8E232623AE6B00430BD7 /* Main.storyboard */; };
+		7CDC8E222623AE6B00430BD7 /* WelcomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CDC8E212623AE6B00430BD7 /* WelcomeViewController.swift */; };
+		7CDC8E252623AE6B00430BD7 /* WelcomeView.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7CDC8E232623AE6B00430BD7 /* WelcomeView.storyboard */; };
 		7CDC8E282623AE6B00430BD7 /* ki_kth_project.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 7CDC8E262623AE6B00430BD7 /* ki_kth_project.xcdatamodeld */; };
 		7CDC8E2A2623AE6B00430BD7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7CDC8E292623AE6B00430BD7 /* Assets.xcassets */; };
 		7CDC8E2D2623AE6B00430BD7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7CDC8E2B2623AE6B00430BD7 /* LaunchScreen.storyboard */; };
+		7CDC8E3B2623AF8F00430BD7 /* NetworkingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CDC8E3A2623AF8F00430BD7 /* NetworkingService.swift */; };
+		F504A3A08E207F6059771813 /* Pods_ki_kth_project.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A6FC4A09A904DFBB5E5C423 /* Pods_ki_kth_project.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		49798964489FB19CD8059D8B /* Pods-ki-kth-project.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ki-kth-project.debug.xcconfig"; path = "Target Support Files/Pods-ki-kth-project/Pods-ki-kth-project.debug.xcconfig"; sourceTree = "<group>"; };
+		7C4E33F52624754000C42669 /* ConcentrationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcentrationTableViewCell.swift; sourceTree = "<group>"; };
+		7C4E33F62624754000C42669 /* ConcentrationTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConcentrationTableViewCell.xib; sourceTree = "<group>"; };
+		7CDA37FF2623B0D700874665 /* AnalyteDataAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyteDataAPI.swift; sourceTree = "<group>"; };
 		7CDC8E1A2623AE6B00430BD7 /* ki-kth-project.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ki-kth-project.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7CDC8E1D2623AE6B00430BD7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7CDC8E1F2623AE6B00430BD7 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		7CDC8E212623AE6B00430BD7 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		7CDC8E242623AE6B00430BD7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		7CDC8E212623AE6B00430BD7 /* WelcomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeViewController.swift; sourceTree = "<group>"; };
+		7CDC8E242623AE6B00430BD7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/WelcomeView.storyboard; sourceTree = "<group>"; };
 		7CDC8E272623AE6B00430BD7 /* ki_kth_project.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ki_kth_project.xcdatamodel; sourceTree = "<group>"; };
 		7CDC8E292623AE6B00430BD7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7CDC8E2C2623AE6B00430BD7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		7CDC8E2E2623AE6B00430BD7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7CDC8E3A2623AF8F00430BD7 /* NetworkingService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkingService.swift; sourceTree = "<group>"; };
+		9A6FC4A09A904DFBB5E5C423 /* Pods_ki_kth_project.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ki_kth_project.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D1DFA9CFFA0E6B88A99C38D3 /* Pods-ki-kth-project.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ki-kth-project.release.xcconfig"; path = "Target Support Files/Pods-ki-kth-project/Pods-ki-kth-project.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -33,17 +45,28 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F504A3A08E207F6059771813 /* Pods_ki_kth_project.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7CDA37FE2623B0C700874665 /* API */ = {
+			isa = PBXGroup;
+			children = (
+				7CDA37FF2623B0D700874665 /* AnalyteDataAPI.swift */,
+			);
+			path = API;
+			sourceTree = "<group>";
+		};
 		7CDC8E112623AE6B00430BD7 = {
 			isa = PBXGroup;
 			children = (
 				7CDC8E1C2623AE6B00430BD7 /* ki-kth-project */,
 				7CDC8E1B2623AE6B00430BD7 /* Products */,
+				8186DD3139FA7E2D58714FE7 /* Pods */,
+				81123C20CEBB19D8F36FD595 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -58,16 +81,69 @@
 		7CDC8E1C2623AE6B00430BD7 /* ki-kth-project */ = {
 			isa = PBXGroup;
 			children = (
+				7CDA37FE2623B0C700874665 /* API */,
+				7CDC8E392623AF4200430BD7 /* Utilities */,
+				7CDC8E352623AE8300430BD7 /* Domain */,
 				7CDC8E1D2623AE6B00430BD7 /* AppDelegate.swift */,
 				7CDC8E1F2623AE6B00430BD7 /* SceneDelegate.swift */,
-				7CDC8E212623AE6B00430BD7 /* ViewController.swift */,
-				7CDC8E232623AE6B00430BD7 /* Main.storyboard */,
 				7CDC8E292623AE6B00430BD7 /* Assets.xcassets */,
 				7CDC8E2B2623AE6B00430BD7 /* LaunchScreen.storyboard */,
 				7CDC8E2E2623AE6B00430BD7 /* Info.plist */,
 				7CDC8E262623AE6B00430BD7 /* ki_kth_project.xcdatamodeld */,
 			);
 			path = "ki-kth-project";
+			sourceTree = "<group>";
+		};
+		7CDC8E352623AE8300430BD7 /* Domain */ = {
+			isa = PBXGroup;
+			children = (
+				7CDC8E362623AE9000430BD7 /* WelcomeView */,
+			);
+			path = Domain;
+			sourceTree = "<group>";
+		};
+		7CDC8E362623AE9000430BD7 /* WelcomeView */ = {
+			isa = PBXGroup;
+			children = (
+				7CDC8E212623AE6B00430BD7 /* WelcomeViewController.swift */,
+				7CDC8E232623AE6B00430BD7 /* WelcomeView.storyboard */,
+				7C4E33F52624754000C42669 /* ConcentrationTableViewCell.swift */,
+				7C4E33F62624754000C42669 /* ConcentrationTableViewCell.xib */,
+			);
+			path = WelcomeView;
+			sourceTree = "<group>";
+		};
+		7CDC8E392623AF4200430BD7 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				7CDC8E3D2623AF9B00430BD7 /* Networking */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		7CDC8E3D2623AF9B00430BD7 /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				7CDC8E3A2623AF8F00430BD7 /* NetworkingService.swift */,
+			);
+			path = Networking;
+			sourceTree = "<group>";
+		};
+		81123C20CEBB19D8F36FD595 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				9A6FC4A09A904DFBB5E5C423 /* Pods_ki_kth_project.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		8186DD3139FA7E2D58714FE7 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				49798964489FB19CD8059D8B /* Pods-ki-kth-project.debug.xcconfig */,
+				D1DFA9CFFA0E6B88A99C38D3 /* Pods-ki-kth-project.release.xcconfig */,
+			);
+			path = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -77,9 +153,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7CDC8E312623AE6B00430BD7 /* Build configuration list for PBXNativeTarget "ki-kth-project" */;
 			buildPhases = (
+				30FABA5F1E0D41A585FBAFBB /* [CP] Check Pods Manifest.lock */,
 				7CDC8E162623AE6B00430BD7 /* Sources */,
 				7CDC8E172623AE6B00430BD7 /* Frameworks */,
 				7CDC8E182623AE6B00430BD7 /* Resources */,
+				51B3104D0A1200850FC7AADB /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -128,20 +206,66 @@
 			buildActionMask = 2147483647;
 			files = (
 				7CDC8E2D2623AE6B00430BD7 /* LaunchScreen.storyboard in Resources */,
+				7C4E33F82624754100C42669 /* ConcentrationTableViewCell.xib in Resources */,
 				7CDC8E2A2623AE6B00430BD7 /* Assets.xcassets in Resources */,
-				7CDC8E252623AE6B00430BD7 /* Main.storyboard in Resources */,
+				7CDC8E252623AE6B00430BD7 /* WelcomeView.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		30FABA5F1E0D41A585FBAFBB /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-ki-kth-project-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		51B3104D0A1200850FC7AADB /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-ki-kth-project/Pods-ki-kth-project-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-ki-kth-project/Pods-ki-kth-project-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ki-kth-project/Pods-ki-kth-project-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		7CDC8E162623AE6B00430BD7 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7CDC8E222623AE6B00430BD7 /* ViewController.swift in Sources */,
+				7CDC8E3B2623AF8F00430BD7 /* NetworkingService.swift in Sources */,
+				7CDC8E222623AE6B00430BD7 /* WelcomeViewController.swift in Sources */,
 				7CDC8E1E2623AE6B00430BD7 /* AppDelegate.swift in Sources */,
+				7C4E33F72624754000C42669 /* ConcentrationTableViewCell.swift in Sources */,
+				7CDA38002623B0D700874665 /* AnalyteDataAPI.swift in Sources */,
 				7CDC8E202623AE6B00430BD7 /* SceneDelegate.swift in Sources */,
 				7CDC8E282623AE6B00430BD7 /* ki_kth_project.xcdatamodeld in Sources */,
 			);
@@ -150,12 +274,12 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		7CDC8E232623AE6B00430BD7 /* Main.storyboard */ = {
+		7CDC8E232623AE6B00430BD7 /* WelcomeView.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
 				7CDC8E242623AE6B00430BD7 /* Base */,
 			);
-			name = Main.storyboard;
+			name = WelcomeView.storyboard;
 			sourceTree = "<group>";
 		};
 		7CDC8E2B2623AE6B00430BD7 /* LaunchScreen.storyboard */ = {
@@ -287,6 +411,7 @@
 		};
 		7CDC8E322623AE6B00430BD7 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 49798964489FB19CD8059D8B /* Pods-ki-kth-project.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -306,6 +431,7 @@
 		};
 		7CDC8E332623AE6B00430BD7 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = D1DFA9CFFA0E6B88A99C38D3 /* Pods-ki-kth-project.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
