@@ -34,6 +34,7 @@ class WelcomeViewController: UIViewController {
         }
     }
     
+    @IBOutlet weak var corCoefficent: UILabel!
     @IBOutlet weak var mainChartView: LineChartView!
     @IBOutlet weak var calGraphView1: LineChartView!
     @IBOutlet weak var calGraphView2: LineChartView!
@@ -118,6 +119,8 @@ class WelcomeViewController: UIViewController {
 
 // MARK: - UI
     private func setUI() {
+        
+        corCoefficent.alpha = 0
    
         setView(for: mainChartView)
         setView(for: calGraphView1)
@@ -203,9 +206,7 @@ class WelcomeViewController: UIViewController {
         set1.drawHorizontalHighlightIndicatorEnabled = false
         set1.highlightColor = .systemRed
         
-        
-        
-        
+        // Regression Line
         var lrgValuesArray: [ChartDataEntry] = []
         
         // Regression
@@ -235,25 +236,38 @@ class WelcomeViewController: UIViewController {
         let A = meanY - (B*meanX)
         
         // y = A + Bx
-    
         yValuesForCal2.forEach { entry in
             lrgValuesArray.append(ChartDataEntry(x: entry.x, y: (A + (B*entry.x))))
         }
-    
+        
+        //Correaleiotn coefficent
+        let r = Sxy / (sqrt(Sxx) * sqrt(Syy))
+        DispatchQueue.main.async {
+            self.corCoefficent.alpha = 1
+            self.corCoefficent.text = "Correalation Coefficent (r) is \(String(format: "%.2f" ,r))"
+            if r > 7 {
+                self.corCoefficent.tintColor = .systemGreen
+            } else {
+                self.corCoefficent.tintColor = .systemRed
+            }
+        }
+        
+        
+        
         let set2 = LineChartDataSet(entries: lrgValuesArray, label: "Linear Regression Line")
-        set2.mode = .cubicBezier
-        set2.drawCirclesEnabled = true
-        set2.lineWidth = 5
-        set2.setCircleColor(.systemRed)
+        set2.mode = .linear
+        set2.drawCirclesEnabled = false
+        set2.lineWidth = 3
+        set2.setCircleColor(.systemGreen)
 
-        set2.setColor(.systemBlue)
+        set2.setColor(.systemGreen)
 
         set2.drawHorizontalHighlightIndicatorEnabled = false
         set2.highlightColor = .systemRed
         
         let sets = [set1, set2]
         let data = LineChartData(dataSets: sets)
-        data.setDrawValues(true)
+        data.setDrawValues(false)
         calGraphView2.data = data
         calGraphView2.animate(xAxisDuration: 0.1)
     }

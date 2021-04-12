@@ -147,6 +147,13 @@
                                     <action selector="clearSelected:" destination="BYZ-38-t0r" eventType="touchUpInside" id="41h-FT-8Yh"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6S1-XS-4Zu">
+                                <rect key="frame" x="670" y="1086" width="229" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -202,6 +209,7 @@
                         <outlet property="calGraphView2" destination="eNx-o4-nIz" id="Ep8-EG-Ljf"/>
                         <outlet property="concTextView" destination="zAg-mB-gzO" id="7Jt-KL-hNV"/>
                         <outlet property="concentrationTable" destination="KQ8-9s-c5K" id="vlg-Tt-0Ct"/>
+                        <outlet property="corCoefficent" destination="6S1-XS-4Zu" id="96H-f9-qb3"/>
                         <outlet property="mainChartView" destination="0v2-kk-qgk" id="uBF-Wc-3fs"/>
                         <outlet property="potential" destination="IVI-He-Y4x" id="HoL-Vc-RNn"/>
                     </connections>
