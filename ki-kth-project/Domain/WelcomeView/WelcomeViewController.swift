@@ -48,8 +48,9 @@ class WelcomeViewController: UIViewController {
     @IBOutlet weak var analyteListTable: UITableView!
     @IBOutlet weak var potential: UILabel!
     @IBOutlet weak var concTextView: UITextField!
-    @IBOutlet weak var refreshActivityMonitor: UIActivityIndicatorView!
     @IBOutlet weak var analyteDescriptionTextView: UITextField!
+    @IBOutlet weak var refreshButton: ActivityIndicatorButton!
+    @IBOutlet weak var addAnalyteButton: ActivityIndicatorButton!
     
     // MARK: - Lifecyle
     override func viewDidLoad() {
@@ -72,12 +73,18 @@ class WelcomeViewController: UIViewController {
         
         let sol = Solution(concentration: conc2, concLog: log10(conc2), potential: Double(pot2))
         concSolutions.append(sol)
+        concTextView.text = ""
+        concTextView.resignFirstResponder()
     }
     
     
-    @IBAction func createAnalyte(_ sender: Any) {
-        
+    @IBAction func createAndRegisterAnalyte(_ sender: Any) {
+        if analyteDescriptionTextView.text == "" {
+            return
+        }
         guard let desc = analyteDescriptionTextView.text else { return }
+        analyteDescriptionTextView.text = ""
+        analyteDescriptionTextView.resignFirstResponder()
         createAndPatchAnalyte(by: desc)
         
     }
@@ -137,7 +144,6 @@ class WelcomeViewController: UIViewController {
     private func setUI() {
         
         corCoefficent.alpha = 0
-        refreshActivityMonitor.alpha = 0
    
         setView(for: mainChartView)
         setView(for: calGraphView1)
@@ -152,8 +158,8 @@ class WelcomeViewController: UIViewController {
         concentrationTable.register(UINib(nibName: ConcentrationTableViewCell.nibName, bundle: nil), forCellReuseIdentifier: ConcentrationTableViewCell.nibName)
         
         analyteListTable.delegate = self
-        analyteListTable.allowsMultipleSelectionDuringEditing = true
-        analyteListTable.setEditing(true, animated: true)
+        //analyteListTable.allowsMultipleSelectionDuringEditing = true
+        //analyteListTable.setEditing(true, animated: true)
         analyteListTable.dataSource = self
         analyteListTable.register(UINib(nibName: AnalyteListTableViewCell.nibName, bundle: nil), forCellReuseIdentifier: AnalyteListTableViewCell.nibName)
         
@@ -299,13 +305,18 @@ class WelcomeViewController: UIViewController {
 // MARK: - Operations
     
     private func createAndPatchAnalyte(by description: String) {
-        
+        DispatchQueue.main.async {
+            self.addAnalyteButton.startActivity()
+        }
         AnalyteDataAPI().createAnalyte(description: description) { [weak self] result in
             switch result {
             case .success(let data):
 
                 let analyte = Analyte(description: data.description, identifier: data.uniqueIdentifier , serverID: data._id)
                 self?.analytes.append(analyte)
+                DispatchQueue.main.async {
+                    self?.addAnalyteButton.stopActivity()
+                }
             case .failure(let error):
                 print(error.localizedDescription)
             }
@@ -313,13 +324,14 @@ class WelcomeViewController: UIViewController {
     }
     
     private func getAnalytes(by id: String){
-        refreshActivityMonitor.alpha = 1
-        refreshActivityMonitor.startAnimating()
+        
+        DispatchQueue.main.async {
+            self.refreshButton.startActivity()
+        }
         AnalyteDataAPI().getAnalyteData(by: id) { [weak self] result  in
             switch result {
             case .success(let data):
-                self?.refreshActivityMonitor.stopAnimating()
-                self?.refreshActivityMonitor.alpha = 0
+
                 let data = AnalyteDataFetch(_id: data._id, description: data.description, uniqueIdentifier: data.uniqueIdentifier, measurements: data.measurements)
                 let firstDate = Date(timeIntervalSince1970: TimeInterval(data.measurements.first!.time)!)
                 
@@ -338,6 +350,9 @@ class WelcomeViewController: UIViewController {
                     return entry
                 }
                 self?.yValuesForMain = chartPoints
+                DispatchQueue.main.async {
+                    self?.refreshButton.stopActivity()
+                }
             case .failure(let error):
                 print(error.localizedDescription)
             }
@@ -359,8 +374,14 @@ struct Analyte {
     let serverID: String
 }
 
+// MARK: - TextView Delegate Extension
 
-
+extension WelcomeViewController: UITextViewDelegate {
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        textView.text = ""
+    }
+}
 
 // MARK: - Chart View Delegate Extension
 
@@ -383,7 +404,12 @@ extension WelcomeViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath)
             -> UISwipeActionsConfiguration? {
             let deleteAction = UIContextualAction(style: .destructive, title: nil) { (_, _, completionHandler) in
-                self.concSolutions.remove(at: indexPath.row)
+                if tableView.isEqual(self.analyteListTable) {
+                    tableView.beginUpdates()
+                    self.analytes.remove(at: indexPath.row)
+                    tableView.deleteRows(at: [indexPath], with: .fade)
+                    tableView.endUpdates()
+                }
                 completionHandler(true)
             }
             deleteAction.image = UIImage(systemName: "trash")
@@ -426,8 +452,8 @@ extension WelcomeViewController: UITableViewDataSource {
             let cell = tableView.dequeueReusableCell(withIdentifier: AnalyteListTableViewCell.nibName, for: indexPath) as! AnalyteListTableViewCell
             
             cell.analyteDescription.text = analytes[indexPath.row].description
-            cell.analyteUniqueUUID.text = String(analytes[indexPath.row].identifier.uuidString)
-            cell.analyteID.text = analytes[indexPath.row].serverID
+            cell.analyteUniqueUUID.text = "UUID: " + String(analytes[indexPath.row].identifier.uuidString)
+            cell.analyteID.text = "Server id: " + analytes[indexPath.row].serverID
             return cell
         }
     }
