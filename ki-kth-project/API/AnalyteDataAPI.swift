@@ -12,8 +12,7 @@ struct AnalyteDataAPI {
     
     private let networkingService = NetworkingService()
     
-    
-    func getAnalyteData(by id: String, with completion: @escaping (Result<AnalyteData,Error>) -> Void) {
+    func getAnalyteData(by id: String, with completion: @escaping (Result<AnalyteDataFetch,Error>) -> Void) {
         
         let url =  "https://ki-kth-project-api.herokuapp.com/analyte/\(id)"
         
@@ -21,7 +20,35 @@ struct AnalyteDataAPI {
             switch result {
             case .success(let data):
                 do {
-                    let analyteData = try JSONDecoder().decode(AnalyteData.self, from: data)
+                    let analyteData = try JSONDecoder().decode(AnalyteDataFetch.self, from: data)
+                    DispatchQueue.main.async {
+                        completion(.success(analyteData))
+                    }
+                } catch {
+                    DispatchQueue.main.async {
+                        completion(.failure(error))
+                    }
+                }
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    completion(.failure(error))
+                }
+            }
+        }
+    }
+    
+    func createAnalyte(description: String, with completion: @escaping (Result<AnalyteDataFetch,Error>) -> Void) {
+        
+        let uniqueIdentifier = UUID()
+        let analyte = AnalyteDataPost(description: description, uniqueIdentifier: uniqueIdentifier.uuidString)
+        let url = "https://ki-kth-project-api.herokuapp.com/analyte"
+        let addHeader = ["Content-Type": "application/json"]
+        
+        networkingService.dispatchRequest(urlString: url, method: .post, additionalHeaders: addHeader, body: analyte) { result in
+            switch result {
+            case .success(let data):
+                do {
+                    let analyteData = try JSONDecoder().decode(AnalyteDataFetch.self, from: data)
                     DispatchQueue.main.async {
                         completion(.success(analyteData))
                     }
@@ -40,15 +67,23 @@ struct AnalyteDataAPI {
 }
 
 //MARK: Analyte Data Decodable
-struct AnalyteData: Decodable {
+
+struct AnalyteDataPost: Codable {
+
     let description: String
+    let uniqueIdentifier: String
+}
+
+struct AnalyteDataFetch: Codable {
+    let _id: String
+    let description: String
+    let uniqueIdentifier: UUID
     let measurements: [Measurement]
 }
 
-struct Measurement: Decodable {
+struct Measurement: Codable {
     let time: String
     let value: Double
 }
-
 
 

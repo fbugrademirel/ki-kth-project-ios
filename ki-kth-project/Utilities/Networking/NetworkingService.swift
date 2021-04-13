@@ -56,7 +56,7 @@ final class NetworkingService {
                 return
             }
         }
-
+        
         ///URLSession data task with url request
         let session = URLSession(configuration: .default)
         session.dataTask(with: urlRequest) { data, response, error in

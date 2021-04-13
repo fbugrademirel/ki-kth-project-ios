@@ -18,6 +18,12 @@ class WelcomeViewController: UIViewController {
         }
     }
     
+    var analytes: [Analyte] = [] {
+        didSet {
+            analyteListTable.reloadData()
+        }
+    }
+    
     var yValuesForMain: [ChartDataEntry] = [] {
         didSet {
             setDataForMainGraph()
@@ -39,8 +45,11 @@ class WelcomeViewController: UIViewController {
     @IBOutlet weak var calGraphView1: LineChartView!
     @IBOutlet weak var calGraphView2: LineChartView!
     @IBOutlet weak var concentrationTable: UITableView!
+    @IBOutlet weak var analyteListTable: UITableView!
     @IBOutlet weak var potential: UILabel!
     @IBOutlet weak var concTextView: UITextField!
+    @IBOutlet weak var refreshActivityMonitor: UIActivityIndicatorView!
+    @IBOutlet weak var analyteDescriptionTextView: UITextField!
     
     // MARK: - Lifecyle
     override func viewDidLoad() {
@@ -55,17 +64,24 @@ class WelcomeViewController: UIViewController {
     @IBAction func addConc(_ sender: UIButton) {
         
         guard let conc1 = concTextView.text, let pot1 = potential.text else { return }
-        
-        
-        guard let con2 = Double(conc1), let pot2 = Double(pot1) else {
+        guard let conc2 = Double(conc1), let pot2 = Double(pot1) else {
             
             potential.text = "Invalid entry"
             return
         }
         
-        let sol = Solution(concentration: con2, concLog: log10(con2), potential: Double(pot2))
+        let sol = Solution(concentration: conc2, concLog: log10(conc2), potential: Double(pot2))
         concSolutions.append(sol)
     }
+    
+    
+    @IBAction func createAnalyte(_ sender: Any) {
+        
+        guard let desc = analyteDescriptionTextView.text else { return }
+        createAndPatchAnalyte(by: desc)
+        
+    }
+    
     
     @IBAction func drawLinearGraph(_ sender: Any) {
         if let selectedRows = concentrationTable.indexPathsForSelectedRows {
@@ -121,17 +137,25 @@ class WelcomeViewController: UIViewController {
     private func setUI() {
         
         corCoefficent.alpha = 0
+        refreshActivityMonitor.alpha = 0
    
         setView(for: mainChartView)
         setView(for: calGraphView1)
         setView(for: calGraphView2)
     
         mainChartView.delegate = self
+        
         concentrationTable.delegate = self
         concentrationTable.allowsMultipleSelectionDuringEditing = true
         concentrationTable.setEditing(true, animated: true)
         concentrationTable.dataSource = self
         concentrationTable.register(UINib(nibName: ConcentrationTableViewCell.nibName, bundle: nil), forCellReuseIdentifier: ConcentrationTableViewCell.nibName)
+        
+        analyteListTable.delegate = self
+        analyteListTable.allowsMultipleSelectionDuringEditing = true
+        analyteListTable.setEditing(true, animated: true)
+        analyteListTable.dataSource = self
+        analyteListTable.register(UINib(nibName: AnalyteListTableViewCell.nibName, bundle: nil), forCellReuseIdentifier: AnalyteListTableViewCell.nibName)
         
     }
     
@@ -273,11 +297,30 @@ class WelcomeViewController: UIViewController {
     }
     
 // MARK: - Operations
+    
+    private func createAndPatchAnalyte(by description: String) {
+        
+        AnalyteDataAPI().createAnalyte(description: description) { [weak self] result in
+            switch result {
+            case .success(let data):
+
+                let analyte = Analyte(description: data.description, identifier: data.uniqueIdentifier , serverID: data._id)
+                self?.analytes.append(analyte)
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
     private func getAnalytes(by id: String){
+        refreshActivityMonitor.alpha = 1
+        refreshActivityMonitor.startAnimating()
         AnalyteDataAPI().getAnalyteData(by: id) { [weak self] result  in
             switch result {
             case .success(let data):
-                let data = AnalyteData(description: data.description, measurements: data.measurements)
+                self?.refreshActivityMonitor.stopAnimating()
+                self?.refreshActivityMonitor.alpha = 0
+                let data = AnalyteDataFetch(_id: data._id, description: data.description, uniqueIdentifier: data.uniqueIdentifier, measurements: data.measurements)
                 let firstDate = Date(timeIntervalSince1970: TimeInterval(data.measurements.first!.time)!)
                 
                 let chartPoints = data.measurements.map { (measurement) -> ChartDataEntry in
@@ -309,6 +352,14 @@ struct Solution {
     let concLog: Double
     let potential: Double
 }
+
+struct Analyte {
+    let description: String
+    let identifier: UUID
+    let serverID: String
+}
+
+
 
 
 // MARK: - Chart View Delegate Extension
@@ -353,17 +404,31 @@ extension WelcomeViewController: UITableViewDelegate {
 extension WelcomeViewController: UITableViewDataSource {
         
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return concSolutions.count
+        if tableView.isEqual(concentrationTable) {
+            return concSolutions.count
+        } else {
+            return analytes.count
+        }
+    
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: ConcentrationTableViewCell.nibName, for: indexPath) as! ConcentrationTableViewCell
-
-        cell.solNumber.text = String(indexPath.row + 1)
-        cell.concentration.text = String(concSolutions[indexPath.row].concentration)
-        cell.logConc.text = String(format:"%.2f", log10(concSolutions[indexPath.row].concentration))
-        cell.potential.text = String(concSolutions[indexPath.row].potential)
         
-        return cell
+        if tableView.isEqual(concentrationTable) {
+            let cell = tableView.dequeueReusableCell(withIdentifier: ConcentrationTableViewCell.nibName, for: indexPath) as! ConcentrationTableViewCell
+
+            cell.solNumber.text = String(indexPath.row + 1)
+            cell.concentration.text = String(concSolutions[indexPath.row].concentration)
+            cell.logConc.text = String(format:"%.2f", log10(concSolutions[indexPath.row].concentration))
+            cell.potential.text = String(concSolutions[indexPath.row].potential)
+            return cell
+        } else {
+            let cell = tableView.dequeueReusableCell(withIdentifier: AnalyteListTableViewCell.nibName, for: indexPath) as! AnalyteListTableViewCell
+            
+            cell.analyteDescription.text = analytes[indexPath.row].description
+            cell.analyteUniqueUUID.text = String(analytes[indexPath.row].identifier.uuidString)
+            cell.analyteID.text = analytes[indexPath.row].serverID
+            return cell
+        }
     }
 }
