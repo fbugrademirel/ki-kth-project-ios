@@ -133,9 +133,12 @@
                                     <action selector="clearSelected:" destination="BYZ-38-t0r" eventType="touchUpInside" id="41h-FT-8Yh"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6S1-XS-4Zu">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6S1-XS-4Zu">
                                 <rect key="frame" x="670" y="1086" width="229" height="21"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="21" id="fwG-br-g4X"/>
+                                    <constraint firstAttribute="width" constant="229" id="zAj-0Z-dkW"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -173,6 +176,7 @@
                             <constraint firstItem="KQ8-9s-c5K" firstAttribute="leading" secondItem="0v2-kk-qgk" secondAttribute="trailing" constant="9" id="69v-Nl-G4w"/>
                             <constraint firstItem="WKp-xz-WGo" firstAttribute="top" secondItem="nMw-m5-1sP" secondAttribute="bottom" constant="37" id="6Jb-xs-gjd"/>
                             <constraint firstItem="Hiq-pT-kIZ" firstAttribute="top" secondItem="KQ8-9s-c5K" secondAttribute="bottom" constant="6" id="6Xt-DT-npI"/>
+                            <constraint firstItem="6S1-XS-4Zu" firstAttribute="leading" secondItem="eNx-o4-nIz" secondAttribute="trailing" constant="8" symbolic="YES" id="6aI-J8-Lvh"/>
                             <constraint firstItem="IVI-He-Y4x" firstAttribute="leading" secondItem="0v2-kk-qgk" secondAttribute="trailing" constant="8" symbolic="YES" id="70u-lH-4UI"/>
                             <constraint firstItem="0v2-kk-qgk" firstAttribute="top" secondItem="lwO-AN-G8d" secondAttribute="bottom" constant="8" symbolic="YES" id="7vU-1N-lJL"/>
                             <constraint firstItem="rbc-c7-1on" firstAttribute="leading" secondItem="0v2-kk-qgk" secondAttribute="trailing" constant="6" id="8Xh-3h-IJ4"/>
@@ -194,6 +198,7 @@
                             <constraint firstItem="eNx-o4-nIz" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="362" id="YSj-L0-fVC"/>
                             <constraint firstItem="nMw-m5-1sP" firstAttribute="baseline" secondItem="Hiq-pT-kIZ" secondAttribute="baseline" id="ZLH-9f-Gbb"/>
                             <constraint firstItem="Mhu-EU-dmN" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="175" id="Zuq-xu-mHg"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="6S1-XS-4Zu" secondAttribute="bottom" constant="259" id="aaK-03-Ej8"/>
                             <constraint firstItem="3kV-3r-rOw" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" id="ait-Lj-t1q"/>
                             <constraint firstItem="WKp-xz-WGo" firstAttribute="centerX" secondItem="KQ8-9s-c5K" secondAttribute="centerX" id="bWx-qP-ShK"/>
                             <constraint firstItem="0v2-kk-qgk" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="262" id="bd2-Dn-c5j"/>

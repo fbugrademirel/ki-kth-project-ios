@@ -12,7 +12,59 @@ struct AnalyteDataAPI {
     
     private let networkingService = NetworkingService()
     
-    func getAnalyteData(by id: String, with completion: @escaping (Result<AnalyteDataFetch,Error>) -> Void) {
+    
+    func deleteAnalyte(_ id: String, completion: @escaping (Result<AnalyteDataFetch, Error>) -> Void) {
+        
+        let url =  "https://ki-kth-project-api.herokuapp.com/analyte/\(id)"
+        
+        networkingService.dispatchRequest(urlString: url, method: .delete, additionalHeaders: nil, body: nil) { (result) in
+            switch result {
+            case .success(let data):
+                do {
+                    let analyte = try JSONDecoder().decode(AnalyteDataFetch.self, from: data)
+                    DispatchQueue.main.async {
+                        completion(.success(analyte))
+                    }
+                } catch {
+                    DispatchQueue.main.async {
+                        completion(.failure(error))
+                    }
+                }
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    completion(.failure(error))
+                }
+            }
+        }
+    }
+    
+    func getAllAnalytes(with completion: @escaping (Result<[AnalyteDataFetch], Error>) -> Void) {
+        
+        let url = "https://ki-kth-project-api.herokuapp.com/analyte/all"
+        
+        networkingService.dispatchRequest(urlString: url, method: .get, additionalHeaders: nil, body: nil) { result in
+            
+            switch result {
+            case .success(let data):
+                do {
+                    let analytes = try JSONDecoder().decode([AnalyteDataFetch].self, from: data)
+                    DispatchQueue.main.async {
+                        completion(.success(analytes))
+                    }
+                } catch {
+                    DispatchQueue.main.async {
+                        completion(.failure(error))
+                    }
+                }
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    completion(.failure(error))
+                }
+            }
+        }
+    }
+    
+    func getAnalyteData(_ id: String, with completion: @escaping (Result<AnalyteDataFetch,Error>) -> Void) {
         
         let url =  "https://ki-kth-project-api.herokuapp.com/analyte/\(id)"
         
@@ -68,6 +120,10 @@ struct AnalyteDataAPI {
 
 //MARK: Analyte Data Decodable
 
+//struct Analytes: Codable {
+//    let analytes: [AnalyteDataFetch]
+//}
+
 struct AnalyteDataPost: Codable {
 
     let description: String
@@ -79,6 +135,8 @@ struct AnalyteDataFetch: Codable {
     let description: String
     let uniqueIdentifier: UUID
     let measurements: [Measurement]
+    let createdAt: String
+    let updatedAt: String
 }
 
 struct Measurement: Codable {

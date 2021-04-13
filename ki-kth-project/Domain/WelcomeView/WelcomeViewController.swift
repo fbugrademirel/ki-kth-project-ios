@@ -8,9 +8,17 @@
 import UIKit
 import Charts
 
+enum Deletion {
+    case deviceOnly
+    case cloudAlso
+    case cancelOp
+}
+
 class WelcomeViewController: UIViewController {
     
     let service = NetworkingService()
+    
+    var deletion: Deletion = .cancelOp
     
     var concSolutions: [Solution] = [] {
         didSet {
@@ -52,13 +60,16 @@ class WelcomeViewController: UIViewController {
     @IBOutlet weak var refreshButton: ActivityIndicatorButton!
     @IBOutlet weak var addAnalyteButton: ActivityIndicatorButton!
     
+    
+    
+    
     // MARK: - Lifecyle
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setUI()
-        getAnalytes(by: "6074328935a6870015ec8de8")
-    
+       // getAnalytesById("6074328935a6870015ec8de8")
+        getAllAnalytes()
     }
     
     // MARK: - IBAction
@@ -125,9 +136,10 @@ class WelcomeViewController: UIViewController {
     }
     
     @IBAction func refButPressed(_ sender: UIButton) {
+        yValuesForMain = []
         yValuesForCal1 = []
         yValuesForCal2 = []
-        getAnalytes(by: "6074328935a6870015ec8de8")
+        getAllAnalytes()
     }
     
 
@@ -302,7 +314,70 @@ class WelcomeViewController: UIViewController {
         calGraphView2.animate(xAxisDuration: 0.1)
     }
     
+    private func showAlert(path: IndexPath) {
+        let alert = UIAlertController(title: "Do you confirm deletion?", message: nil, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Delete only from this device", style: .default, handler: { _ in
+
+            self.analyteListTable.beginUpdates()
+            self.analytes.remove(at: path.row)
+            self.analyteListTable.deleteRows(at: [path], with: .fade)
+            self.analyteListTable.endUpdates()
+
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Delete also from cloud", style: .destructive, handler: { _ in
+
+            AnalyteDataAPI().deleteAnalyte(self.analytes[path.row].serverID) { (result) in
+                switch result {
+                case .success(_):
+                    let alert = UIAlertController(title: "Deleted from database", message: "Server message", preferredStyle: .alert)
+                    alert.addAction(UIAlertAction(title: "Okay", style: .default, handler: nil))
+                    self.present(alert, animated: true, completion: nil)
+                case .failure(let error):
+                    print(error.localizedDescription)
+                }
+            }
+            
+            self.analyteListTable.beginUpdates()
+            self.analytes.remove(at: path.row)
+            self.analyteListTable.deleteRows(at: [path], with: .fade)
+            self.analyteListTable.endUpdates()
+            
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in
+            return
+        }))
+        present(alert, animated: true, completion: nil)
+    }
+    
+    
 // MARK: - Operations
+    
+    private func getAllAnalytes() {
+        AnalyteDataAPI().getAllAnalytes { [weak self] result in
+            
+            switch result {
+            
+            case .success(let data):
+                
+                let sorted = data.sorted {
+                    $0.updatedAt > $1.updatedAt
+                }
+                
+                let fetched = sorted.map { (data) -> Analyte in
+                    let analyte = Analyte(description: data.description,
+                                          identifier: data.uniqueIdentifier,
+                                          serverID: data._id)
+                    return analyte
+                }
+                self?.analytes = fetched
+        
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
     
     private func createAndPatchAnalyte(by description: String) {
         DispatchQueue.main.async {
@@ -312,8 +387,10 @@ class WelcomeViewController: UIViewController {
             switch result {
             case .success(let data):
 
-                let analyte = Analyte(description: data.description, identifier: data.uniqueIdentifier , serverID: data._id)
-                self?.analytes.append(analyte)
+                let analyte = Analyte(description: data.description,
+                                      identifier: data.uniqueIdentifier,
+                                      serverID: data._id)
+                self?.analytes.insert(analyte, at: 0)
                 DispatchQueue.main.async {
                     self?.addAnalyteButton.stopActivity()
                 }
@@ -323,17 +400,36 @@ class WelcomeViewController: UIViewController {
         }
     }
     
-    private func getAnalytes(by id: String){
+    private func getAnalytesById(_ id: String){
         
         DispatchQueue.main.async {
             self.refreshButton.startActivity()
         }
-        AnalyteDataAPI().getAnalyteData(by: id) { [weak self] result  in
+        AnalyteDataAPI().getAnalyteData(id) { [weak self] result  in
             switch result {
             case .success(let data):
 
-                let data = AnalyteDataFetch(_id: data._id, description: data.description, uniqueIdentifier: data.uniqueIdentifier, measurements: data.measurements)
-                let firstDate = Date(timeIntervalSince1970: TimeInterval(data.measurements.first!.time)!)
+                let data = AnalyteDataFetch(_id: data._id,
+                                            description: data.description,
+                                            uniqueIdentifier: data.uniqueIdentifier,
+                                            measurements: data.measurements,
+                                            createdAt: data.createdAt,
+                                            updatedAt: data.updatedAt)
+                guard let time = data.measurements.first?.time else {
+                    DispatchQueue.main.async {
+                        self?.refreshButton.stopActivity()
+                    }
+                    return
+                }
+                guard let interval = TimeInterval(time) else {
+                    
+                    DispatchQueue.main.async {
+                        self?.refreshButton.stopActivity()
+                    }
+                    return
+                }
+                
+                let firstDate = Date(timeIntervalSince1970: interval)
                 
                 let chartPoints = data.measurements.map { (measurement) -> ChartDataEntry in
                 
@@ -396,7 +492,13 @@ extension WelcomeViewController: ChartViewDelegate {
 // MARK: - Table View Delegate Extension
 
 extension WelcomeViewController: UITableViewDelegate {
-
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if tableView.isEqual(analyteListTable) {
+            getAnalytesById(analytes[indexPath.row].serverID)
+        }
+    }
+    
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return true
     }
@@ -404,12 +506,18 @@ extension WelcomeViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath)
             -> UISwipeActionsConfiguration? {
             let deleteAction = UIContextualAction(style: .destructive, title: nil) { (_, _, completionHandler) in
-                if tableView.isEqual(self.analyteListTable) {
-                    tableView.beginUpdates()
-                    self.analytes.remove(at: indexPath.row)
-                    tableView.deleteRows(at: [indexPath], with: .fade)
-                    tableView.endUpdates()
-                }
+                self.showAlert(path: indexPath)
+//                if tableView.isEqual(self.analyteListTable) {
+//
+//                    /* Deletion */
+//                    tableView.beginUpdates()
+//                    self.analytes.remove(at: indexPath.row)
+//                    tableView.deleteRows(at: [indexPath], with: .fade)
+//                    tableView.endUpdates()
+//                    /* Deletion */
+//
+//
+//                }
                 completionHandler(true)
             }
             deleteAction.image = UIImage(systemName: "trash")
@@ -417,12 +525,6 @@ extension WelcomeViewController: UITableViewDelegate {
             let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
             return configuration
     }
-    
-//    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-//        if (editingStyle == .delete) {
-//            concSolutions.remove(at: indexPath.row)
-//        }
-//    }
 }
 
 // MARK: - Table View Datasource Extension
