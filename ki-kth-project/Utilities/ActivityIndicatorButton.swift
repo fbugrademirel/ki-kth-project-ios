@@ -35,6 +35,7 @@ class ActivityIndicatorButton: UIButton {
     }
 
      func startActivity() {
+        self.isUserInteractionEnabled = false
         UIView.animate(withDuration: 0.1, delay: 0, options: .curveEaseOut, animations: {
             self.imageView?.alpha = 0
             self.titleLabel?.alpha = 0
@@ -48,6 +49,7 @@ class ActivityIndicatorButton: UIButton {
     }
 
     func stopActivity() {
+        self.isUserInteractionEnabled = true
         UIView.animate(withDuration: 0.1, delay: 0, options: .curveEaseOut, animations: {
             self.ai.alpha = 0
             self.ai.stopAnimating()

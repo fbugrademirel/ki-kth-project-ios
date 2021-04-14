@@ -48,6 +48,7 @@ class WelcomeViewController: UIViewController {
         }
     }
     
+    @IBOutlet weak var informationLAbel: UILabel!
     @IBOutlet weak var corCoefficent: UILabel!
     @IBOutlet weak var mainChartView: LineChartView!
     @IBOutlet weak var calGraphView1: LineChartView!
@@ -136,6 +137,7 @@ class WelcomeViewController: UIViewController {
     }
     
     @IBAction func refButPressed(_ sender: UIButton) {
+        informationLAbel.text = ""
         yValuesForMain = []
         yValuesForCal1 = []
         yValuesForCal2 = []
@@ -154,6 +156,10 @@ class WelcomeViewController: UIViewController {
 
 // MARK: - UI
     private func setUI() {
+        
+        informationLAbel.font = .boldSystemFont(ofSize: 20)
+        informationLAbel.alpha = 0
+        informationLAbel.text = ""
         
         corCoefficent.alpha = 0
    
@@ -354,9 +360,31 @@ class WelcomeViewController: UIViewController {
     
 // MARK: - Operations
     
+    private func startActivityIndicators(with info: String){
+        DispatchQueue.main.async {
+            self.addAnalyteButton.startActivity()
+            self.informationLAbel.textColor = .systemRed
+            self.informationLAbel.text = info
+            self.informationLAbel.alpha = 1
+        }
+    }
+    
+    private func stopActivityIndicators(with info: String) {
+        DispatchQueue.main.async {
+            self.addAnalyteButton.stopActivity()
+            self.informationLAbel.textColor = .systemRed
+            UIView.animate(withDuration: 2, animations: {
+                self.informationLAbel.alpha = 0
+
+            })
+            self.informationLAbel.text = info
+        }
+    }
+    
     private func getAllAnalytes() {
+        
+        startActivityIndicators(with: "Fetching all from server...")
         AnalyteDataAPI().getAllAnalytes { [weak self] result in
-            
             switch result {
             
             case .success(let data):
@@ -371,18 +399,19 @@ class WelcomeViewController: UIViewController {
                                           serverID: data._id)
                     return analyte
                 }
+                self?.stopActivityIndicators(with: "Fetched with success!")
                 self?.analytes = fetched
         
             case .failure(let error):
+                self?.stopActivityIndicators(with: "Fetching failed...")
                 print(error.localizedDescription)
             }
         }
     }
     
     private func createAndPatchAnalyte(by description: String) {
-        DispatchQueue.main.async {
-            self.addAnalyteButton.startActivity()
-        }
+        
+        startActivityIndicators(with: "Creating analyte...")
         AnalyteDataAPI().createAnalyte(description: description) { [weak self] result in
             switch result {
             case .success(let data):
@@ -390,21 +419,18 @@ class WelcomeViewController: UIViewController {
                 let analyte = Analyte(description: data.description,
                                       identifier: data.uniqueIdentifier,
                                       serverID: data._id)
+                self?.stopActivityIndicators(with: "Created with success!")
                 self?.analytes.insert(analyte, at: 0)
-                DispatchQueue.main.async {
-                    self?.addAnalyteButton.stopActivity()
-                }
             case .failure(let error):
                 print(error.localizedDescription)
+                self?.stopActivityIndicators(with: "Creating analyte failed...")
             }
         }
     }
     
     private func getAnalytesById(_ id: String){
         
-        DispatchQueue.main.async {
-            self.refreshButton.startActivity()
-        }
+        startActivityIndicators(with: "Fetching analyte data from server...")
         AnalyteDataAPI().getAnalyteData(id) { [weak self] result  in
             switch result {
             case .success(let data):
@@ -416,16 +442,11 @@ class WelcomeViewController: UIViewController {
                                             createdAt: data.createdAt,
                                             updatedAt: data.updatedAt)
                 guard let time = data.measurements.first?.time else {
-                    DispatchQueue.main.async {
-                        self?.refreshButton.stopActivity()
-                    }
+                    self?.stopActivityIndicators(with: "Invalid data for graphing...")
                     return
                 }
                 guard let interval = TimeInterval(time) else {
-                    
-                    DispatchQueue.main.async {
-                        self?.refreshButton.stopActivity()
-                    }
+                    self?.stopActivityIndicators(with: "Invalid data for graphing...")
                     return
                 }
                 
@@ -433,23 +454,25 @@ class WelcomeViewController: UIViewController {
                 
                 let chartPoints = data.measurements.map { (measurement) -> ChartDataEntry in
                 
+                    var x: Double = -1
                     let date2 = Date(timeIntervalSince1970: TimeInterval(measurement.time)!)
 
                     let formatter = DateComponentsFormatter()
                     formatter.allowedUnits = [.second]
                         
                     let difference = formatter.string(from: firstDate, to: date2)!
-                    let str = difference.split(separator: ",").joined(separator: "")
-                    print(str)//output "8 seconds"
-                    
-                    let entry = ChartDataEntry(x: Double(str)!, y: measurement.value)
+                    guard let str = Double(difference.split(separator: ",").joined(separator: "")) else {
+                        x += 1
+                        self?.stopActivityIndicators(with: "Invalid data for graphing...")
+                        return ChartDataEntry(x: x, y: 0)
+                    }
+                    let entry = ChartDataEntry(x: str, y: measurement.value)
                     return entry
                 }
+                self?.stopActivityIndicators(with: "Fetched with success!")
                 self?.yValuesForMain = chartPoints
-                DispatchQueue.main.async {
-                    self?.refreshButton.stopActivity()
-                }
             case .failure(let error):
+                self?.stopActivityIndicators(with: "Fetching failed")
                 print(error.localizedDescription)
             }
         }
