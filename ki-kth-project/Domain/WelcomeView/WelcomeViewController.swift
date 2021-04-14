@@ -111,7 +111,6 @@ class WelcomeViewController: UIViewController {
                 entries.append(ChartDataEntry(x: concSolutions[each.row].concLog, y: concSolutions[each.row].potential))
             }
             
-            entries.sort(by: { $0.x < $1.x })
             yValuesForCal2 = entries
         }
     }
@@ -205,6 +204,12 @@ class WelcomeViewController: UIViewController {
     
     
     private func setDataForMainGraph() {
+        
+        if yValuesForMain.isEmpty {
+            mainChartView.clearValues()
+            return
+        }
+        
         let set1 = LineChartDataSet(entries: yValuesForMain, label: "Raw Data from Server ")
         set1.mode = .cubicBezier
         set1.drawCirclesEnabled = false
@@ -226,6 +231,21 @@ class WelcomeViewController: UIViewController {
     }
     
     private func setDataForCal1() {
+        
+        if yValuesForCal1.isEmpty {
+            calGraphView1.clearValues()
+            return
+        }
+        
+        let sorted = yValuesForCal1.sorted {
+            $0.x <= $1.x
+        }
+        
+        if sorted != yValuesForCal1 {
+            informationLAbel.text = "Invalid for calibration curve graph!"
+            return
+        }
+        
         let set1 = LineChartDataSet(entries: yValuesForCal1, label: "Calibration Curve")
         set1.mode = .cubicBezier
         set1.drawCirclesEnabled = true
@@ -243,6 +263,22 @@ class WelcomeViewController: UIViewController {
     }
     
     private func setDataForCal2(){
+        
+        if yValuesForCal2.isEmpty {
+            calGraphView2.clearValues()
+            return
+        }
+        
+        let sorted = yValuesForCal2.sorted {
+            $0.x <= $1.x
+        }
+        
+        if sorted != yValuesForCal2 {
+            informationLAbel.text = "Invalid for calibration curve graph!"
+            return
+        }
+        
+        
         let set1 = LineChartDataSet(entries: yValuesForCal2, label: "Linear Calibration Graph Points")
         set1.mode = .cubicBezier
         set1.drawCirclesEnabled = true
@@ -333,13 +369,16 @@ class WelcomeViewController: UIViewController {
         
         alert.addAction(UIAlertAction(title: "Delete also from cloud", style: .destructive, handler: { _ in
 
+            self.startActivityIndicators(with: "Deleting from database...")
             AnalyteDataAPI().deleteAnalyte(self.analytes[path.row].serverID) { (result) in
                 switch result {
                 case .success(_):
+                    self.stopActivityIndicators(with: "Deleted with success")
                     let alert = UIAlertController(title: "Deleted from database", message: "Server message", preferredStyle: .alert)
-                    alert.addAction(UIAlertAction(title: "Okay", style: .default, handler: nil))
+                    alert.addAction(UIAlertAction(title: "I understand", style: .default, handler: nil))
                     self.present(alert, animated: true, completion: nil)
                 case .failure(let error):
+                    self.stopActivityIndicators(with: "Deletion from database failed...")
                     print(error.localizedDescription)
                 }
             }
