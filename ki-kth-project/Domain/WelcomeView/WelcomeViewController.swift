@@ -64,7 +64,7 @@ class WelcomeViewController: UIViewController {
     
     
     
-    // MARK: - Lifecyle
+// MARK: - Lifecyle
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -73,7 +73,7 @@ class WelcomeViewController: UIViewController {
         getAllAnalytes()
     }
     
-    // MARK: - IBAction
+// MARK: - IBAction
     @IBAction func addConc(_ sender: UIButton) {
         
         guard let conc1 = concTextView.text, let pot1 = potential.text else { return }
@@ -104,13 +104,14 @@ class WelcomeViewController: UIViewController {
     
     @IBAction func drawLinearGraph(_ sender: Any) {
         if let selectedRows = concentrationTable.indexPathsForSelectedRows {
-            
+
             var entries: [ChartDataEntry] = []
             
-            for each in selectedRows {
+            let sortedRows = selectedRows.sorted { $0.row < $1.row }
+            
+            for each in sortedRows {
                 entries.append(ChartDataEntry(x: concSolutions[each.row].concLog, y: concSolutions[each.row].potential))
             }
-            
             yValuesForCal2 = entries
         }
     }
@@ -150,7 +151,6 @@ class WelcomeViewController: UIViewController {
             return ChartDataEntry(x: solution.concLog, y: solution.potential)
         }
         yValuesForCal1 = entries
-        
     }
 
 // MARK: - UI
@@ -321,7 +321,7 @@ class WelcomeViewController: UIViewController {
         let B = Sxy / Sxx
         let A = meanY - (B*meanX)
         
-        // y = A + Bx
+        // y = A + Bx ADD SLOPE ON THE INTERCEPT
         yValuesForCal2.forEach { entry in
             lrgValuesArray.append(ChartDataEntry(x: entry.x, y: (A + (B*entry.x))))
         }
@@ -397,7 +397,6 @@ class WelcomeViewController: UIViewController {
         }))
         present(alert, animated: true, completion: nil)
     }
-    
     
 // MARK: - Operations
     
@@ -520,19 +519,6 @@ class WelcomeViewController: UIViewController {
     }
 }
 
-// MARK: - MODELS
-
-struct Solution {
-    let concentration: Double
-    let concLog: Double
-    let potential: Double
-}
-
-struct Analyte {
-    let description: String
-    let identifier: UUID
-    let serverID: String
-}
 
 // MARK: - TextView Delegate Extension
 
@@ -632,4 +618,18 @@ extension WelcomeViewController: UITableViewDataSource {
             return cell
         }
     }
+}
+
+// MARK: - MODELS
+
+struct Solution {
+    let concentration: Double
+    let concLog: Double
+    let potential: Double
+}
+
+struct Analyte {
+    let description: String
+    let identifier: UUID
+    let serverID: String
 }
