@@ -212,10 +212,11 @@ class WelcomeViewController: UIViewController {
         
         let set1 = LineChartDataSet(entries: yValuesForMain, label: "Raw Data from Server ")
         set1.mode = .cubicBezier
-        set1.drawCirclesEnabled = false
-        set1.lineWidth = 5
+        set1.drawCirclesEnabled = true
+        set1.lineWidth = 0
         set1.setColor(.systemBlue)
-        
+        set1.setCircleColor(.systemBlue)
+
         //set1.fill = Fill(color: .white)
         //set1.fillAlpha = 0.8
         //set1.drawFilledEnabled = true
@@ -226,6 +227,7 @@ class WelcomeViewController: UIViewController {
         let data = LineChartData(dataSet: set1)
         data.setDrawValues(false)
         mainChartView.data = data
+        mainChartView.fitScreen()
         mainChartView.animate(xAxisDuration: 2)
 
     }
@@ -328,7 +330,7 @@ class WelcomeViewController: UIViewController {
         let r = Sxy / (sqrt(Sxx) * sqrt(Syy))
         DispatchQueue.main.async {
             self.corCoefficent.alpha = 1
-            self.corCoefficent.text = "Correalation Coefficent (r) is \(String(format: "%.2f" ,r))"
+            self.corCoefficent.text = "Correalation Coefficent (r) is \(String(format: "%.4f" ,r))"
             if r > 7 {
                 self.corCoefficent.tintColor = .systemGreen
             } else {
