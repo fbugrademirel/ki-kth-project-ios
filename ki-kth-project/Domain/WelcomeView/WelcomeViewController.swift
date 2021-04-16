@@ -18,8 +18,6 @@ class WelcomeViewController: UIViewController {
     
     let service = NetworkingService()
     
-    var deletion: Deletion = .cancelOp
-    
     var concSolutions: [Solution] = [] {
         didSet {
             concentrationTable.reloadData()
