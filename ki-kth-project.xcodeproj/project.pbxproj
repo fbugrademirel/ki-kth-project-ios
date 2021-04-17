@@ -22,6 +22,7 @@
 		7CDC8E2D2623AE6B00430BD7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7CDC8E2B2623AE6B00430BD7 /* LaunchScreen.storyboard */; };
 		7CDC8E3B2623AF8F00430BD7 /* NetworkingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CDC8E3A2623AF8F00430BD7 /* NetworkingService.swift */; };
 		7CDEFBA12629C15B00CA3E66 /* StoryboardInstantiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CDEFBA02629C15B00CA3E66 /* StoryboardInstantiable.swift */; };
+		7CDEFBA62629C23000CA3E66 /* WelcomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CDEFBA52629C23000CA3E66 /* WelcomeViewModel.swift */; };
 		F504A3A08E207F6059771813 /* Pods_ki_kth_project.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A6FC4A09A904DFBB5E5C423 /* Pods_ki_kth_project.framework */; };
 /* End PBXBuildFile section */
 
@@ -44,6 +45,7 @@
 		7CDC8E2E2623AE6B00430BD7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7CDC8E3A2623AF8F00430BD7 /* NetworkingService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkingService.swift; sourceTree = "<group>"; };
 		7CDEFBA02629C15B00CA3E66 /* StoryboardInstantiable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoryboardInstantiable.swift; sourceTree = "<group>"; };
+		7CDEFBA52629C23000CA3E66 /* WelcomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeViewModel.swift; sourceTree = "<group>"; };
 		9A6FC4A09A904DFBB5E5C423 /* Pods_ki_kth_project.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ki_kth_project.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D1DFA9CFFA0E6B88A99C38D3 /* Pods-ki-kth-project.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ki-kth-project.release.xcconfig"; path = "Target Support Files/Pods-ki-kth-project/Pods-ki-kth-project.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -132,10 +134,11 @@
 		7CDC8E362623AE9000430BD7 /* WelcomeView */ = {
 			isa = PBXGroup;
 			children = (
+				7CDC8E232623AE6B00430BD7 /* WelcomeView.storyboard */,
 				7C3C27D726258F8C00F83DAA /* AnalyteListTableViewCell */,
 				7C3C27D526258F2D00F83DAA /* ConcentrationTableViewCell */,
 				7CDC8E212623AE6B00430BD7 /* WelcomeViewController.swift */,
-				7CDC8E232623AE6B00430BD7 /* WelcomeView.storyboard */,
+				7CDEFBA52629C23000CA3E66 /* WelcomeViewModel.swift */,
 			);
 			path = WelcomeView;
 			sourceTree = "<group>";
@@ -304,6 +307,7 @@
 				7CDC8E1E2623AE6B00430BD7 /* AppDelegate.swift in Sources */,
 				7C4E33F72624754000C42669 /* ConcentrationTableViewCell.swift in Sources */,
 				7C3C27E92625C1EB00F83DAA /* ActivityIndicatorButton.swift in Sources */,
+				7CDEFBA62629C23000CA3E66 /* WelcomeViewModel.swift in Sources */,
 				7CDA38002623B0D700874665 /* AnalyteDataAPI.swift in Sources */,
 				7CDC8E202623AE6B00430BD7 /* SceneDelegate.swift in Sources */,
 				7C3C27DF26258FBD00F83DAA /* AnalyteListTableViewCell.swift in Sources */,
