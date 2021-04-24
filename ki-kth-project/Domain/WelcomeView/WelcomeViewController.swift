@@ -14,34 +14,6 @@ class WelcomeViewController: UIViewController {
     
     var viewModel: WelcomeViewModel!
     
-//    var concSolutions: [Solution] = [] {
-//        didSet {
-//            concentrationTable.reloadData()
-//        }
-//    }
-//    
-//    var analytes: [Analyte] = [] {
-//        didSet {
-//            analyteListTable.reloadData()
-//        }
-//    }
-//    
-//    var yValuesForMain: [ChartDataEntry] = [] {
-//        didSet {
-//            setDataForMainGraph()
-//        }
-//    }
-//    var yValuesForCal1: [ChartDataEntry] = [] {
-//        didSet {
-//            setDataForCal1()
-//        }
-//    }
-//    var yValuesForCal2: [ChartDataEntry] = [] {
-//        didSet {
-//            setDataForCal2()
-//        }
-//    }
-    
     @IBOutlet weak var informationLAbel: UILabel!
     @IBOutlet weak var corCoefficent: UILabel!
     @IBOutlet weak var mainChartView: LineChartView!
@@ -54,8 +26,6 @@ class WelcomeViewController: UIViewController {
     @IBOutlet weak var analyteDescriptionTextView: UITextField!
     @IBOutlet weak var refreshButton: ActivityIndicatorButton!
     @IBOutlet weak var addAnalyteButton: ActivityIndicatorButton!
-    
-    
     
     
 // MARK: - Lifecyle
@@ -80,9 +50,9 @@ class WelcomeViewController: UIViewController {
             potential.text = "Invalid entry"
             return
         }
-        
-        let sol = Solution(concentration: conc2, concLog: log10(conc2), potential: Double(pot2))
-        viewModel.concSolutions.append(sol)
+                
+        let model = ConcentrationTableViewCellModel(concentration: conc2, log: log10(conc2), potential: Double(pot2))
+        viewModel.concentrationTableViewCellModels.append(model)
         concTextView.text = ""
         concTextView.resignFirstResponder()
     }
@@ -109,7 +79,9 @@ class WelcomeViewController: UIViewController {
             let sortedRows = selectedRows.sorted { $0.row < $1.row }
             
             for each in sortedRows {
-                entries.append(ChartDataEntry(x: viewModel.concSolutions[each.row].concLog, y: viewModel.concSolutions[each.row].potential))
+                //entries.append(ChartDataEntry(x: viewModel.concSolutions[each.row].concLog, y: viewModel.concSolutions[each.row].potential))
+                entries.append(ChartDataEntry(x: viewModel.concentrationTableViewCellModels[each.row].concLog, y: viewModel.concentrationTableViewCellModels[each.row].potential))
+
             }
             viewModel.yValuesForCal2 = entries
         }
@@ -120,11 +92,13 @@ class WelcomeViewController: UIViewController {
         if let indexPaths = concentrationTable.indexPathsForSelectedRows  {
             let sortedPaths = indexPaths.sorted { $0.row > $1.row }
             for indexPath in sortedPaths {
-                let count = viewModel.concSolutions.count
+                let count = viewModel.concentrationTableViewCellModels.count
+                //let count = viewModel.concSolutions.count
                 let i = count - 1
                 for i in stride(from: i, through: 0, by: -1) {
                     if(indexPath.row == i){
-                        viewModel.concSolutions.remove(at: i)
+                        //viewModel.concSolutions.remove(at: i)
+                        viewModel.concentrationTableViewCellModels.remove(at: i)
                     }
                 }
             }
@@ -132,7 +106,8 @@ class WelcomeViewController: UIViewController {
     }
     
     @IBAction func clearList(_ sender: UIButton) {
-        viewModel.concSolutions = []
+//        viewModel.conc = []
+        viewModel.concentrationTableViewCellModels = []
     }
     
     @IBAction func refButPressed(_ sender: UIButton) {
@@ -146,15 +121,18 @@ class WelcomeViewController: UIViewController {
 
     @IBAction func drawCalGraph(_ sender: UIButton) {
         
-        let entries = viewModel.concSolutions.map { (solution) -> ChartDataEntry in
+//        let entries = viewModel.concSolutions.map { (solution) -> ChartDataEntry in
+//            return ChartDataEntry(x: solution.concLog, y: solution.potential)
+//        }
+        
+        let entries = viewModel.concentrationTableViewCellModels.map { (solution) -> ChartDataEntry in
             return ChartDataEntry(x: solution.concLog, y: solution.potential)
         }
         viewModel.yValuesForCal1 = entries
     }
     
     
-    // MARK: - HANDLE
-    
+// MARK: - Handle from view model
     func handleReceivedFromViewModel(action :WelcomeViewModel.Action) {
         switch action {
         case .presentView (let view):
@@ -179,7 +157,6 @@ class WelcomeViewController: UIViewController {
 
     
 // MARK: - UI
-    
     private func makeCorrLabelVisible(corValue: Double) {
         DispatchQueue.main.async {
             self.corCoefficent.alpha = 1
@@ -252,7 +229,6 @@ class WelcomeViewController: UIViewController {
         //analyteListTable.setEditing(true, animated: true)
         analyteListTableView.dataSource = self
         analyteListTableView.register(UINib(nibName: AnalyteListTableViewCell.nibName, bundle: nil), forCellReuseIdentifier: AnalyteListTableViewCell.nibName)
-        
     }
     
     private func setView(for lineChartView: LineChartView) {
@@ -290,7 +266,6 @@ class WelcomeViewController: UIViewController {
             self.informationLAbel.textColor = .systemRed
             UIView.animate(withDuration: 2, animations: {
                 self.informationLAbel.alpha = 0
-
             })
             self.informationLAbel.text = info.rawValue
         }
@@ -300,22 +275,23 @@ class WelcomeViewController: UIViewController {
         alert.addAction(UIAlertAction(title: "Delete only from this device", style: .default, handler: { _ in
 
             self.analyteListTableView.beginUpdates()
-            self.viewModel.analytes.remove(at: path.row)
+//            self.viewModel.analytes.remove(at: path.row)
+            self.viewModel.analyteListTableViewCellModels.remove(at: path.row)
             self.analyteListTableView.deleteRows(at: [path], with: .fade)
             self.analyteListTableView.endUpdates()
-
         }))
         
         alert.addAction(UIAlertAction(title: "Delete also from cloud", style: .destructive, handler: { _ in
             
-            
-            self.viewModel.deletionByIdRequested(id: self.viewModel.analytes[path.row].serverID)
-            
+           // self.viewModel.deletionByIdRequested(id: self.viewModel.analytes[path.row].serverID)
+            self.viewModel.deletionByIdRequested(id: self.viewModel.analyteListTableViewCellModels[path.row].serverID)
+
             self.analyteListTableView.beginUpdates()
-            self.viewModel.analytes.remove(at: path.row)
+           // self.viewModel.analytes.remove(at: path.row)
+            self.viewModel.analyteListTableViewCellModels.remove(at: path.row)
+
             self.analyteListTableView.deleteRows(at: [path], with: .fade)
             self.analyteListTableView.endUpdates()
-            
         }))
         
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in
@@ -360,7 +336,9 @@ extension WelcomeViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if tableView.isEqual(analyteListTableView) {
-            viewModel.getAnalytesByIdRequested(viewModel.analytes[indexPath.row].serverID)
+//            viewModel.getAnalytesByIdRequested(viewModel.analytes[indexPath.row].serverID)
+            viewModel.getAnalytesByIdRequested(viewModel.analyteListTableViewCellModels[indexPath.row].serverID)
+
         }
     }
     
@@ -387,9 +365,9 @@ extension WelcomeViewController: UITableViewDataSource {
         
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if tableView.isEqual(concentrationTable) {
-            return viewModel.concSolutions.count
+            return viewModel.concentrationTableViewCellModels.count
         } else {
-            return viewModel.analytes.count
+            return viewModel.analyteListTableViewCellModels.count
         }
     
     }
@@ -398,18 +376,22 @@ extension WelcomeViewController: UITableViewDataSource {
         
         if tableView.isEqual(concentrationTable) {
             let cell = tableView.dequeueReusableCell(withIdentifier: ConcentrationTableViewCell.nibName, for: indexPath) as! ConcentrationTableViewCell
-
+            
+            cell.viewModel = viewModel.concentrationTableViewCellModels[indexPath.row]
             cell.solNumber.text = String(indexPath.row + 1)
-            cell.concentration.text = String(viewModel.concSolutions[indexPath.row].concentration)
-            cell.logConc.text = String(format:"%.2f", log10(viewModel.concSolutions[indexPath.row].concentration))
-            cell.potential.text = String(viewModel.concSolutions[indexPath.row].potential)
+//            cell.concentration.text = String(viewModel.concSolutions[indexPath.row].concentration)
+//            cell.logConc.text = String(format:"%.2f", log10(viewModel.concSolutions[indexPath.row].concentration))
+//            cell.potential.text = String(viewModel.concSolutions[indexPath.row].potential)
             return cell
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: AnalyteListTableViewCell.nibName, for: indexPath) as! AnalyteListTableViewCell
             
-            cell.analyteDescription.text = viewModel.analytes[indexPath.row].description
-            cell.analyteUniqueUUID.text = "UUID: " + String(viewModel.analytes[indexPath.row].identifier.uuidString)
-            cell.analyteID.text = "Server id: " + viewModel.analytes[indexPath.row].serverID
+            cell.viewModel = viewModel.analyteListTableViewCellModels[indexPath.row]
+            
+
+//            cell.analyteDescription.text = viewModel.analytes[indexPath.row].description
+//            cell.analyteUniqueUUID.text = "UUID: " + String(viewModel.analytes[indexPath.row].identifier.uuidString)
+//            cell.analyteID.text = "Server id: " + viewModel.analytes[indexPath.row].serverID
             return cell
         }
     }

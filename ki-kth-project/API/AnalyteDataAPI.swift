@@ -12,7 +12,6 @@ struct AnalyteDataAPI {
     
     private let networkingService = NetworkingService()
     
-    
     func deleteAnalyte(_ id: String, completion: @escaping (Result<AnalyteDataFetch, Error>) -> Void) {
         
         let url =  "https://ki-kth-project-api.herokuapp.com/analyte/\(id)"
@@ -119,10 +118,6 @@ struct AnalyteDataAPI {
 }
 
 //MARK: Analyte Data Decodable
-
-//struct Analytes: Codable {
-//    let analytes: [AnalyteDataFetch]
-//}
 
 struct AnalyteDataPost: Codable {
 

@@ -21,17 +21,30 @@ final class WelcomeViewModel {
         case stopActivityIndicators(message: InformationLabel)
     }
     
-    var concSolutions: [Solution] = [] {
+    var concentrationTableViewCellModels: [ConcentrationTableViewCellModel] = [] {
         didSet {
             sendActionToViewController?(.reloadConcentrationListTableView)
+
         }
     }
     
-    var analytes: [Analyte] = [] {
+    var analyteListTableViewCellModels: [AnalyteTableViewCellModel] = [] {
         didSet {
             sendActionToViewController?(.reloadAnayteListTableView)
         }
     }
+    
+//    var concSolutions: [Solution] = [] {
+//        didSet {
+//          //  sendActionToViewController?(.reloadConcentrationListTableView)
+//        }
+//    }
+//
+//    var analytes: [Analyte] = [] {
+//        didSet {
+//          //  sendActionToViewController?(.reloadAnayteListTableView)
+//        }
+//    }
     
     var yValuesForMain: [ChartDataEntry] = [] {
         didSet {
@@ -54,7 +67,20 @@ final class WelcomeViewModel {
     func viewDidLoad() {
         fetchAllAnaytesRequired()
     }
-        
+    
+    func handleFromAnalyteTableView(action: AnalyteTableViewCellModel.ActionToParent) {
+        switch action {
+        case .toParent:
+            print("Handled by WelcomeViewModel")
+        }
+    }
+    
+    func handleFromConcentrationTableView(action: ConcentrationTableViewCellModel.ActionToParent) {
+        switch action {
+        case .toParent:
+            print("Handled by WelcomeViewModel")
+        }
+    }
     
     func fetchAllAnaytesRequired() {
         
@@ -68,14 +94,22 @@ final class WelcomeViewModel {
                     $0.updatedAt > $1.updatedAt
                 }
                 
-                let fetched = sorted.map { (data) -> Analyte in
+                let fetched = sorted.map { (data) -> AnalyteTableViewCellModel in
                     let analyte = Analyte(description: data.description,
                                           identifier: data.uniqueIdentifier,
                                           serverID: data._id)
-                    return analyte
+                    
+                    let viewModel = AnalyteTableViewCellModel(description: analyte.description,
+                                                          identifier: analyte.identifier,
+                                                          serverID: analyte.serverID)
+                    viewModel.sendActionToParentModel = { [weak self] action in
+                        self?.handleFromAnalyteTableView(action: action)
+                    }
+                    return viewModel
                 }
+                
                 self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithSuccess))
-                self?.analytes = fetched
+                self?.analyteListTableViewCellModels = fetched
         
             case .failure(let error):
                 self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithFailure))
@@ -95,9 +129,13 @@ final class WelcomeViewModel {
                 let analyte = Analyte(description: data.description,
                                       identifier: data.uniqueIdentifier,
                                       serverID: data._id)
+                
+                let model = AnalyteTableViewCellModel(description: analyte.description,
+                                                      identifier: analyte.identifier,
+                                                      serverID: analyte.serverID)
+                
                 self?.sendActionToViewController?(.stopActivityIndicators(message: .createdWithSuccess))// here
-
-                self?.analytes.insert(analyte, at: 0)
+                self?.analyteListTableViewCellModels.insert(model, at: 0)
             case .failure(let error):
                 print(error.localizedDescription)
                 self?.sendActionToViewController?(.stopActivityIndicators(message: .createdWithFailure))
@@ -123,6 +161,7 @@ final class WelcomeViewModel {
                     self?.sendActionToViewController?(.stopActivityIndicators(message: .invalidData))
                     return
                 }
+                
                 guard let interval = TimeInterval(time) else {
                     self?.sendActionToViewController?(.stopActivityIndicators(message: .invalidData))
                     return

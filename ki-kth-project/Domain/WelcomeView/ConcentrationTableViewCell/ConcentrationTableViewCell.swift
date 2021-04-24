@@ -16,6 +16,30 @@ class ConcentrationTableViewCell: UITableViewCell {
     
     static let nibName = "ConcentrationTableViewCell"
     
+    var viewModel: ConcentrationTableViewCellModel! {
+        didSet {
+            configure()
+        }
+    }
+    
+    func handle(action: ConcentrationTableViewCellModel.ActionToOwnView) {
+        switch action {
+        case .toOwnView:
+            print("Action executed...")
+        }
+    }
+    
+    private func configure() {
+        concentration.text = String(viewModel.concentration)
+        logConc.text = String(viewModel.concLog)
+        potential.text = String(viewModel.potential)
+        
+        viewModel.sendActionToOwnView = { [weak self] action in
+            self?.handle(action: action)
+        }
+    }
+    
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

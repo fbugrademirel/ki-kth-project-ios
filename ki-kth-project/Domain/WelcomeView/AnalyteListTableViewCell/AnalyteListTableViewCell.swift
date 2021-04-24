@@ -15,6 +15,28 @@ class AnalyteListTableViewCell: UITableViewCell {
     @IBOutlet weak var analyteUniqueUUID: UILabel!
     @IBOutlet weak var analyteID: UILabel!
     
+    var viewModel: AnalyteTableViewCellModel! {
+        didSet {
+            configure()
+        }
+    }
+    
+    func handle(action: AnalyteTableViewCellModel.ActionToOwnView) {
+        switch action {
+        case .toOwnView:
+            print("Action executed...")
+        }
+    }
+    
+    private func configure() {
+        self.analyteDescription.text = viewModel.description
+        self.analyteUniqueUUID.text = viewModel.identifier.uuidString
+        self.analyteID.text = viewModel.serverID
+        
+        viewModel.sendActionToOwnView = { [weak self] action in
+            self?.handle(action: action)
+        }
+    }
     
     override func awakeFromNib() {
         super.awakeFromNib()
