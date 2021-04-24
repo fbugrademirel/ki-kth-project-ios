@@ -34,18 +34,6 @@ final class WelcomeViewModel {
         }
     }
     
-//    var concSolutions: [Solution] = [] {
-//        didSet {
-//          //  sendActionToViewController?(.reloadConcentrationListTableView)
-//        }
-//    }
-//
-//    var analytes: [Analyte] = [] {
-//        didSet {
-//          //  sendActionToViewController?(.reloadAnayteListTableView)
-//        }
-//    }
-    
     var yValuesForMain: [ChartDataEntry] = [] {
         didSet {
             setDataForMainGraph()

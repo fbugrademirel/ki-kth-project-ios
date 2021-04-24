@@ -79,11 +79,12 @@ class WelcomeViewController: UIViewController {
             let sortedRows = selectedRows.sorted { $0.row < $1.row }
             
             for each in sortedRows {
-                //entries.append(ChartDataEntry(x: viewModel.concSolutions[each.row].concLog, y: viewModel.concSolutions[each.row].potential))
                 entries.append(ChartDataEntry(x: viewModel.concentrationTableViewCellModels[each.row].concLog, y: viewModel.concentrationTableViewCellModels[each.row].potential))
 
             }
             viewModel.yValuesForCal2 = entries
+        } else {
+            viewModel.yValuesForCal2 = []
         }
     }
     
@@ -97,7 +98,6 @@ class WelcomeViewController: UIViewController {
                 let i = count - 1
                 for i in stride(from: i, through: 0, by: -1) {
                     if(indexPath.row == i){
-                        //viewModel.concSolutions.remove(at: i)
                         viewModel.concentrationTableViewCellModels.remove(at: i)
                     }
                 }
@@ -106,7 +106,6 @@ class WelcomeViewController: UIViewController {
     }
     
     @IBAction func clearList(_ sender: UIButton) {
-//        viewModel.conc = []
         viewModel.concentrationTableViewCellModels = []
     }
     
@@ -120,11 +119,7 @@ class WelcomeViewController: UIViewController {
     
 
     @IBAction func drawCalGraph(_ sender: UIButton) {
-        
-//        let entries = viewModel.concSolutions.map { (solution) -> ChartDataEntry in
-//            return ChartDataEntry(x: solution.concLog, y: solution.potential)
-//        }
-        
+    
         let entries = viewModel.concentrationTableViewCellModels.map { (solution) -> ChartDataEntry in
             return ChartDataEntry(x: solution.concLog, y: solution.potential)
         }
@@ -283,11 +278,9 @@ class WelcomeViewController: UIViewController {
         
         alert.addAction(UIAlertAction(title: "Delete also from cloud", style: .destructive, handler: { _ in
             
-           // self.viewModel.deletionByIdRequested(id: self.viewModel.analytes[path.row].serverID)
             self.viewModel.deletionByIdRequested(id: self.viewModel.analyteListTableViewCellModels[path.row].serverID)
 
             self.analyteListTableView.beginUpdates()
-           // self.viewModel.analytes.remove(at: path.row)
             self.viewModel.analyteListTableViewCellModels.remove(at: path.row)
 
             self.analyteListTableView.deleteRows(at: [path], with: .fade)
@@ -336,7 +329,6 @@ extension WelcomeViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if tableView.isEqual(analyteListTableView) {
-//            viewModel.getAnalytesByIdRequested(viewModel.analytes[indexPath.row].serverID)
             viewModel.getAnalytesByIdRequested(viewModel.analyteListTableViewCellModels[indexPath.row].serverID)
 
         }
@@ -379,19 +371,11 @@ extension WelcomeViewController: UITableViewDataSource {
             
             cell.viewModel = viewModel.concentrationTableViewCellModels[indexPath.row]
             cell.solNumber.text = String(indexPath.row + 1)
-//            cell.concentration.text = String(viewModel.concSolutions[indexPath.row].concentration)
-//            cell.logConc.text = String(format:"%.2f", log10(viewModel.concSolutions[indexPath.row].concentration))
-//            cell.potential.text = String(viewModel.concSolutions[indexPath.row].potential)
             return cell
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: AnalyteListTableViewCell.nibName, for: indexPath) as! AnalyteListTableViewCell
             
             cell.viewModel = viewModel.analyteListTableViewCellModels[indexPath.row]
-            
-
-//            cell.analyteDescription.text = viewModel.analytes[indexPath.row].description
-//            cell.analyteUniqueUUID.text = "UUID: " + String(viewModel.analytes[indexPath.row].identifier.uuidString)
-//            cell.analyteID.text = "Server id: " + viewModel.analytes[indexPath.row].serverID
             return cell
         }
     }

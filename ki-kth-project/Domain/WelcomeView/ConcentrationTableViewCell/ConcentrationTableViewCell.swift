@@ -31,7 +31,7 @@ class ConcentrationTableViewCell: UITableViewCell {
     
     private func configure() {
         concentration.text = String(viewModel.concentration)
-        logConc.text = String(viewModel.concLog)
+        logConc.text = String(format:"%.2f", viewModel.concLog)
         potential.text = String(viewModel.potential)
         
         viewModel.sendActionToOwnView = { [weak self] action in
