@@ -37,9 +37,19 @@ class WelcomeViewController: UIViewController {
         }
         
         setUI()
+        refreshButton.titleLabel?.font = UIFont.appFont(placement: .buttonTitle)
+        
+        refreshButton.layer.borderWidth = 0.1
+        refreshButton.layer.borderColor = #colorLiteral(red: 0.8549019694, green: 0.250980407, blue: 0.4784313738, alpha: 1)
+        refreshButton.layer.cornerRadius = 5
+                
         viewModel.viewDidLoad()
     }
     
+    override func viewDidLayoutSubviews() {
+
+  
+    }
 
 // MARK: - IBAction
     @IBAction func addConc(_ sender: UIButton) {
@@ -249,6 +259,7 @@ class WelcomeViewController: UIViewController {
     private func startActivityIndicators(with info: InformationLabel){
         DispatchQueue.main.async {
             self.addAnalyteButton.startActivity()
+            self.refreshButton.startActivity()
             self.informationLAbel.textColor = .systemRed
             self.informationLAbel.text = info.rawValue
             self.informationLAbel.alpha = 1
@@ -258,6 +269,7 @@ class WelcomeViewController: UIViewController {
     private func stopActivityIndicators(with info: InformationLabel) {
         DispatchQueue.main.async {
             self.addAnalyteButton.stopActivity()
+            self.refreshButton.stopActivity()
             self.informationLAbel.textColor = .systemRed
             UIView.animate(withDuration: 2, animations: {
                 self.informationLAbel.alpha = 0

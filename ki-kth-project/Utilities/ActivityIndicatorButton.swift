@@ -21,6 +21,12 @@ class ActivityIndicatorButton: UIButton {
         super.init(coder: coder)
         setActivityIndicator()
     }
+    
+    override open var isHighlighted: Bool {
+        didSet {
+            backgroundColor = isHighlighted ? UIColor.black : UIColor.white
+        }
+    }
 
     private func setActivityIndicator() {
         ai.isHidden = true
