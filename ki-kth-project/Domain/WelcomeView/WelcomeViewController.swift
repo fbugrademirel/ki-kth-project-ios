@@ -54,7 +54,7 @@ class WelcomeViewController: UIViewController {
 // MARK: - IBAction
     @IBAction func addConc(_ sender: UIButton) {
         
-        guard let conc1 = concTextView.text, let pot1 = potential.text else { return }
+        guard let conc1 = concTextView.text, let pot1 = potential.text?.replacingOccurrences(of: " mV", with: "") else { return }
         guard let conc2 = Double(conc1), let pot2 = Double(pot1) else {
             
             potential.text = "Invalid entry"
@@ -321,7 +321,7 @@ extension WelcomeViewController: UITextViewDelegate {
 extension WelcomeViewController: ChartViewDelegate {
     
     func chartValueSelected(_ chartView: ChartViewBase, entry: ChartDataEntry, highlight: Highlight) {
-        potential.text = String(entry.y)
+        potential.text = "\(String(entry.y)) mV"
     }
     
 }

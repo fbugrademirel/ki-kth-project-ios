@@ -421,7 +421,7 @@
                                 </subviews>
                             </stackView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="L9W-fP-mIU">
-                                <rect key="frame" x="416" y="1202" width="192" height="25.5"/>
+                                <rect key="frame" x="320" y="1202" width="384" height="25.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -443,7 +443,7 @@
                             <constraint firstItem="U4L-id-Swy" firstAttribute="leading" secondItem="YZs-qh-20f" secondAttribute="trailing" constant="3" id="dGG-IA-1Za"/>
                             <constraint firstItem="szc-r6-D3d" firstAttribute="top" secondItem="98u-zR-Seg" secondAttribute="bottom" constant="12" id="hPS-9c-Kd4"/>
                             <constraint firstItem="tZ2-yM-rbM" firstAttribute="height" secondItem="itM-KU-kqu" secondAttribute="height" multiplier="0.3" id="hkF-lA-Zib"/>
-                            <constraint firstItem="L9W-fP-mIU" firstAttribute="width" secondItem="dWn-pK-gpg" secondAttribute="width" multiplier="0.5" id="lnt-I9-fwj"/>
+                            <constraint firstItem="L9W-fP-mIU" firstAttribute="width" secondItem="dWn-pK-gpg" secondAttribute="width" id="lnt-I9-fwj"/>
                             <constraint firstItem="szc-r6-D3d" firstAttribute="width" secondItem="itM-KU-kqu" secondAttribute="width" multiplier="0.5" id="qIw-rL-4QF"/>
                             <constraint firstItem="L9W-fP-mIU" firstAttribute="top" secondItem="dWn-pK-gpg" secondAttribute="bottom" constant="12" id="sZ4-3M-HyE"/>
                             <constraint firstItem="U4L-id-Swy" firstAttribute="top" secondItem="YZs-qh-20f" secondAttribute="top" id="tvL-qM-JHE"/>
@@ -475,7 +475,7 @@
     <resources>
         <image name="arrow.clockwise" catalog="system" width="115" height="128"/>
         <namedColor name="primary">
-            <color red="0.43137254901960786" green="0.047058823529411764" blue="0.25490196078431371" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.4309999942779541" green="0.046999998390674591" blue="0.25499999523162842" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
