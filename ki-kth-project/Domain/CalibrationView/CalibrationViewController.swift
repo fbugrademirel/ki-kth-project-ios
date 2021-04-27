@@ -12,7 +12,7 @@ class CalibrationViewController: UIViewController {
     
     let service = NetworkingService()
     
-    var viewModel: WelcomeViewModel!
+    var viewModel: CalibrationViewModel!
     
     @IBOutlet weak var informationLAbel: UILabel!
     @IBOutlet weak var corCoefficent: UILabel!
@@ -137,7 +137,7 @@ class CalibrationViewController: UIViewController {
     
     
 // MARK: - Handle from view model
-    func handleReceivedFromViewModel(action :WelcomeViewModel.Action) {
+    func handleReceivedFromViewModel(action :CalibrationViewModel.Action) {
         switch action {
         case .presentView (let view):
             present(view, animated: true, completion: nil)
@@ -440,10 +440,10 @@ extension CalibrationViewController: UITableViewDataSource {
 // MARK: - Storyboard Instantiable
 extension CalibrationViewController: StoryboardInstantiable {
     static var storyboardName: String {
-        return "WelcomeView"
+        return "CalibrationView"
     }
 
-    public static func instantiate(with viewModel: WelcomeViewModel) -> CalibrationViewController {
+    public static func instantiate(with viewModel: CalibrationViewModel) -> CalibrationViewController {
         let viewController = instantiate()
         viewController.viewModel = viewModel
         return viewController
