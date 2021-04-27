@@ -120,7 +120,11 @@ class CalibrationViewController: UIViewController {
     }
     
     @IBAction func refButPressed(_ sender: UIButton) {
+        
         informationLAbel.text = ""
+        corCoefficent.text = ""
+        corEquationLabel.text = ""
+        
         viewModel.concentrationTableViewCellModels = []
         viewModel.yValuesForMain = []
         viewModel.yValuesForCal1 = []
