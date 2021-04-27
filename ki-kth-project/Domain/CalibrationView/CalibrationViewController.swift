@@ -30,6 +30,7 @@ class CalibrationViewController: UIViewController {
     @IBOutlet weak var calibrationStackView: UIStackView!
     @IBOutlet weak var clearButtonsStackView: UIStackView!
     @IBOutlet weak var calLabelsStackView: UIStackView!
+    @IBOutlet weak var corEquationLabel: UILabel!
     
     
 // MARK: - Lifecyle
@@ -120,6 +121,7 @@ class CalibrationViewController: UIViewController {
     
     @IBAction func refButPressed(_ sender: UIButton) {
         informationLAbel.text = ""
+        viewModel.concentrationTableViewCellModels = []
         viewModel.yValuesForMain = []
         viewModel.yValuesForCal1 = []
         viewModel.yValuesForCal2 = []
@@ -141,8 +143,10 @@ class CalibrationViewController: UIViewController {
         switch action {
         case .presentView (let view):
             present(view, animated: true, completion: nil)
-        case .makeCorrLabelVisible(let value):
-            makeCorrLabelVisible(corValue: value)
+        case .makeCorrLabelVisible(let parameters):
+            makeCorrLabelsVisible(corValue: parameters.rValue,
+                                  slope: parameters.slope,
+                                  constant: parameters.constant)
         case .clearChart(for: let chart):
             clearChart(for: chart)
         case .updateChartUI(for: let chart, with: let data):
@@ -161,8 +165,10 @@ class CalibrationViewController: UIViewController {
 
     
 // MARK: - UI
-    private func makeCorrLabelVisible(corValue: Double) {
+    private func makeCorrLabelsVisible(corValue: Double, slope: Double, constant: Double) {
         DispatchQueue.main.async {
+            
+            // Cor Coefficient
             self.corCoefficent.alpha = 1
             self.corCoefficent.text = "Correalation Coefficent (r) is \(String(format: "%.4f", corValue))"
             if corValue > 7 {
@@ -170,6 +176,10 @@ class CalibrationViewController: UIViewController {
             } else {
                 self.corCoefficent.tintColor = .systemRed
             }
+            
+            // Cor Equation
+            self.corEquationLabel.alpha = 1
+            self.corEquationLabel.text = "Correalation Equation is y = \(String(format: "%.3f", slope))x + (\(String(format: "%.3f", constant)))"
         }
     }
     
@@ -221,6 +231,11 @@ class CalibrationViewController: UIViewController {
         corCoefficent.alpha = 0
         corCoefficent.textColor = AppColor.primary
         corCoefficent.font = UIFont.appFont(placement: .boldText)
+        
+        //Cor. Equation label
+        corEquationLabel.alpha = 0
+        corEquationLabel.textColor = AppColor.primary
+        corEquationLabel.font = UIFont.appFont(placement: .boldText)
         
         calLabelsStackView.subviews.forEach {
             if let label = $0 as? UILabel {

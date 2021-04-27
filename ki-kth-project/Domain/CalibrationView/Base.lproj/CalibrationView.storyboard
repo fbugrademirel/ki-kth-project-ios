@@ -87,7 +87,7 @@
                                 </subviews>
                             </stackView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="U4L-id-Swy" userLabel="CalibrationStackView">
-                                <rect key="frame" x="771" y="156" width="246" height="557.5"/>
+                                <rect key="frame" x="771" y="156" width="246" height="559.5"/>
                                 <subviews>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter Concentration..." textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="jFB-fG-wcz">
                                         <rect key="frame" x="0.0" y="0.0" width="246" height="34"/>
@@ -101,7 +101,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="R1P-eD-5wr" customClass="ActivityIndicatorButton" customModule="ki_kth_project" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="70" width="246" height="32"/>
+                                        <rect key="frame" x="0.0" y="70" width="246" height="34"/>
                                         <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="17"/>
                                         <state key="normal" title="Add to List">
                                             <color key="titleColor" name="primary"/>
@@ -111,7 +111,7 @@
                                         </connections>
                                     </button>
                                     <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="fJc-L6-Kdd">
-                                        <rect key="frame" x="0.0" y="108" width="246" height="341.5"/>
+                                        <rect key="frame" x="0.0" y="110" width="246" height="341.5"/>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <stackView key="tableHeaderView" opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" id="n0e-as-ZbR">
                                             <rect key="frame" x="0.0" y="0.0" width="246" height="44"/>
@@ -145,7 +145,7 @@
                                         </stackView>
                                     </tableView>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="ebE-N4-pQB">
-                                        <rect key="frame" x="0.0" y="455.5" width="246" height="30"/>
+                                        <rect key="frame" x="0.0" y="457.5" width="246" height="30"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4IJ-fd-glk" customClass="ActivityIndicatorButton" customModule="ki_kth_project" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="0.0" width="151.5" height="30"/>
@@ -168,7 +168,7 @@
                                         </subviews>
                                     </stackView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="At1-E8-BbU" customClass="ActivityIndicatorButton" customModule="ki_kth_project" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="491.5" width="246" height="30"/>
+                                        <rect key="frame" x="0.0" y="493.5" width="246" height="30"/>
                                         <state key="normal" title="Draw Calibration Curve">
                                             <color key="titleColor" name="primary"/>
                                         </state>
@@ -177,7 +177,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ztU-M1-Rcs" customClass="ActivityIndicatorButton" customModule="ki_kth_project" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="527.5" width="246" height="30"/>
+                                        <rect key="frame" x="0.0" y="529.5" width="246" height="30"/>
                                         <state key="normal" title="Draw Linear Calibration Graph">
                                             <color key="titleColor" name="primary"/>
                                         </state>
@@ -193,6 +193,12 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Mzr-cR-Dg1" userLabel="Cor Equation">
+                                <rect key="frame" x="320" y="1233.5" width="384" height="25.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="ZdY-Bv-L1v"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -200,12 +206,14 @@
                             <constraint firstItem="szc-r6-D3d" firstAttribute="height" secondItem="itM-KU-kqu" secondAttribute="width" multiplier="0.5" id="0Zq-1O-7JI"/>
                             <constraint firstItem="rcL-2p-Mf6" firstAttribute="top" secondItem="YZs-qh-20f" secondAttribute="top" id="8WI-65-fX8"/>
                             <constraint firstItem="YZs-qh-20f" firstAttribute="leading" secondItem="rcL-2p-Mf6" secondAttribute="trailing" constant="3" id="9HM-GX-0xM"/>
+                            <constraint firstItem="Mzr-cR-Dg1" firstAttribute="centerX" secondItem="dWn-pK-gpg" secondAttribute="centerX" id="BDj-ad-gTN"/>
                             <constraint firstItem="fJc-L6-Kdd" firstAttribute="height" secondItem="itM-KU-kqu" secondAttribute="height" multiplier="0.25" id="IuF-VY-Uqd"/>
                             <constraint firstItem="98u-zR-Seg" firstAttribute="centerX" secondItem="szc-r6-D3d" secondAttribute="centerX" id="LC4-e1-U7L"/>
                             <constraint firstItem="YZs-qh-20f" firstAttribute="centerX" secondItem="ZdY-Bv-L1v" secondAttribute="centerX" id="LML-l3-OpB"/>
                             <constraint firstItem="tZ2-yM-rbM" firstAttribute="width" secondItem="itM-KU-kqu" secondAttribute="width" multiplier="0.24" id="Lk2-hk-Z0t"/>
                             <constraint firstItem="L9W-fP-mIU" firstAttribute="height" secondItem="dWn-pK-gpg" secondAttribute="height" multiplier="0.1" id="O8A-RP-4da"/>
                             <constraint firstItem="L9W-fP-mIU" firstAttribute="centerX" secondItem="dWn-pK-gpg" secondAttribute="centerX" id="RcF-T3-g6i"/>
+                            <constraint firstItem="Mzr-cR-Dg1" firstAttribute="height" secondItem="dWn-pK-gpg" secondAttribute="height" multiplier="0.1" id="aQY-Us-2Q9"/>
                             <constraint firstItem="YZs-qh-20f" firstAttribute="centerY" secondItem="ZdY-Bv-L1v" secondAttribute="centerY" id="byb-h7-4gz"/>
                             <constraint firstItem="U4L-id-Swy" firstAttribute="leading" secondItem="YZs-qh-20f" secondAttribute="trailing" constant="3" id="dGG-IA-1Za"/>
                             <constraint firstItem="szc-r6-D3d" firstAttribute="top" secondItem="98u-zR-Seg" secondAttribute="bottom" constant="12" id="hPS-9c-Kd4"/>
@@ -213,8 +221,10 @@
                             <constraint firstItem="L9W-fP-mIU" firstAttribute="width" secondItem="dWn-pK-gpg" secondAttribute="width" id="lnt-I9-fwj"/>
                             <constraint firstItem="szc-r6-D3d" firstAttribute="width" secondItem="itM-KU-kqu" secondAttribute="width" multiplier="0.5" id="qIw-rL-4QF"/>
                             <constraint firstItem="L9W-fP-mIU" firstAttribute="top" secondItem="dWn-pK-gpg" secondAttribute="bottom" constant="12" id="sZ4-3M-HyE"/>
+                            <constraint firstItem="Mzr-cR-Dg1" firstAttribute="top" secondItem="L9W-fP-mIU" secondAttribute="bottom" constant="6" id="tQ3-we-rQg"/>
                             <constraint firstItem="U4L-id-Swy" firstAttribute="top" secondItem="YZs-qh-20f" secondAttribute="top" id="tvL-qM-JHE"/>
                             <constraint firstItem="98u-zR-Seg" firstAttribute="width" secondItem="szc-r6-D3d" secondAttribute="width" multiplier="0.8" id="ufD-Mp-C2G"/>
+                            <constraint firstItem="Mzr-cR-Dg1" firstAttribute="width" secondItem="dWn-pK-gpg" secondAttribute="width" id="vCR-88-8Uz"/>
                             <constraint firstItem="98u-zR-Seg" firstAttribute="height" secondItem="szc-r6-D3d" secondAttribute="height" multiplier="0.1" id="w0q-sx-wkG"/>
                             <constraint firstItem="fJc-L6-Kdd" firstAttribute="width" secondItem="itM-KU-kqu" secondAttribute="width" multiplier="0.24" id="yXw-W0-bp6"/>
                         </constraints>
@@ -232,6 +242,7 @@
                         <outlet property="concTextView" destination="jFB-fG-wcz" id="as0-0I-Gha"/>
                         <outlet property="concentrationTable" destination="fJc-L6-Kdd" id="4Bh-Ro-NOu"/>
                         <outlet property="corCoefficent" destination="L9W-fP-mIU" id="HWd-zL-7Bu"/>
+                        <outlet property="corEquationLabel" destination="Mzr-cR-Dg1" id="cBb-36-7xg"/>
                         <outlet property="informationLAbel" destination="98u-zR-Seg" id="kWb-E7-e7N"/>
                         <outlet property="mainChartView" destination="szc-r6-D3d" id="ddI-Pb-oLJ"/>
                         <outlet property="potential" destination="Tq8-Td-vE1" id="MHD-eV-7Is"/>

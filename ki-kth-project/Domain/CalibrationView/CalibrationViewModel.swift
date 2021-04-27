@@ -12,7 +12,7 @@ final class CalibrationViewModel {
     
     enum Action {
         case presentView(view: UIAlertController)
-        case makeCorrLabelVisible(value: Double)
+        case makeCorrLabelVisible(parameters: CorrealetionParameters)
         case clearChart(for: ChartViews)
         case reloadAnayteListTableView
         case reloadConcentrationListTableView
@@ -322,7 +322,10 @@ final class CalibrationViewModel {
         
         //Correaleiotn coefficent
         let r = Sxy / (sqrt(Sxx) * sqrt(Syy))
-        sendActionToViewController?(.makeCorrLabelVisible(value: r))
+        sendActionToViewController?(.makeCorrLabelVisible(parameters:
+                                                            CorrealetionParameters(rValue: r,
+                                                                                   slope: B,
+                                                                                   constant: A)))
 
         let set2 = LineChartDataSet(entries: lrgValuesArray, label: "Linear Regression Line")
         set2.mode = .linear
@@ -361,6 +364,12 @@ enum InformationLabel: String {
     case deletingFromDatabase = "Deleting from database"
     case deletedWithSuccess = "Deleted with success!"
     case deletionFailed = "Deletion from database failed!"
+}
+
+struct CorrealetionParameters {
+    let rValue: Double
+    let slope: Double
+    let constant: Double
 }
 
 struct Solution {
