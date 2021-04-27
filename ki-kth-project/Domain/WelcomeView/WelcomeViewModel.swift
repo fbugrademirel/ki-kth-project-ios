@@ -352,7 +352,7 @@ enum ChartViews {
 
 enum InformationLabel: String {
     case fetching = "Fetching data from the server..."
-    case fetchedWithSuccess = "Fetched with succsess!"
+    case fetchedWithSuccess = "Fetched with success!"
     case fetchedWithFailure = "Fetch failed!"
     case creating = "Creating analyte..."
     case createdWithSuccess = "Created with success!"

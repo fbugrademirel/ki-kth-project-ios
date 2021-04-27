@@ -53,6 +53,7 @@
                 <outlet property="analyteDescription" destination="HfD-K3-zqF" id="4Fa-L9-RQG"/>
                 <outlet property="analyteID" destination="d8d-Hb-5xq" id="AgA-x4-MDI"/>
                 <outlet property="analyteUniqueUUID" destination="4yX-PR-urp" id="PZP-iD-F18"/>
+                <outlet property="labelStackView" destination="jJa-CC-VdH" id="zSs-5m-JJc"/>
             </connections>
             <point key="canvasLocation" x="-47.826086956521742" y="-62.946428571428569"/>
         </tableViewCell>

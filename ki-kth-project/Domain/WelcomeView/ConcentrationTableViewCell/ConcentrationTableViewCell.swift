@@ -13,6 +13,7 @@ class ConcentrationTableViewCell: UITableViewCell {
     @IBOutlet weak var concentration: UILabel!
     @IBOutlet weak var logConc: UILabel!
     @IBOutlet weak var potential: UILabel!
+    @IBOutlet weak var labelStackView: UIStackView!
     
     static let nibName = "ConcentrationTableViewCell"
     
@@ -43,6 +44,11 @@ class ConcentrationTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        labelStackView.subviews.forEach {
+            if let label = $0 as? UILabel {
+                label.font = UIFont.appFont(placement: .text)
+            }
+        }
         
     }
 

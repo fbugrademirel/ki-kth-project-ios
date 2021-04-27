@@ -26,6 +26,10 @@ class WelcomeViewController: UIViewController {
     @IBOutlet weak var analyteDescriptionTextView: UITextField!
     @IBOutlet weak var refreshButton: ActivityIndicatorButton!
     @IBOutlet weak var addAnalyteButton: ActivityIndicatorButton!
+    @IBOutlet weak var analytesStackView: UIStackView!
+    @IBOutlet weak var calibrationStackView: UIStackView!
+    @IBOutlet weak var clearButtonsStackView: UIStackView!
+    @IBOutlet weak var calLabelsStackView: UIStackView!
     
     
 // MARK: - Lifecyle
@@ -35,14 +39,9 @@ class WelcomeViewController: UIViewController {
         viewModel.sendActionToViewController = { [weak self] action in
             self?.handleReceivedFromViewModel(action: action)
         }
-        
+    
+        title = "Analyte Calibration"
         setUI()
-        refreshButton.titleLabel?.font = UIFont.appFont(placement: .buttonTitle)
-        
-        refreshButton.layer.borderWidth = 0.1
-        refreshButton.layer.borderColor = #colorLiteral(red: 0.8549019694, green: 0.250980407, blue: 0.4784313738, alpha: 1)
-        refreshButton.layer.cornerRadius = 5
-                
         viewModel.viewDidLoad()
     }
     
@@ -211,12 +210,56 @@ class WelcomeViewController: UIViewController {
     
     private func setUI() {
         
-        informationLAbel.font = .boldSystemFont(ofSize: 20)
+        
+        // Information label
+        informationLAbel.font = UIFont.appFont(placement: .title)
         informationLAbel.alpha = 0
         informationLAbel.text = ""
+        informationLAbel.textColor = AppColor.primary
         
+        // Cor. Coefficient label
         corCoefficent.alpha = 0
-   
+        corCoefficent.textColor = AppColor.primary
+        corCoefficent.font = UIFont.appFont(placement: .boldText)
+        
+        calLabelsStackView.subviews.forEach {
+            if let label = $0 as? UILabel {
+                label.font = UIFont.appFont(placement: .text)
+            }
+        }
+        
+        clearButtonsStackView.subviews.forEach {
+            if let btn = $0 as? ActivityIndicatorButton {
+                btn.titleLabel?.font = UIFont.appFont(placement: .buttonTitle)
+                btn.backgroundColor = AppColor.secondary
+                btn.layer.cornerRadius = 10
+            }
+        }
+        
+        analytesStackView.subviews.forEach {
+            if let btn = $0 as? ActivityIndicatorButton {
+                btn.titleLabel?.font = UIFont.appFont(placement: .buttonTitle)
+                btn.backgroundColor = AppColor.secondary
+                btn.layer.cornerRadius = 10
+            } else if let text = $0 as? UITextField {
+                text.font = UIFont.appFont(placement: .text)
+            }
+        }
+        
+        calibrationStackView.subviews.forEach {
+            if let btn = $0 as? ActivityIndicatorButton {
+                btn.titleLabel?.font = UIFont.appFont(placement: .buttonTitle)
+                btn.backgroundColor = AppColor.secondary
+                btn.layer.cornerRadius = 10
+            } else if let text = $0 as? UITextField {
+                text.font = UIFont.appFont(placement: .text)
+            } else if let label = $0 as? UILabel {
+                label.font = UIFont.appFont(placement: .boldText)
+            }
+        }
+        
+        potential.font = UIFont.appFont(placement: .title)
+
         setView(for: mainChartView)
         setView(for: calGraphView1)
         setView(for: calGraphView2)
@@ -230,6 +273,7 @@ class WelcomeViewController: UIViewController {
         concentrationTable.register(UINib(nibName: ConcentrationTableViewCell.nibName, bundle: nil), forCellReuseIdentifier: ConcentrationTableViewCell.nibName)
         
         analyteListTableView.delegate = self
+        analyteListTableView.delaysContentTouches = false;
         //analyteListTable.allowsMultipleSelectionDuringEditing = true
         //analyteListTable.setEditing(true, animated: true)
         analyteListTableView.dataSource = self
@@ -330,6 +374,7 @@ extension WelcomeViewController: ChartViewDelegate {
 
 extension WelcomeViewController: UITableViewDelegate {
     
+    
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         cell.alpha = 0
         UIView.animate(withDuration: 0.5,
@@ -342,7 +387,6 @@ extension WelcomeViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if tableView.isEqual(analyteListTableView) {
             viewModel.getAnalytesByIdRequested(viewModel.analyteListTableViewCellModels[indexPath.row].serverID)
-
         }
     }
     
