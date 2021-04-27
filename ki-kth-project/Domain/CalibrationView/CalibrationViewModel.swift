@@ -8,7 +8,7 @@
 import Foundation
 import Charts
 
-final class WelcomeViewModel {
+final class CalibrationViewModel {
     
     enum Action {
         case presentView(view: UIAlertController)

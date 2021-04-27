@@ -14,10 +14,10 @@
         </array>
     </customFonts>
     <scenes>
-        <!--Welcome View Controller-->
+        <!--Calibration View Controller-->
         <scene sceneID="OIo-Cm-3s3">
             <objects>
-                <viewController id="uSr-49-Bbt" customClass="WelcomeViewController" customModule="ki_kth_project" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="uSr-49-Bbt" customClass="CalibrationViewController" customModule="ki_kth_project" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="itM-KU-kqu">
                         <rect key="frame" x="0.0" y="0.0" width="1024" height="1366"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

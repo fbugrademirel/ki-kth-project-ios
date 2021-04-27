@@ -8,7 +8,7 @@
 import UIKit
 import Charts
 
-class WelcomeViewController: UIViewController {
+class CalibrationViewController: UIViewController {
     
     let service = NetworkingService()
     
@@ -353,7 +353,7 @@ class WelcomeViewController: UIViewController {
 
 // MARK: - TextView Delegate Extension
 
-extension WelcomeViewController: UITextViewDelegate {
+extension CalibrationViewController: UITextViewDelegate {
     
     func textViewDidEndEditing(_ textView: UITextView) {
         textView.text = ""
@@ -362,7 +362,7 @@ extension WelcomeViewController: UITextViewDelegate {
 
 // MARK: - Chart View Delegate Extension
 
-extension WelcomeViewController: ChartViewDelegate {
+extension CalibrationViewController: ChartViewDelegate {
     
     func chartValueSelected(_ chartView: ChartViewBase, entry: ChartDataEntry, highlight: Highlight) {
         potential.text = "\(String(entry.y)) mV"
@@ -372,7 +372,7 @@ extension WelcomeViewController: ChartViewDelegate {
 
 // MARK: - Table View Delegate Extension
 
-extension WelcomeViewController: UITableViewDelegate {
+extension CalibrationViewController: UITableViewDelegate {
     
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -409,7 +409,7 @@ extension WelcomeViewController: UITableViewDelegate {
 
 // MARK: - Table View Datasource Extension
 
-extension WelcomeViewController: UITableViewDataSource {
+extension CalibrationViewController: UITableViewDataSource {
         
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if tableView.isEqual(concentrationTable) {
@@ -438,12 +438,12 @@ extension WelcomeViewController: UITableViewDataSource {
 }
 
 // MARK: - Storyboard Instantiable
-extension WelcomeViewController: StoryboardInstantiable {
+extension CalibrationViewController: StoryboardInstantiable {
     static var storyboardName: String {
         return "WelcomeView"
     }
 
-    public static func instantiate(with viewModel: WelcomeViewModel) -> WelcomeViewController {
+    public static func instantiate(with viewModel: WelcomeViewModel) -> CalibrationViewController {
         let viewController = instantiate()
         viewController.viewModel = viewModel
         return viewController
