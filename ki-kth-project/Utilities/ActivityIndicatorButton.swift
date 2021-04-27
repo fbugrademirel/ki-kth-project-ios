@@ -24,7 +24,7 @@ class ActivityIndicatorButton: UIButton {
     
     override open var isHighlighted: Bool {
         didSet {
-            backgroundColor = isHighlighted ? UIColor.black : UIColor.white
+            backgroundColor = isHighlighted ? UIColor.systemGray2 : UIColor.systemGray
         }
     }
 

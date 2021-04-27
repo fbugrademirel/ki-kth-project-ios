@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="uSr-49-Bbt">
-    <device id="ipad12_9rounded" orientation="portrait" layout="fullscreen" appearance="light"/>
+    <device id="ipad12_9" orientation="portrait" layout="fullscreen" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
@@ -135,7 +135,7 @@
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6S1-XS-4Zu">
-                                <rect key="frame" x="670" y="1066" width="229" height="21"/>
+                                <rect key="frame" x="670" y="1086" width="229" height="21"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="21" id="fwG-br-g4X"/>
                                     <constraint firstAttribute="width" constant="229" id="zAj-0Z-dkW"/>
@@ -256,7 +256,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="YZs-qh-20f" userLabel="ChartsStackView">
-                                <rect key="frame" x="256" y="156" width="512" height="1034"/>
+                                <rect key="frame" x="256" y="166" width="512" height="1034"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="szc-r6-D3d" customClass="LineChartView" customModule="Charts">
                                         <rect key="frame" x="0.0" y="0.0" width="512" height="512"/>
@@ -279,21 +279,21 @@
                                 </constraints>
                             </stackView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Information Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="98u-zR-Seg">
-                                <rect key="frame" x="307" y="93" width="410" height="51"/>
+                                <rect key="frame" x="307" y="103" width="410" height="51"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="rcL-2p-Mf6" userLabel="AnalytesStackView">
-                                <rect key="frame" x="7" y="156" width="246" height="517"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="rcL-2p-Mf6" userLabel="AnalytesStackView">
+                                <rect key="frame" x="7" y="166" width="246" height="517"/>
                                 <subviews>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter Analyte Description..." textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="rKL-xW-bBk">
-                                        <rect key="frame" x="21" y="0.0" width="204.5" height="34"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="246" height="34"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
                                     </textField>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tI0-UI-iTA" customClass="ActivityIndicatorButton" customModule="ki_kth_project" customModuleProvider="target">
-                                        <rect key="frame" x="83.5" y="40" width="79" height="28"/>
+                                        <rect key="frame" x="0.0" y="40" width="246" height="28"/>
                                         <inset key="contentEdgeInsets" minX="6" minY="3" maxX="6" maxY="3"/>
                                         <state key="normal" title="Register">
                                             <color key="titleColor" name="primary"/>
@@ -307,7 +307,7 @@
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                     </tableView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lmJ-dx-zjp" customClass="ActivityIndicatorButton" customModule="ki_kth_project" customModuleProvider="target">
-                                        <rect key="frame" x="87.5" y="490" width="71" height="27"/>
+                                        <rect key="frame" x="0.0" y="490" width="246" height="27"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <inset key="contentEdgeInsets" minX="6" minY="3" maxX="6" maxY="3"/>
                                         <state key="normal" title="Refresh">
@@ -320,7 +320,7 @@
                                 </subviews>
                             </stackView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="U4L-id-Swy" userLabel="CalibrationStackView">
-                                <rect key="frame" x="771" y="156" width="246" height="561.5"/>
+                                <rect key="frame" x="771" y="166" width="246" height="561.5"/>
                                 <subviews>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter Concentration..." textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="jFB-fG-wcz">
                                         <rect key="frame" x="0.0" y="0.0" width="246" height="34"/>
@@ -421,7 +421,7 @@
                                 </subviews>
                             </stackView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="L9W-fP-mIU">
-                                <rect key="frame" x="320" y="1202" width="384" height="25.5"/>
+                                <rect key="frame" x="320" y="1212" width="384" height="25.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -432,7 +432,7 @@
                         <constraints>
                             <constraint firstItem="szc-r6-D3d" firstAttribute="height" secondItem="itM-KU-kqu" secondAttribute="width" multiplier="0.5" id="0Zq-1O-7JI"/>
                             <constraint firstItem="rcL-2p-Mf6" firstAttribute="top" secondItem="YZs-qh-20f" secondAttribute="top" id="8WI-65-fX8"/>
-                            <constraint firstItem="rcL-2p-Mf6" firstAttribute="trailing" secondItem="YZs-qh-20f" secondAttribute="leading" constant="-3" id="9HM-GX-0xM"/>
+                            <constraint firstItem="YZs-qh-20f" firstAttribute="leading" secondItem="rcL-2p-Mf6" secondAttribute="trailing" constant="3" id="9HM-GX-0xM"/>
                             <constraint firstItem="fJc-L6-Kdd" firstAttribute="height" secondItem="itM-KU-kqu" secondAttribute="height" multiplier="0.25" id="IuF-VY-Uqd"/>
                             <constraint firstItem="98u-zR-Seg" firstAttribute="centerX" secondItem="szc-r6-D3d" secondAttribute="centerX" id="LC4-e1-U7L"/>
                             <constraint firstItem="YZs-qh-20f" firstAttribute="centerX" secondItem="ZdY-Bv-L1v" secondAttribute="centerX" id="LML-l3-OpB"/>
