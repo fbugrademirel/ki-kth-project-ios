@@ -59,6 +59,7 @@
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
                 <outlet property="concentration" destination="6A8-Ph-D7V" id="lEz-vC-ao9"/>
+                <outlet property="labelStackView" destination="dVh-aR-bgh" id="sRL-lt-O99"/>
                 <outlet property="logConc" destination="sn6-Qh-LKc" id="ErG-Xd-HNE"/>
                 <outlet property="potential" destination="eAr-W5-XFM" id="atZ-Rq-Yw7"/>
                 <outlet property="solNumber" destination="Kgc-Vi-d1D" id="zGq-e5-YpW"/>

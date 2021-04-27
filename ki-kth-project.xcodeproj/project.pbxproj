@@ -7,6 +7,22 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7C066D84262B2F140030B103 /* ConcentrationTableViewCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C066D83262B2F140030B103 /* ConcentrationTableViewCellModel.swift */; };
+		7C066D87262B31FE0030B103 /* AnalyteTableViewCellModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C066D86262B31FE0030B103 /* AnalyteTableViewCellModel.swift */; };
+		7C066D8E2634777E0030B103 /* AppColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C066D8D2634777E0030B103 /* AppColor.swift */; };
+		7C066DAE2634BF450030B103 /* UIFont+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C066DA02634BF450030B103 /* UIFont+Extension.swift */; };
+		7C066DAF2634BF450030B103 /* SourceSansPro-BlackItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7C066DA22634BF450030B103 /* SourceSansPro-BlackItalic.ttf */; };
+		7C066DB02634BF450030B103 /* SourceSansPro-SemiBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7C066DA32634BF450030B103 /* SourceSansPro-SemiBoldItalic.ttf */; };
+		7C066DB12634BF450030B103 /* SourceSansPro-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7C066DA42634BF450030B103 /* SourceSansPro-Regular.ttf */; };
+		7C066DB22634BF450030B103 /* SourceSansPro-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7C066DA52634BF450030B103 /* SourceSansPro-Bold.ttf */; };
+		7C066DB32634BF450030B103 /* SourceSansPro-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7C066DA62634BF450030B103 /* SourceSansPro-LightItalic.ttf */; };
+		7C066DB42634BF450030B103 /* SourceSansPro-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7C066DA72634BF450030B103 /* SourceSansPro-Light.ttf */; };
+		7C066DB52634BF450030B103 /* SourceSansPro-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7C066DA82634BF450030B103 /* SourceSansPro-Black.ttf */; };
+		7C066DB62634BF450030B103 /* SourceSansPro-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7C066DA92634BF450030B103 /* SourceSansPro-ExtraLight.ttf */; };
+		7C066DB72634BF450030B103 /* SourceSansPro-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7C066DAA2634BF450030B103 /* SourceSansPro-BoldItalic.ttf */; };
+		7C066DB82634BF450030B103 /* SourceSansPro-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7C066DAB2634BF450030B103 /* SourceSansPro-SemiBold.ttf */; };
+		7C066DB92634BF450030B103 /* SourceSansPro-ExtraLightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7C066DAC2634BF450030B103 /* SourceSansPro-ExtraLightItalic.ttf */; };
+		7C066DBA2634BF450030B103 /* SourceSansPro-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7C066DAD2634BF450030B103 /* SourceSansPro-Italic.ttf */; };
 		7C3C27DF26258FBD00F83DAA /* AnalyteListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C3C27DD26258FBD00F83DAA /* AnalyteListTableViewCell.swift */; };
 		7C3C27E026258FBD00F83DAA /* AnalyteListTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7C3C27DE26258FBD00F83DAA /* AnalyteListTableViewCell.xib */; };
 		7C3C27E92625C1EB00F83DAA /* ActivityIndicatorButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C3C27E82625C1EB00F83DAA /* ActivityIndicatorButton.swift */; };
@@ -22,11 +38,28 @@
 		7CDC8E2D2623AE6B00430BD7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7CDC8E2B2623AE6B00430BD7 /* LaunchScreen.storyboard */; };
 		7CDC8E3B2623AF8F00430BD7 /* NetworkingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CDC8E3A2623AF8F00430BD7 /* NetworkingService.swift */; };
 		7CDEFBA12629C15B00CA3E66 /* StoryboardInstantiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CDEFBA02629C15B00CA3E66 /* StoryboardInstantiable.swift */; };
+		7CDEFBA62629C23000CA3E66 /* WelcomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CDEFBA52629C23000CA3E66 /* WelcomeViewModel.swift */; };
 		F504A3A08E207F6059771813 /* Pods_ki_kth_project.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A6FC4A09A904DFBB5E5C423 /* Pods_ki_kth_project.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		49798964489FB19CD8059D8B /* Pods-ki-kth-project.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ki-kth-project.debug.xcconfig"; path = "Target Support Files/Pods-ki-kth-project/Pods-ki-kth-project.debug.xcconfig"; sourceTree = "<group>"; };
+		7C066D83262B2F140030B103 /* ConcentrationTableViewCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcentrationTableViewCellModel.swift; sourceTree = "<group>"; };
+		7C066D86262B31FE0030B103 /* AnalyteTableViewCellModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyteTableViewCellModel.swift; sourceTree = "<group>"; };
+		7C066D8D2634777E0030B103 /* AppColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppColor.swift; sourceTree = "<group>"; };
+		7C066DA02634BF450030B103 /* UIFont+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIFont+Extension.swift"; sourceTree = "<group>"; };
+		7C066DA22634BF450030B103 /* SourceSansPro-BlackItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceSansPro-BlackItalic.ttf"; sourceTree = "<group>"; };
+		7C066DA32634BF450030B103 /* SourceSansPro-SemiBoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceSansPro-SemiBoldItalic.ttf"; sourceTree = "<group>"; };
+		7C066DA42634BF450030B103 /* SourceSansPro-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceSansPro-Regular.ttf"; sourceTree = "<group>"; };
+		7C066DA52634BF450030B103 /* SourceSansPro-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceSansPro-Bold.ttf"; sourceTree = "<group>"; };
+		7C066DA62634BF450030B103 /* SourceSansPro-LightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceSansPro-LightItalic.ttf"; sourceTree = "<group>"; };
+		7C066DA72634BF450030B103 /* SourceSansPro-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceSansPro-Light.ttf"; sourceTree = "<group>"; };
+		7C066DA82634BF450030B103 /* SourceSansPro-Black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceSansPro-Black.ttf"; sourceTree = "<group>"; };
+		7C066DA92634BF450030B103 /* SourceSansPro-ExtraLight.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceSansPro-ExtraLight.ttf"; sourceTree = "<group>"; };
+		7C066DAA2634BF450030B103 /* SourceSansPro-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceSansPro-BoldItalic.ttf"; sourceTree = "<group>"; };
+		7C066DAB2634BF450030B103 /* SourceSansPro-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceSansPro-SemiBold.ttf"; sourceTree = "<group>"; };
+		7C066DAC2634BF450030B103 /* SourceSansPro-ExtraLightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceSansPro-ExtraLightItalic.ttf"; sourceTree = "<group>"; };
+		7C066DAD2634BF450030B103 /* SourceSansPro-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceSansPro-Italic.ttf"; sourceTree = "<group>"; };
 		7C3C27DD26258FBD00F83DAA /* AnalyteListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyteListTableViewCell.swift; sourceTree = "<group>"; };
 		7C3C27DE26258FBD00F83DAA /* AnalyteListTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AnalyteListTableViewCell.xib; sourceTree = "<group>"; };
 		7C3C27E82625C1EB00F83DAA /* ActivityIndicatorButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicatorButton.swift; sourceTree = "<group>"; };
@@ -44,6 +77,7 @@
 		7CDC8E2E2623AE6B00430BD7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7CDC8E3A2623AF8F00430BD7 /* NetworkingService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkingService.swift; sourceTree = "<group>"; };
 		7CDEFBA02629C15B00CA3E66 /* StoryboardInstantiable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoryboardInstantiable.swift; sourceTree = "<group>"; };
+		7CDEFBA52629C23000CA3E66 /* WelcomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeViewModel.swift; sourceTree = "<group>"; };
 		9A6FC4A09A904DFBB5E5C423 /* Pods_ki_kth_project.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ki_kth_project.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D1DFA9CFFA0E6B88A99C38D3 /* Pods-ki-kth-project.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ki-kth-project.release.xcconfig"; path = "Target Support Files/Pods-ki-kth-project/Pods-ki-kth-project.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -60,10 +94,48 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7C066D8C2634775F0030B103 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				7C066D8D2634777E0030B103 /* AppColor.swift */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		7C066D9F2634BF450030B103 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				7C066DA02634BF450030B103 /* UIFont+Extension.swift */,
+				7C066DA12634BF450030B103 /* SourceSansPro */,
+			);
+			name = Fonts;
+			path = "../../../../../Downloads/12-months-ios-master/UI/CCUIKit/Fonts";
+			sourceTree = "<group>";
+		};
+		7C066DA12634BF450030B103 /* SourceSansPro */ = {
+			isa = PBXGroup;
+			children = (
+				7C066DA22634BF450030B103 /* SourceSansPro-BlackItalic.ttf */,
+				7C066DA32634BF450030B103 /* SourceSansPro-SemiBoldItalic.ttf */,
+				7C066DA42634BF450030B103 /* SourceSansPro-Regular.ttf */,
+				7C066DA52634BF450030B103 /* SourceSansPro-Bold.ttf */,
+				7C066DA62634BF450030B103 /* SourceSansPro-LightItalic.ttf */,
+				7C066DA72634BF450030B103 /* SourceSansPro-Light.ttf */,
+				7C066DA82634BF450030B103 /* SourceSansPro-Black.ttf */,
+				7C066DA92634BF450030B103 /* SourceSansPro-ExtraLight.ttf */,
+				7C066DAA2634BF450030B103 /* SourceSansPro-BoldItalic.ttf */,
+				7C066DAB2634BF450030B103 /* SourceSansPro-SemiBold.ttf */,
+				7C066DAC2634BF450030B103 /* SourceSansPro-ExtraLightItalic.ttf */,
+				7C066DAD2634BF450030B103 /* SourceSansPro-Italic.ttf */,
+			);
+			path = SourceSansPro;
+			sourceTree = "<group>";
+		};
 		7C3C27D526258F2D00F83DAA /* ConcentrationTableViewCell */ = {
 			isa = PBXGroup;
 			children = (
 				7C4E33F52624754000C42669 /* ConcentrationTableViewCell.swift */,
+				7C066D83262B2F140030B103 /* ConcentrationTableViewCellModel.swift */,
 				7C4E33F62624754000C42669 /* ConcentrationTableViewCell.xib */,
 			);
 			path = ConcentrationTableViewCell;
@@ -73,6 +145,7 @@
 			isa = PBXGroup;
 			children = (
 				7C3C27DD26258FBD00F83DAA /* AnalyteListTableViewCell.swift */,
+				7C066D86262B31FE0030B103 /* AnalyteTableViewCellModel.swift */,
 				7C3C27DE26258FBD00F83DAA /* AnalyteListTableViewCell.xib */,
 			);
 			path = AnalyteListTableViewCell;
@@ -135,6 +208,7 @@
 				7C3C27D726258F8C00F83DAA /* AnalyteListTableViewCell */,
 				7C3C27D526258F2D00F83DAA /* ConcentrationTableViewCell */,
 				7CDC8E212623AE6B00430BD7 /* WelcomeViewController.swift */,
+				7CDEFBA52629C23000CA3E66 /* WelcomeViewModel.swift */,
 				7CDC8E232623AE6B00430BD7 /* WelcomeView.storyboard */,
 			);
 			path = WelcomeView;
@@ -143,6 +217,8 @@
 		7CDC8E392623AF4200430BD7 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				7C066D9F2634BF450030B103 /* Fonts */,
+				7C066D8C2634775F0030B103 /* UI */,
 				7C3C27E82625C1EB00F83DAA /* ActivityIndicatorButton.swift */,
 				7CDC8E3D2623AF9B00430BD7 /* Networking */,
 			);
@@ -241,9 +317,21 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7C066DB02634BF450030B103 /* SourceSansPro-SemiBoldItalic.ttf in Resources */,
+				7C066DBA2634BF450030B103 /* SourceSansPro-Italic.ttf in Resources */,
+				7C066DAF2634BF450030B103 /* SourceSansPro-BlackItalic.ttf in Resources */,
+				7C066DB42634BF450030B103 /* SourceSansPro-Light.ttf in Resources */,
+				7C066DB22634BF450030B103 /* SourceSansPro-Bold.ttf in Resources */,
+				7C066DB92634BF450030B103 /* SourceSansPro-ExtraLightItalic.ttf in Resources */,
+				7C066DB52634BF450030B103 /* SourceSansPro-Black.ttf in Resources */,
 				7C3C27E026258FBD00F83DAA /* AnalyteListTableViewCell.xib in Resources */,
+				7C066DB12634BF450030B103 /* SourceSansPro-Regular.ttf in Resources */,
+				7C066DB72634BF450030B103 /* SourceSansPro-BoldItalic.ttf in Resources */,
+				7C066DB32634BF450030B103 /* SourceSansPro-LightItalic.ttf in Resources */,
+				7C066DB62634BF450030B103 /* SourceSansPro-ExtraLight.ttf in Resources */,
 				7CDC8E2D2623AE6B00430BD7 /* LaunchScreen.storyboard in Resources */,
 				7C4E33F82624754100C42669 /* ConcentrationTableViewCell.xib in Resources */,
+				7C066DB82634BF450030B103 /* SourceSansPro-SemiBold.ttf in Resources */,
 				7CDC8E2A2623AE6B00430BD7 /* Assets.xcassets in Resources */,
 				7CDC8E252623AE6B00430BD7 /* WelcomeView.storyboard in Resources */,
 			);
@@ -301,12 +389,17 @@
 				7CDC8E3B2623AF8F00430BD7 /* NetworkingService.swift in Sources */,
 				7CDC8E222623AE6B00430BD7 /* WelcomeViewController.swift in Sources */,
 				7CDEFBA12629C15B00CA3E66 /* StoryboardInstantiable.swift in Sources */,
+				7C066D8E2634777E0030B103 /* AppColor.swift in Sources */,
 				7CDC8E1E2623AE6B00430BD7 /* AppDelegate.swift in Sources */,
 				7C4E33F72624754000C42669 /* ConcentrationTableViewCell.swift in Sources */,
 				7C3C27E92625C1EB00F83DAA /* ActivityIndicatorButton.swift in Sources */,
+				7CDEFBA62629C23000CA3E66 /* WelcomeViewModel.swift in Sources */,
+				7C066D84262B2F140030B103 /* ConcentrationTableViewCellModel.swift in Sources */,
 				7CDA38002623B0D700874665 /* AnalyteDataAPI.swift in Sources */,
 				7CDC8E202623AE6B00430BD7 /* SceneDelegate.swift in Sources */,
 				7C3C27DF26258FBD00F83DAA /* AnalyteListTableViewCell.swift in Sources */,
+				7C066D87262B31FE0030B103 /* AnalyteTableViewCellModel.swift in Sources */,
+				7C066DAE2634BF450030B103 /* UIFont+Extension.swift in Sources */,
 				7CDC8E282623AE6B00430BD7 /* ki_kth_project.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
