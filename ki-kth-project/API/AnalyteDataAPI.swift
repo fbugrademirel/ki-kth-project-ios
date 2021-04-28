@@ -132,6 +132,7 @@ struct AnalyteDataFetch: Codable {
     let measurements: [Measurement]
     let createdAt: String
     let updatedAt: String
+    let calibrationParameters: CalibrationParameter
 }
 
 struct Measurement: Codable {
@@ -139,4 +140,9 @@ struct Measurement: Codable {
     let value: Double
 }
 
+struct CalibrationParameter: Codable {
+    let isCalibrated: Bool
+    let slope: Double?
+    let constant: Double?
+}
 

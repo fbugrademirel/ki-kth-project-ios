@@ -20,14 +20,16 @@ final class AnalyteTableViewCellModel {
     var description: String
     var identifier: UUID
     var serverID: String
+    var isCalibrated: Bool
     
     var sendActionToParentModel: ((ActionToParent) -> Void)?
     var sendActionToOwnView: ((ActionToOwnView) -> Void)?
     
-    init(description: String, identifier: UUID, serverID: String) {
+    init(description: String, identifier: UUID, serverID: String, isCalibrated: Bool) {
         self.description = description
         self.identifier = identifier
         self.serverID = serverID
+        self.isCalibrated = isCalibrated
     }
     
 }

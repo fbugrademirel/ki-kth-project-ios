@@ -85,11 +85,13 @@ final class CalibrationViewModel {
                 let fetched = sorted.map { (data) -> AnalyteTableViewCellModel in
                     let analyte = Analyte(description: data.description,
                                           identifier: data.uniqueIdentifier,
-                                          serverID: data._id)
+                                          serverID: data._id,
+                                          calibrationParam: CalibrationParam(isCalibrated: data.calibrationParameters.isCalibrated, slope: data.calibrationParameters.slope ?? 0, constant: data.calibrationParameters.constant ?? 0))
                     
                     let viewModel = AnalyteTableViewCellModel(description: analyte.description,
                                                           identifier: analyte.identifier,
-                                                          serverID: analyte.serverID)
+                                                          serverID: analyte.serverID,
+                                                          isCalibrated: analyte.calibrationParam.isCalibrated)
                     viewModel.sendActionToParentModel = { [weak self] action in
                         self?.handleFromAnalyteTableView(action: action)
                     }
@@ -116,11 +118,15 @@ final class CalibrationViewModel {
 
                 let analyte = Analyte(description: data.description,
                                       identifier: data.uniqueIdentifier,
-                                      serverID: data._id)
+                                      serverID: data._id,
+                                      calibrationParam: CalibrationParam(isCalibrated: data.calibrationParameters.isCalibrated,
+                                                                         slope: data.calibrationParameters.slope ?? 0,
+                                                                         constant: data.calibrationParameters.constant ?? 0))
                 
                 let model = AnalyteTableViewCellModel(description: analyte.description,
                                                       identifier: analyte.identifier,
-                                                      serverID: analyte.serverID)
+                                                      serverID: analyte.serverID,
+                                                      isCalibrated: analyte.calibrationParam.isCalibrated)
                 
                 self?.sendActionToViewController?(.stopActivityIndicators(message: .createdWithSuccess))// here
                 self?.analyteListTableViewCellModels.insert(model, at: 0)
@@ -144,7 +150,8 @@ final class CalibrationViewModel {
                                             uniqueIdentifier: data.uniqueIdentifier,
                                             measurements: data.measurements,
                                             createdAt: data.createdAt,
-                                            updatedAt: data.updatedAt)
+                                            updatedAt: data.updatedAt,
+                                            calibrationParameters: CalibrationParameter(isCalibrated: data.calibrationParameters.isCalibrated, slope: data.calibrationParameters.slope, constant: data.calibrationParameters.constant))
                 guard let time = data.measurements.first?.time else {
                     self?.sendActionToViewController?(.stopActivityIndicators(message: .invalidData))
                     return
@@ -382,4 +389,11 @@ struct Analyte {
     let description: String
     let identifier: UUID
     let serverID: String
+    let calibrationParam: CalibrationParam
+}
+
+struct CalibrationParam {
+    let isCalibrated: Bool
+    let slope: Double
+    let constant: Double
 }

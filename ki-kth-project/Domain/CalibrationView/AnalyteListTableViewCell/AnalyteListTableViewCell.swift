@@ -15,6 +15,7 @@ class AnalyteListTableViewCell: UITableViewCell {
     @IBOutlet weak var analyteUniqueUUID: UILabel!
     @IBOutlet weak var analyteID: UILabel!
     @IBOutlet weak var labelStackView: UIStackView!
+    @IBOutlet weak var calibrationMark: UIImageView!
     
     var viewModel: AnalyteTableViewCellModel! {
         didSet {
@@ -33,6 +34,9 @@ class AnalyteListTableViewCell: UITableViewCell {
         self.analyteDescription.text = viewModel.description
         self.analyteUniqueUUID.text = viewModel.identifier.uuidString
         self.analyteID.text = viewModel.serverID
+        calibrationMark.image = viewModel.isCalibrated ?
+            UIImage(systemName: "checkmark")?.withTintColor(.systemGreen, renderingMode: .alwaysOriginal) :
+            UIImage(systemName: "xmark")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal)
         
         viewModel.sendActionToOwnView = { [weak self] action in
             self?.handle(action: action)
