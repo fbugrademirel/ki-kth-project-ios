@@ -39,6 +39,12 @@
 		7CDC8E3B2623AF8F00430BD7 /* NetworkingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CDC8E3A2623AF8F00430BD7 /* NetworkingService.swift */; };
 		7CDEFBA12629C15B00CA3E66 /* StoryboardInstantiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CDEFBA02629C15B00CA3E66 /* StoryboardInstantiable.swift */; };
 		7CDEFBA62629C23000CA3E66 /* CalibrationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CDEFBA52629C23000CA3E66 /* CalibrationViewModel.swift */; };
+		7CE223782639977300BD8C5B /* DeviceReadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CE223772639977300BD8C5B /* DeviceReadingViewController.swift */; };
+		7CE2237A2639978D00BD8C5B /* DeviceReadingView.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7CE223792639978D00BD8C5B /* DeviceReadingView.storyboard */; };
+		7CE2237C263997AC00BD8C5B /* DeviceReadingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CE2237B263997AC00BD8C5B /* DeviceReadingViewModel.swift */; };
+		7CE2238026399BA100BD8C5B /* DeviceListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CE2237E26399BA100BD8C5B /* DeviceListTableViewCell.swift */; };
+		7CE2238126399BA100BD8C5B /* DeviceListTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7CE2237F26399BA100BD8C5B /* DeviceListTableViewCell.xib */; };
+		7CE2238326399BC000BD8C5B /* DeviceListTableViewCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CE2238226399BC000BD8C5B /* DeviceListTableViewCellViewModel.swift */; };
 		F504A3A08E207F6059771813 /* Pods_ki_kth_project.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A6FC4A09A904DFBB5E5C423 /* Pods_ki_kth_project.framework */; };
 /* End PBXBuildFile section */
 
@@ -78,6 +84,12 @@
 		7CDC8E3A2623AF8F00430BD7 /* NetworkingService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkingService.swift; sourceTree = "<group>"; };
 		7CDEFBA02629C15B00CA3E66 /* StoryboardInstantiable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoryboardInstantiable.swift; sourceTree = "<group>"; };
 		7CDEFBA52629C23000CA3E66 /* CalibrationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalibrationViewModel.swift; sourceTree = "<group>"; };
+		7CE223772639977300BD8C5B /* DeviceReadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceReadingViewController.swift; sourceTree = "<group>"; };
+		7CE223792639978D00BD8C5B /* DeviceReadingView.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = DeviceReadingView.storyboard; sourceTree = "<group>"; };
+		7CE2237B263997AC00BD8C5B /* DeviceReadingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceReadingViewModel.swift; sourceTree = "<group>"; };
+		7CE2237E26399BA100BD8C5B /* DeviceListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceListTableViewCell.swift; sourceTree = "<group>"; };
+		7CE2237F26399BA100BD8C5B /* DeviceListTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DeviceListTableViewCell.xib; sourceTree = "<group>"; };
+		7CE2238226399BC000BD8C5B /* DeviceListTableViewCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceListTableViewCellViewModel.swift; sourceTree = "<group>"; };
 		9A6FC4A09A904DFBB5E5C423 /* Pods_ki_kth_project.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ki_kth_project.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D1DFA9CFFA0E6B88A99C38D3 /* Pods-ki-kth-project.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ki-kth-project.release.xcconfig"; path = "Target Support Files/Pods-ki-kth-project/Pods-ki-kth-project.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -197,6 +209,7 @@
 		7CDC8E352623AE8300430BD7 /* Domain */ = {
 			isa = PBXGroup;
 			children = (
+				7CE223762639903A00BD8C5B /* DeviceReadingView */,
 				7CDC8E362623AE9000430BD7 /* CalibrationView */,
 			);
 			path = Domain;
@@ -239,6 +252,27 @@
 				7CDEFBA02629C15B00CA3E66 /* StoryboardInstantiable.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		7CE223762639903A00BD8C5B /* DeviceReadingView */ = {
+			isa = PBXGroup;
+			children = (
+				7CE2237D26399B7A00BD8C5B /* DeviceListTableView */,
+				7CE223772639977300BD8C5B /* DeviceReadingViewController.swift */,
+				7CE2237B263997AC00BD8C5B /* DeviceReadingViewModel.swift */,
+				7CE223792639978D00BD8C5B /* DeviceReadingView.storyboard */,
+			);
+			path = DeviceReadingView;
+			sourceTree = "<group>";
+		};
+		7CE2237D26399B7A00BD8C5B /* DeviceListTableView */ = {
+			isa = PBXGroup;
+			children = (
+				7CE2237E26399BA100BD8C5B /* DeviceListTableViewCell.swift */,
+				7CE2238226399BC000BD8C5B /* DeviceListTableViewCellViewModel.swift */,
+				7CE2237F26399BA100BD8C5B /* DeviceListTableViewCell.xib */,
+			);
+			path = DeviceListTableView;
 			sourceTree = "<group>";
 		};
 		81123C20CEBB19D8F36FD595 /* Frameworks */ = {
@@ -325,6 +359,7 @@
 				7C066DB92634BF450030B103 /* SourceSansPro-ExtraLightItalic.ttf in Resources */,
 				7C066DB52634BF450030B103 /* SourceSansPro-Black.ttf in Resources */,
 				7C3C27E026258FBD00F83DAA /* AnalyteListTableViewCell.xib in Resources */,
+				7CE2237A2639978D00BD8C5B /* DeviceReadingView.storyboard in Resources */,
 				7C066DB12634BF450030B103 /* SourceSansPro-Regular.ttf in Resources */,
 				7C066DB72634BF450030B103 /* SourceSansPro-BoldItalic.ttf in Resources */,
 				7C066DB32634BF450030B103 /* SourceSansPro-LightItalic.ttf in Resources */,
@@ -332,6 +367,7 @@
 				7CDC8E2D2623AE6B00430BD7 /* LaunchScreen.storyboard in Resources */,
 				7C4E33F82624754100C42669 /* ConcentrationTableViewCell.xib in Resources */,
 				7C066DB82634BF450030B103 /* SourceSansPro-SemiBold.ttf in Resources */,
+				7CE2238126399BA100BD8C5B /* DeviceListTableViewCell.xib in Resources */,
 				7CDC8E2A2623AE6B00430BD7 /* Assets.xcassets in Resources */,
 				7CDC8E252623AE6B00430BD7 /* CalibrationView.storyboard in Resources */,
 			);
@@ -392,15 +428,19 @@
 				7C066D8E2634777E0030B103 /* AppColor.swift in Sources */,
 				7CDC8E1E2623AE6B00430BD7 /* AppDelegate.swift in Sources */,
 				7C4E33F72624754000C42669 /* ConcentrationTableViewCell.swift in Sources */,
+				7CE2238326399BC000BD8C5B /* DeviceListTableViewCellViewModel.swift in Sources */,
 				7C3C27E92625C1EB00F83DAA /* ActivityIndicatorButton.swift in Sources */,
 				7CDEFBA62629C23000CA3E66 /* CalibrationViewModel.swift in Sources */,
 				7C066D84262B2F140030B103 /* ConcentrationTableViewCellModel.swift in Sources */,
 				7CDA38002623B0D700874665 /* AnalyteDataAPI.swift in Sources */,
+				7CE2237C263997AC00BD8C5B /* DeviceReadingViewModel.swift in Sources */,
+				7CE2238026399BA100BD8C5B /* DeviceListTableViewCell.swift in Sources */,
 				7CDC8E202623AE6B00430BD7 /* SceneDelegate.swift in Sources */,
 				7C3C27DF26258FBD00F83DAA /* AnalyteListTableViewCell.swift in Sources */,
 				7C066D87262B31FE0030B103 /* AnalyteTableViewCellModel.swift in Sources */,
 				7C066DAE2634BF450030B103 /* UIFont+Extension.swift in Sources */,
 				7CDC8E282623AE6B00430BD7 /* ki_kth_project.xcdatamodeld in Sources */,
+				7CE223782639977300BD8C5B /* DeviceReadingViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

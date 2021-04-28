@@ -77,7 +77,7 @@ final class CalibrationViewModel {
             switch result {
             
             case .success(let data):
-                
+                //TODO: Adjust sorting according to time
                 let sorted = data.sorted {
                     $0.updatedAt > $1.updatedAt
                 }

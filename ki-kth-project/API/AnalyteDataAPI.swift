@@ -12,11 +12,38 @@ struct AnalyteDataAPI {
     
     private let networkingService = NetworkingService()
     
+    func getAllDevices(with completion: @escaping (Result<[DeviceDataFetch], Error>) -> Void ) {
+        
+        let url = "https://ki-kth-project-api.herokuapp.com/onbodydevice/all"
+        
+        networkingService.dispatchRequest(urlString: url, method: .get) { result in
+         
+            switch result {
+            case .success(let data):
+                
+                do {
+                    let device = try JSONDecoder().decode([DeviceDataFetch].self, from: data)
+                    DispatchQueue.main.async {
+                        completion(.success(device))
+                    }
+                } catch {
+                    DispatchQueue.main.async {
+                        completion(.failure(error))
+                    }
+                }
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    completion(.failure(error))
+                }
+            }
+        }
+    }
+    
     func deleteAnalyte(_ id: String, completion: @escaping (Result<AnalyteDataFetch, Error>) -> Void) {
         
         let url =  "https://ki-kth-project-api.herokuapp.com/analyte/\(id)"
         
-        networkingService.dispatchRequest(urlString: url, method: .delete, additionalHeaders: nil, body: nil) { (result) in
+        networkingService.dispatchRequest(urlString: url, method: .delete, additionalHeaders: nil, body: nil) { result in
             switch result {
             case .success(let data):
                 do {
@@ -117,7 +144,7 @@ struct AnalyteDataAPI {
     }
 }
 
-//MARK: Analyte Data Decodable
+// MARK: - Analyte Data Codable
 
 struct AnalyteDataPost: Codable {
 
@@ -146,3 +173,13 @@ struct CalibrationParameter: Codable {
     let constant: Double?
 }
 
+// MARK: - Device Data Codable
+
+struct DeviceDataFetch: Codable {
+    let _id: String
+    let name: String
+    let deviceID: UUID
+    let personalID: Int
+    let createdAt: String
+    let updatedAt: String
+}
