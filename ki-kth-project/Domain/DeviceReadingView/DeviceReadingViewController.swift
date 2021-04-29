@@ -30,6 +30,10 @@ class DeviceReadingViewController: UIViewController {
         switch action {
         case .reloadDeviceListTableView:
             deviceListTableView.reloadData()
+        case .presentCalibrationView(id: let id):
+            let vc = CalibrationViewController.instantiate(with: CalibrationViewModel())
+            vc.viewModel.deviceID = id
+            navigationController?.pushViewController(vc, animated: true)
         }
     }
     
@@ -37,6 +41,7 @@ class DeviceReadingViewController: UIViewController {
     private func setUI() {
         deviceListTableView.delegate = self
         deviceListTableView.dataSource = self
+        deviceListTableView.delaysContentTouches = false;
         deviceListTableView.register(UINib(nibName: DeviceListTableViewCell.nibName, bundle: nil), forCellReuseIdentifier: DeviceListTableViewCell.nibName)
     }
     

@@ -21,6 +21,8 @@ final class CalibrationViewModel {
         case stopActivityIndicators(message: InformationLabel)
     }
     
+    var deviceID: String?
+    
     var concentrationTableViewCellModels: [ConcentrationTableViewCellModel] = [] {
         didSet {
             sendActionToViewController?(.reloadConcentrationListTableView)
@@ -52,7 +54,7 @@ final class CalibrationViewModel {
     
     var sendActionToViewController: ((Action) -> Void)?
             
-    func viewDidLoad() {
+    func viewDidLoad(for device: String) {
         fetchAllAnaytesRequired()
     }
     
@@ -69,6 +71,7 @@ final class CalibrationViewModel {
             print("Handled by WelcomeViewModel")
         }
     }
+    
     
     func fetchAllAnaytesRequired() {
         

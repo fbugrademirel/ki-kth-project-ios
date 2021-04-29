@@ -11,6 +11,7 @@ final class DeviceReadingViewModel {
     
     enum Action {
         case reloadDeviceListTableView
+        case presentCalibrationView(id: String)
     }
     
     var deviceListTableViewViewModels: [DeviceListTableViewCellViewModel] = [] {
@@ -27,9 +28,13 @@ final class DeviceReadingViewModel {
     
     func handleReceivedFromDeviceTableViewCell(action: DeviceListTableViewCellViewModel.ActionToParent) {
         switch action {
-        case .toParent:
-            print("Handled from handleReceivedFromDeviceTableViewCell")
+        case .presentCalibrationView(id: let id):
+            fetchAndPresentCalibrationView(id)
         }
+    }
+    
+    func fetchAndPresentCalibrationView(_ id: String) {
+        sendActionToViewController?(.presentCalibrationView(id: id))
     }
     
     func fetchAllDevicesRequired() {
@@ -47,7 +52,7 @@ final class DeviceReadingViewModel {
                     
                     let device = Device(name: data.name, id: data.personalID)
                     
-                    let viewModel = DeviceListTableViewCellViewModel(name: device.name, id: device.id)
+                    let viewModel = DeviceListTableViewCellViewModel(name: device.name, id: device.id, serverID: data._id)
                     
                     viewModel.sendActionToParentModel = { [weak self] action in
                         self?.handleReceivedFromDeviceTableViewCell(action: action)

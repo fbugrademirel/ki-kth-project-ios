@@ -12,6 +12,32 @@ struct AnalyteDataAPI {
     
     private let networkingService = NetworkingService()
     
+    
+    func getAllAnalytesForDevice(_ id: String, completion: @escaping (Result<[AnalyteDataFetch], Error>) -> Void ) {
+        
+        let url = "https://ki-kth-project-api.herokuapp.com/onbodydevice/allanalytes/\(id)"
+        
+        networkingService.dispatchRequest(urlString: url, method: .get) { result in
+            switch result {
+            case .success(let data):
+                do {
+                    let analytes = try JSONDecoder().decode([AnalyteDataFetch].self, from: data)
+                    DispatchQueue.main.async {
+                        completion(.success(analytes))
+                    }
+                } catch {
+                    DispatchQueue.main.async {
+                        completion(.failure(error))
+                    }
+                }
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    completion(.failure(error))
+                }
+            }
+        }
+    }
+    
     func getAllDevices(with completion: @escaping (Result<[DeviceDataFetch], Error>) -> Void ) {
         
         let url = "https://ki-kth-project-api.herokuapp.com/onbodydevice/all"

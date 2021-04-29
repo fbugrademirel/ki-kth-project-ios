@@ -17,24 +17,24 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="cGD-ba-zcx">
-                                <rect key="frame" x="256" y="100" width="512" height="1229.5"/>
+                                <rect key="frame" x="352.5" y="100" width="665.5" height="1229.5"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </tableView>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="ctG-xu-SYA">
-                                <rect key="frame" x="4" y="100" width="246" height="614.5"/>
+                                <rect key="frame" x="8.5" y="100" width="338" height="614.5"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </tableView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="cGD-ba-zcx" firstAttribute="centerX" secondItem="vDu-zF-Fre" secondAttribute="centerX" id="GhU-8n-QMN"/>
                             <constraint firstItem="cGD-ba-zcx" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" constant="100" id="KUj-zW-8kd"/>
                             <constraint firstItem="ctG-xu-SYA" firstAttribute="top" secondItem="cGD-ba-zcx" secondAttribute="top" id="L2T-Wd-3LC"/>
-                            <constraint firstItem="cGD-ba-zcx" firstAttribute="width" secondItem="5EZ-qb-Rvc" secondAttribute="width" multiplier="0.5" id="V4S-ZD-JlH"/>
-                            <constraint firstItem="ctG-xu-SYA" firstAttribute="width" secondItem="5EZ-qb-Rvc" secondAttribute="width" multiplier="0.24" id="YJT-E3-4PH"/>
+                            <constraint firstItem="ctG-xu-SYA" firstAttribute="width" secondItem="5EZ-qb-Rvc" secondAttribute="width" multiplier="0.33" id="YJT-E3-4PH"/>
+                            <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="cGD-ba-zcx" secondAttribute="trailing" constant="6" id="bYS-6t-Jxz"/>
                             <constraint firstItem="cGD-ba-zcx" firstAttribute="height" secondItem="5EZ-qb-Rvc" secondAttribute="height" multiplier="0.9" id="gNg-7Y-Thv"/>
                             <constraint firstItem="ctG-xu-SYA" firstAttribute="height" secondItem="cGD-ba-zcx" secondAttribute="height" multiplier="0.5" id="iwH-0v-u55"/>
+                            <constraint firstItem="cGD-ba-zcx" firstAttribute="width" secondItem="5EZ-qb-Rvc" secondAttribute="width" multiplier="0.65" id="spi-Lk-HOB"/>
                             <constraint firstItem="ctG-xu-SYA" firstAttribute="trailing" secondItem="cGD-ba-zcx" secondAttribute="leading" constant="-6" id="v5m-yk-L0p"/>
                         </constraints>
                     </view>

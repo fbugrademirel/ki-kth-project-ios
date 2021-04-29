@@ -13,6 +13,7 @@ class DeviceListTableViewCell: UITableViewCell {
     
     @IBOutlet weak var patientName: UILabel!
     @IBOutlet weak var patientID: UILabel!
+    @IBOutlet weak var labelStackView: UIStackView!
     
     
     var viewModel: DeviceListTableViewCellViewModel! {
@@ -21,6 +22,10 @@ class DeviceListTableViewCell: UITableViewCell {
         }
     }
 
+    
+    @IBAction func calibrateButtonPressed(_ sender: Any) {
+        viewModel.calibrateViewRequested()
+    }
     
     func handle(action: DeviceListTableViewCellViewModel.ActionToOwnView) {
         switch action {
@@ -43,16 +48,27 @@ class DeviceListTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
-//        labelStackView.subviews.forEach {
-//            if let label = $0 as? UILabel {
-//                label.font = UIFont.appFont(placement: .text)
-//            }
-//        }
+        labelStackView.subviews.forEach {
+            if let label = $0 as? UILabel {
+                label.font = UIFont.appFont(placement: .text)
+            }
+        }
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state
+        
+    }
+    
+    override func setHighlighted(_ highlighted: Bool, animated: Bool) {
+         super.setHighlighted(highlighted, animated: animated)
+         // do your custom things with the cell subviews here
+         if highlighted == true {
+            self.contentView.backgroundColor = AppColor.secondary
+         } else {
+             self.contentView.backgroundColor = .white
+         }
     }
 }

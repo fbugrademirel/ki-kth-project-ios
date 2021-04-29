@@ -43,14 +43,11 @@ class CalibrationViewController: UIViewController {
     
         title = "Analyte Calibration"
         setUI()
-        viewModel.viewDidLoad()
+        if let id = viewModel.deviceID {
+            viewModel.viewDidLoad(for: id)
+        }
     }
     
-    override func viewDidLayoutSubviews() {
-
-  
-    }
-
 // MARK: - IBAction
     @IBAction func addConc(_ sender: UIButton) {
         
@@ -250,7 +247,7 @@ class CalibrationViewController: UIViewController {
         clearButtonsStackView.subviews.forEach {
             if let btn = $0 as? ActivityIndicatorButton {
                 btn.titleLabel?.font = UIFont.appFont(placement: .buttonTitle)
-                btn.backgroundColor = AppColor.secondary
+                //btn.backgroundColor = AppColor.secondary
                 btn.layer.cornerRadius = 10
             }
         }
