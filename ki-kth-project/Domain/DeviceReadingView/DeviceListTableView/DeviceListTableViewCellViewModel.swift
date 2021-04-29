@@ -14,7 +14,7 @@ final class DeviceListTableViewCellViewModel {
     }
     
     enum ActionToOwnView{
-        case toOwnView
+        case showCalibratedAnalytes(analytes: [Analyte])
     }
     
     let patientName: String
@@ -32,5 +32,29 @@ final class DeviceListTableViewCellViewModel {
     
     func calibrateViewRequested() {
         sendActionToParentModel?(.presentCalibrationView(id: serverID))
-    }    
+    }
+    
+    func calibratedAnalytesForThisDeviceRequested() {
+        
+        AnalyteDataAPI().getAllAnalytesForDevice(serverID) { [weak self] result in
+            switch result {
+            case .success(let data):
+                let sorted = data.sorted {
+                    $0.updatedAt > $1.updatedAt
+                }
+                let fetched = sorted.map { (data) -> Analyte in
+                    let analyte = Analyte(description: data.description,
+                                          identifier: data.uniqueIdentifier,
+                                          serverID: data._id,
+                                          calibrationParam: CalibrationParam(isCalibrated: data.calibrationParameters.isCalibrated, slope: data.calibrationParameters.slope ?? 0, constant: data.calibrationParameters.constant ?? 0))
+                        
+                    return analyte
+                }
+                self?.sendActionToOwnView?(.showCalibratedAnalytes(analytes: fetched))
+            case .failure(let error):
+             //   self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithFailure))
+                print(error.localizedDescription)
+            }
+        }
+    }
 }

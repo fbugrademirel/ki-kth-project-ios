@@ -126,7 +126,9 @@ class CalibrationViewController: UIViewController {
         viewModel.yValuesForMain = []
         viewModel.yValuesForCal1 = []
         viewModel.yValuesForCal2 = []
-        viewModel.fetchAllAnaytesRequired()
+        if let id = viewModel.deviceID {
+            viewModel.fetchAllAnalytesForDevice(id: id)
+        }
     }
     
 

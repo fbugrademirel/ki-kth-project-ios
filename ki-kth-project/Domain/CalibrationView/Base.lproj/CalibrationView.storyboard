@@ -46,7 +46,7 @@
                                 </constraints>
                             </stackView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Information Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="98u-zR-Seg">
-                                <rect key="frame" x="307" y="93" width="410" height="51"/>
+                                <rect key="frame" x="179" y="93" width="666" height="51"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -223,7 +223,7 @@
                             <constraint firstItem="L9W-fP-mIU" firstAttribute="top" secondItem="dWn-pK-gpg" secondAttribute="bottom" constant="12" id="sZ4-3M-HyE"/>
                             <constraint firstItem="Mzr-cR-Dg1" firstAttribute="top" secondItem="L9W-fP-mIU" secondAttribute="bottom" constant="6" id="tQ3-we-rQg"/>
                             <constraint firstItem="U4L-id-Swy" firstAttribute="top" secondItem="YZs-qh-20f" secondAttribute="top" id="tvL-qM-JHE"/>
-                            <constraint firstItem="98u-zR-Seg" firstAttribute="width" secondItem="szc-r6-D3d" secondAttribute="width" multiplier="0.8" id="ufD-Mp-C2G"/>
+                            <constraint firstItem="98u-zR-Seg" firstAttribute="width" secondItem="szc-r6-D3d" secondAttribute="width" multiplier="1.3" id="ufD-Mp-C2G"/>
                             <constraint firstItem="Mzr-cR-Dg1" firstAttribute="width" secondItem="dWn-pK-gpg" secondAttribute="width" id="vCR-88-8Uz"/>
                             <constraint firstItem="98u-zR-Seg" firstAttribute="height" secondItem="szc-r6-D3d" secondAttribute="height" multiplier="0.1" id="w0q-sx-wkG"/>
                             <constraint firstItem="fJc-L6-Kdd" firstAttribute="width" secondItem="itM-KU-kqu" secondAttribute="width" multiplier="0.24" id="yXw-W0-bp6"/>

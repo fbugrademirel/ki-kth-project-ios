@@ -54,8 +54,8 @@ final class CalibrationViewModel {
     
     var sendActionToViewController: ((Action) -> Void)?
             
-    func viewDidLoad(for device: String) {
-        fetchAllAnaytesRequired()
+    func viewDidLoad(for id: String) {
+        fetchAllAnalytesForDevice(id: id)
     }
     
     func handleFromAnalyteTableView(action: AnalyteTableViewCellModel.ActionToParent) {
@@ -72,25 +72,23 @@ final class CalibrationViewModel {
         }
     }
     
-    
-    func fetchAllAnaytesRequired() {
-        
+    func fetchAllAnalytesForDevice(id: String) {
         sendActionToViewController?(.startActivityIndicators(message: .fetching))
-        AnalyteDataAPI().getAllAnalytes { [weak self] result in
+        AnalyteDataAPI().getAllAnalytesForDevice(id) { [weak self] result in
             switch result {
-            
+
             case .success(let data):
                 //TODO: Adjust sorting according to time
                 let sorted = data.sorted {
                     $0.updatedAt > $1.updatedAt
                 }
-                
+
                 let fetched = sorted.map { (data) -> AnalyteTableViewCellModel in
                     let analyte = Analyte(description: data.description,
                                           identifier: data.uniqueIdentifier,
                                           serverID: data._id,
                                           calibrationParam: CalibrationParam(isCalibrated: data.calibrationParameters.isCalibrated, slope: data.calibrationParameters.slope ?? 0, constant: data.calibrationParameters.constant ?? 0))
-                    
+
                     let viewModel = AnalyteTableViewCellModel(description: analyte.description,
                                                           identifier: analyte.identifier,
                                                           serverID: analyte.serverID,
@@ -100,10 +98,13 @@ final class CalibrationViewModel {
                     }
                     return viewModel
                 }
-                
-                self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithSuccess))
+                if data.isEmpty {
+                    self?.sendActionToViewController?(.stopActivityIndicators(message: .fetcedWithSuccessButNoAnalytesRegistered))
+                } else {
+                    self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithSuccess))
+                }
                 self?.analyteListTableViewCellModels = fetched
-        
+
             case .failure(let error):
                 self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithFailure))
                 print(error.localizedDescription)
@@ -111,11 +112,56 @@ final class CalibrationViewModel {
         }
     }
     
+    
+    /// This method will not be used in current implementation
+    /*
+     func fetchAllAnaytesRequired() {
+
+         sendActionToViewController?(.startActivityIndicators(message: .fetching))
+         AnalyteDataAPI().getAllAnalytes { [weak self] result in
+             switch result {
+
+             case .success(let data):
+                 //TODO: Adjust sorting according to time
+                 let sorted = data.sorted {
+                     $0.updatedAt > $1.updatedAt
+                 }
+
+                 let fetched = sorted.map { (data) -> AnalyteTableViewCellModel in
+                     let analyte = Analyte(description: data.description,
+                                           identifier: data.uniqueIdentifier,
+                                           serverID: data._id,
+                                           calibrationParam: CalibrationParam(isCalibrated: data.calibrationParameters.isCalibrated, slope: data.calibrationParameters.slope ?? 0, constant: data.calibrationParameters.constant ?? 0))
+
+                     let viewModel = AnalyteTableViewCellModel(description: analyte.description,
+                                                           identifier: analyte.identifier,
+                                                           serverID: analyte.serverID,
+                                                           isCalibrated: analyte.calibrationParam.isCalibrated)
+                     viewModel.sendActionToParentModel = { [weak self] action in
+                         self?.handleFromAnalyteTableView(action: action)
+                     }
+                     return viewModel
+                 }
+
+                 self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithSuccess))
+                 self?.analyteListTableViewCellModels = fetched
+
+             case .failure(let error):
+                 self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithFailure))
+                 print(error.localizedDescription)
+             }
+         }
+     }
+     */
+    
+    
     func createAndPatchAnalyteRequested(by description: String) {
+        
+        guard let id = deviceID else { return }
         
         sendActionToViewController?(.startActivityIndicators(message: .creating))
 
-        AnalyteDataAPI().createAnalyte(description: description) { [weak self] result in
+        AnalyteDataAPI().createAnalyte(description: description, owner: id) { [weak self] result in
             switch result {
             case .success(let data):
 
@@ -366,6 +412,7 @@ enum ChartViews {
 enum InformationLabel: String {
     case fetching = "Fetching data from the server..."
     case fetchedWithSuccess = "Fetched with success!"
+    case fetcedWithSuccessButNoAnalytesRegistered = "No analytes registered for this device!"
     case fetchedWithFailure = "Fetch failed!"
     case creating = "Creating analyte..."
     case createdWithSuccess = "Created with success!"

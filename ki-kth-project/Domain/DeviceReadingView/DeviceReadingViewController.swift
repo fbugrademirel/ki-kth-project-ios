@@ -25,6 +25,11 @@ class DeviceReadingViewController: UIViewController {
         viewModel.viewDidLoad()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        viewModel.reloadTableViewsRequired()
+    }
+    
     // MARK: - Handle
     func handleReceivedFromViewModel(action: DeviceReadingViewModel.Action) -> Void {
         switch action {

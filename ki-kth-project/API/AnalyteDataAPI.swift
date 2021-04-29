@@ -141,10 +141,12 @@ struct AnalyteDataAPI {
         }
     }
     
-    func createAnalyte(description: String, with completion: @escaping (Result<AnalyteDataFetch,Error>) -> Void) {
+    func createAnalyte(description: String, owner: String, with completion: @escaping (Result<AnalyteDataFetch,Error>) -> Void) {
         
         let uniqueIdentifier = UUID()
-        let analyte = AnalyteDataPost(description: description, uniqueIdentifier: uniqueIdentifier.uuidString)
+        let analyte = AnalyteDataPost(description: description,
+                                      uniqueIdentifier: uniqueIdentifier.uuidString,
+                                      owner: owner)
         let url = "https://ki-kth-project-api.herokuapp.com/analyte"
         let addHeader = ["Content-Type": "application/json"]
         
@@ -176,6 +178,7 @@ struct AnalyteDataPost: Codable {
 
     let description: String
     let uniqueIdentifier: String
+    let owner: String
 }
 
 struct AnalyteDataFetch: Codable {

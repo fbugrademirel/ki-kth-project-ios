@@ -3,6 +3,7 @@
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -16,11 +17,11 @@
                 <rect key="frame" x="0.0" y="0.0" width="501" height="100"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="HGf-tb-Vh6">
+                    <stackView opaque="NO" contentMode="scaleToFill" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="HGf-tb-Vh6">
                         <rect key="frame" x="3" y="3" width="495" height="94"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="A76-Va-VQt">
-                                <rect key="frame" x="0.0" y="0.0" width="165" height="94"/>
+                                <rect key="frame" x="0.0" y="0.0" width="250" height="94"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3nJ-3T-NIo">
                                         <rect key="frame" x="0.0" y="0.0" width="41.5" height="47"/>
@@ -37,25 +38,14 @@
                                 </subviews>
                             </stackView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="j66-Jg-ypX">
-                                <rect key="frame" x="165" y="0.0" width="165" height="94"/>
-                                <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SFJ-BU-CrE">
-                                        <rect key="frame" x="0.0" y="0.0" width="41.5" height="47"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <nil key="textColor"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QxK-lr-MNn">
-                                        <rect key="frame" x="0.0" y="47" width="41.5" height="47"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <nil key="textColor"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                </subviews>
+                                <rect key="frame" x="256" y="0.0" width="165" height="94"/>
                             </stackView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SZK-6a-PYR" customClass="ActivityIndicatorButton" customModule="ki_kth_project" customModuleProvider="target">
-                                <rect key="frame" x="330" y="0.0" width="165" height="94"/>
-                                <state key="normal" title="Button"/>
+                                <rect key="frame" x="427" y="0.0" width="68" height="94"/>
+                                <inset key="contentEdgeInsets" minX="3" minY="3" maxX="3" maxY="3"/>
+                                <state key="normal" title="Calibrate">
+                                    <color key="titleColor" name="primary"/>
+                                </state>
                                 <connections>
                                     <action selector="calibrateButtonPressed:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="hUL-Ml-bWN"/>
                                 </connections>
@@ -72,6 +62,8 @@
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
+                <outlet property="calibrateButton" destination="SZK-6a-PYR" id="Hqw-df-xdB"/>
+                <outlet property="calibrationInfoStackView" destination="j66-Jg-ypX" id="Rqz-XR-Pck"/>
                 <outlet property="labelStackView" destination="A76-Va-VQt" id="Sfl-jo-Tsa"/>
                 <outlet property="patientID" destination="9nM-Q8-xG4" id="G4w-sC-tEr"/>
                 <outlet property="patientName" destination="3nJ-3T-NIo" id="LlI-bv-t3v"/>
@@ -79,4 +71,9 @@
             <point key="canvasLocation" x="-131.15942028985509" y="-70.982142857142847"/>
         </tableViewCell>
     </objects>
+    <resources>
+        <namedColor name="primary">
+            <color red="0.4309999942779541" green="0.046999998390674591" blue="0.25499999523162842" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
 </document>

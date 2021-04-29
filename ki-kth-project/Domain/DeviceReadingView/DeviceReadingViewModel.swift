@@ -37,6 +37,10 @@ final class DeviceReadingViewModel {
         sendActionToViewController?(.presentCalibrationView(id: id))
     }
     
+    func reloadTableViewsRequired() {
+        sendActionToViewController?(.reloadDeviceListTableView)
+    }
+    
     func fetchAllDevicesRequired() {
         
         AnalyteDataAPI().getAllDevices { result in
