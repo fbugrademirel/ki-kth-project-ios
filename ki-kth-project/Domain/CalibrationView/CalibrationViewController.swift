@@ -15,6 +15,7 @@ class CalibrationViewController: UIViewController {
     var viewModel: CalibrationViewModel!
     
     var refreshControl = UIRefreshControl()
+    
     @IBOutlet weak var informationLAbel: UILabel!
     @IBOutlet weak var corCoefficent: UILabel!
     @IBOutlet weak var mainChartView: LineChartView!
@@ -31,6 +32,7 @@ class CalibrationViewController: UIViewController {
     @IBOutlet weak var clearButtonsStackView: UIStackView!
     @IBOutlet weak var calLabelsStackView: UIStackView!
     @IBOutlet weak var corEquationLabel: UILabel!
+    @IBOutlet weak var calibrateButton: ActivityIndicatorButton!
     
     
 // MARK: - Lifecyle
@@ -141,6 +143,9 @@ class CalibrationViewController: UIViewController {
         viewModel.yValuesForCal1 = entries
     }
     
+    @IBAction func calibrateButtonPressed(_ sender: Any) {
+        viewModel.analyteCalibrationRequired()
+    }
     
 // MARK: - Handle from view model
     func handleReceivedFromViewModel(action :CalibrationViewModel.Action) {
@@ -165,8 +170,6 @@ class CalibrationViewController: UIViewController {
             stopActivityIndicators(with: message)
         }
     }
-    
-
     
 // MARK: - UI
     private func makeCorrLabelsVisible(corValue: Double, slope: Double, constant: Double) {
@@ -250,10 +253,12 @@ class CalibrationViewController: UIViewController {
         clearButtonsStackView.subviews.forEach {
             if let btn = $0 as? ActivityIndicatorButton {
                 btn.titleLabel?.font = UIFont.appFont(placement: .buttonTitle)
-                //btn.backgroundColor = AppColor.secondary
                 btn.layer.cornerRadius = 10
             }
         }
+        
+        calibrateButton.titleLabel?.font = UIFont.appFont(placement: .buttonTitle)
+        calibrateButton.layer.cornerRadius = 10
         
         analytesStackView.subviews.forEach {
             if let btn = $0 as? ActivityIndicatorButton {
@@ -334,6 +339,7 @@ class CalibrationViewController: UIViewController {
     private func startActivityIndicators(with info: InformationLabel){
         DispatchQueue.main.async {
             self.addAnalyteButton.startActivity()
+            self.calibrateButton.startActivity()
             self.informationLAbel.textColor = .systemRed
             self.informationLAbel.text = info.rawValue
             self.informationLAbel.alpha = 1
@@ -343,6 +349,7 @@ class CalibrationViewController: UIViewController {
     private func stopActivityIndicators(with info: InformationLabel) {
         DispatchQueue.main.async {
             self.addAnalyteButton.stopActivity()
+            self.calibrateButton.stopActivity()
             self.refreshControl.endRefreshing()
             self.informationLAbel.textColor = .systemRed
             UIView.animate(withDuration: 2, animations: {

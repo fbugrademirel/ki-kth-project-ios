@@ -22,6 +22,9 @@ final class CalibrationViewModel {
     }
     
     var deviceID: String?
+    var latestHandledAnalyteId: String?
+    var regressionSlope: Double?
+    var regressionConstant: Double?
     
     var concentrationTableViewCellModels: [ConcentrationTableViewCellModel] = [] {
         didSet {
@@ -72,6 +75,23 @@ final class CalibrationViewModel {
         }
     }
     
+    func analyteCalibrationRequired() {
+        sendActionToViewController?(.startActivityIndicators(message: .creating))
+        guard let slope = self.regressionSlope, let constant = self.regressionConstant, let analyteID = self.latestHandledAnalyteId else {
+            sendActionToViewController?(.stopActivityIndicators(message: .calibrationParameterError))
+        return }
+        
+        AnalyteDataAPI().calibrateAnalyte(slope: slope, constant: constant, id: analyteID) { [weak self] result in
+            switch result {
+            case .success(_):
+                self?.sendActionToViewController?(.stopActivityIndicators(message: .calibratedWithSuccess))
+            case .failure(let error):
+                self?.sendActionToViewController?(.stopActivityIndicators(message: .calibratedWithFailure))
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
     func fetchAllAnalytesForDevice(id: String) {
         sendActionToViewController?(.startActivityIndicators(message: .fetching))
         AnalyteDataAPI().getAllAnalytesForDevice(id) { [weak self] result in
@@ -87,7 +107,9 @@ final class CalibrationViewModel {
                     let analyte = Analyte(description: data.description,
                                           identifier: data.uniqueIdentifier,
                                           serverID: data._id,
-                                          calibrationParam: CalibrationParam(isCalibrated: data.calibrationParameters.isCalibrated, slope: data.calibrationParameters.slope ?? 0, constant: data.calibrationParameters.constant ?? 0))
+                                          calibrationParam: CalibrationParam(calibrationTime: data.calibrationParameters.calibrationTime ?? 0, isCalibrated: data.calibrationParameters.isCalibrated,
+                                                                             slope: data.calibrationParameters.correlationEquationParameters?.slope ?? 0,
+                                                                             constant: data.calibrationParameters.correlationEquationParameters?.constant ?? 0))
 
                     let viewModel = AnalyteTableViewCellModel(description: analyte.description,
                                                           identifier: analyte.identifier,
@@ -168,9 +190,10 @@ final class CalibrationViewModel {
                 let analyte = Analyte(description: data.description,
                                       identifier: data.uniqueIdentifier,
                                       serverID: data._id,
-                                      calibrationParam: CalibrationParam(isCalibrated: data.calibrationParameters.isCalibrated,
-                                                                         slope: data.calibrationParameters.slope ?? 0,
-                                                                         constant: data.calibrationParameters.constant ?? 0))
+                                      calibrationParam: CalibrationParam(calibrationTime: data.calibrationParameters.calibrationTime ?? 0,
+                                                                         isCalibrated: data.calibrationParameters.isCalibrated,
+                                                                         slope: data.calibrationParameters.correlationEquationParameters?.slope ?? 0,
+                                                                         constant: data.calibrationParameters.correlationEquationParameters?.constant ?? 0))
                 
                 let model = AnalyteTableViewCellModel(description: analyte.description,
                                                       identifier: analyte.identifier,
@@ -194,13 +217,12 @@ final class CalibrationViewModel {
             switch result {
             case .success(let data):
 
-                let data = AnalyteDataFetch(_id: data._id,
+                let data = AnalyteDataFetch(calibrationParameters: data.calibrationParameters, _id: data._id,
                                             description: data.description,
                                             uniqueIdentifier: data.uniqueIdentifier,
                                             measurements: data.measurements,
                                             createdAt: data.createdAt,
-                                            updatedAt: data.updatedAt,
-                                            calibrationParameters: CalibrationParameter(isCalibrated: data.calibrationParameters.isCalibrated, slope: data.calibrationParameters.slope, constant: data.calibrationParameters.constant))
+                                            updatedAt: data.updatedAt)
                 guard let time = data.measurements.first?.time else {
                     self?.sendActionToViewController?(.stopActivityIndicators(message: .invalidData))
                     return
@@ -230,6 +252,7 @@ final class CalibrationViewModel {
                     let entry = ChartDataEntry(x: str, y: measurement.value)
                     return entry
                 }
+                self?.latestHandledAnalyteId = data._id
                 self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithSuccess))
 
                 self?.yValuesForMain = chartPoints
@@ -378,6 +401,8 @@ final class CalibrationViewModel {
         
         //Correaleiotn coefficent
         let r = Sxy / (sqrt(Sxx) * sqrt(Syy))
+        self.regressionSlope = B
+        self.regressionConstant = A
         sendActionToViewController?(.makeCorrLabelVisible(parameters:
                                                             CorrealetionParameters(rValue: r,
                                                                                    slope: B,
@@ -410,6 +435,9 @@ enum ChartViews {
 }
 
 enum InformationLabel: String {
+    case calibrationParameterError = "Regression Data is not calculated!"
+    case calibratedWithSuccess = "Analyte calibrated with success!"
+    case calibratedWithFailure = "Analyte calibration failed!"
     case fetching = "Fetching data from the server..."
     case fetchedWithSuccess = "Fetched with success!"
     case fetcedWithSuccessButNoAnalytesRegistered = "No analytes registered for this device!"
@@ -443,6 +471,7 @@ struct Analyte {
 }
 
 struct CalibrationParam {
+    let calibrationTime: Double
     let isCalibrated: Bool
     let slope: Double
     let constant: Double

@@ -188,6 +188,16 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="syh-WV-n72" customClass="ActivityIndicatorButton" customModule="ki_kth_project" customModuleProvider="target">
+                                <rect key="frame" x="416" y="1262" width="192" height="30"/>
+                                <inset key="titleEdgeInsets" minX="6" minY="6" maxX="6" maxY="6"/>
+                                <state key="normal" title="Calibrate">
+                                    <color key="titleColor" name="primary"/>
+                                </state>
+                                <connections>
+                                    <action selector="calibrateButtonPressed:" destination="uSr-49-Bbt" eventType="touchUpInside" id="TAm-S4-mOs"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="ZdY-Bv-L1v"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -202,11 +212,14 @@
                             <constraint firstItem="tZ2-yM-rbM" firstAttribute="width" secondItem="itM-KU-kqu" secondAttribute="width" multiplier="0.24" id="Lk2-hk-Z0t"/>
                             <constraint firstItem="L9W-fP-mIU" firstAttribute="height" secondItem="dWn-pK-gpg" secondAttribute="height" multiplier="0.1" id="O8A-RP-4da"/>
                             <constraint firstItem="L9W-fP-mIU" firstAttribute="centerX" secondItem="dWn-pK-gpg" secondAttribute="centerX" id="RcF-T3-g6i"/>
+                            <constraint firstItem="syh-WV-n72" firstAttribute="top" secondItem="Mzr-cR-Dg1" secondAttribute="bottom" constant="3" id="Tje-D4-nR7"/>
                             <constraint firstItem="Mzr-cR-Dg1" firstAttribute="height" secondItem="dWn-pK-gpg" secondAttribute="height" multiplier="0.1" id="aQY-Us-2Q9"/>
                             <constraint firstItem="YZs-qh-20f" firstAttribute="centerY" secondItem="ZdY-Bv-L1v" secondAttribute="centerY" id="byb-h7-4gz"/>
+                            <constraint firstItem="syh-WV-n72" firstAttribute="width" secondItem="Mzr-cR-Dg1" secondAttribute="width" multiplier="0.5" id="cgb-yq-u2r"/>
                             <constraint firstItem="U4L-id-Swy" firstAttribute="leading" secondItem="YZs-qh-20f" secondAttribute="trailing" constant="3" id="dGG-IA-1Za"/>
                             <constraint firstItem="szc-r6-D3d" firstAttribute="top" secondItem="98u-zR-Seg" secondAttribute="bottom" constant="12" id="hPS-9c-Kd4"/>
                             <constraint firstItem="tZ2-yM-rbM" firstAttribute="height" secondItem="itM-KU-kqu" secondAttribute="height" multiplier="0.3" id="hkF-lA-Zib"/>
+                            <constraint firstItem="syh-WV-n72" firstAttribute="centerX" secondItem="Mzr-cR-Dg1" secondAttribute="centerX" id="koq-xX-Xbc"/>
                             <constraint firstItem="L9W-fP-mIU" firstAttribute="width" secondItem="dWn-pK-gpg" secondAttribute="width" id="lnt-I9-fwj"/>
                             <constraint firstItem="szc-r6-D3d" firstAttribute="width" secondItem="itM-KU-kqu" secondAttribute="width" multiplier="0.5" id="qIw-rL-4QF"/>
                             <constraint firstItem="L9W-fP-mIU" firstAttribute="top" secondItem="dWn-pK-gpg" secondAttribute="bottom" constant="12" id="sZ4-3M-HyE"/>
@@ -226,6 +239,7 @@
                         <outlet property="calGraphView1" destination="XWU-bd-GDu" id="evU-Zc-uPc"/>
                         <outlet property="calGraphView2" destination="dWn-pK-gpg" id="SGb-6Y-fOg"/>
                         <outlet property="calLabelsStackView" destination="n0e-as-ZbR" id="XSN-yH-JMj"/>
+                        <outlet property="calibrateButton" destination="syh-WV-n72" id="X2N-Xr-Spk"/>
                         <outlet property="calibrationStackView" destination="U4L-id-Swy" id="hoi-gx-H8o"/>
                         <outlet property="clearButtonsStackView" destination="ebE-N4-pQB" id="FgB-xT-3YH"/>
                         <outlet property="concTextView" destination="jFB-fG-wcz" id="as0-0I-Gha"/>

@@ -13,6 +13,39 @@ struct AnalyteDataAPI {
     private let networkingService = NetworkingService()
     
     
+    func calibrateAnalyte(slope: Double, constant: Double, id: String, completion: @escaping (Result<AnalyteDataFetch,Error>) -> Void ) {
+    
+        let url =  "https://ki-kth-project-api.herokuapp.com/analyte/\(id)"
+        let addHeader = ["Content-Type": "application/json"]
+        
+        let body = AnalyteCalibrationPatch(calibrationParameters: CalibrationParameter(isCalibrated: true,
+                                                                                       correlationEquationParameters: CorrelationEquationParameters(slope: slope, constant: constant),
+                                                                                       calibrationTime: Date().timeIntervalSince1970))
+                
+        networkingService.dispatchRequest(urlString: url,
+                                          method: .patch,
+                                          additionalHeaders: addHeader,
+                                          body: body) { result in
+            switch result {
+            case .success(let data):
+                do {
+                    let analyteData = try JSONDecoder().decode(AnalyteDataFetch.self, from: data)
+                    DispatchQueue.main.async {
+                        completion(.success(analyteData))
+                    }
+                } catch {
+                    DispatchQueue.main.async {
+                        completion(.failure(error))
+                    }
+                }
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    completion(.failure(error))
+                }
+            }
+        }
+    }
+    
     func getAllAnalytesForDevice(_ id: String, completion: @escaping (Result<[AnalyteDataFetch], Error>) -> Void ) {
         
         let url = "https://ki-kth-project-api.herokuapp.com/onbodydevice/allanalytes/\(id)"
@@ -174,6 +207,10 @@ struct AnalyteDataAPI {
 
 // MARK: - Analyte Data Codable
 
+struct AnalyteCalibrationPatch: Codable {
+    let calibrationParameters: CalibrationParameter
+}
+
 struct AnalyteDataPost: Codable {
 
     let description: String
@@ -182,13 +219,13 @@ struct AnalyteDataPost: Codable {
 }
 
 struct AnalyteDataFetch: Codable {
+    let calibrationParameters: CalibrationParameter
     let _id: String
     let description: String
     let uniqueIdentifier: UUID
     let measurements: [Measurement]
     let createdAt: String
     let updatedAt: String
-    let calibrationParameters: CalibrationParameter
 }
 
 struct Measurement: Codable {
@@ -198,8 +235,13 @@ struct Measurement: Codable {
 
 struct CalibrationParameter: Codable {
     let isCalibrated: Bool
-    let slope: Double?
-    let constant: Double?
+    let correlationEquationParameters: CorrelationEquationParameters?
+    let calibrationTime: Double?
+}
+
+struct CorrelationEquationParameters: Codable {
+    let slope: Double
+    let constant: Double
 }
 
 // MARK: - Device Data Codable
