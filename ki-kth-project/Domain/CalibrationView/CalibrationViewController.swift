@@ -14,6 +14,7 @@ class CalibrationViewController: UIViewController {
     
     var viewModel: CalibrationViewModel!
     
+    var refreshControl = UIRefreshControl()
     @IBOutlet weak var informationLAbel: UILabel!
     @IBOutlet weak var corCoefficent: UILabel!
     @IBOutlet weak var mainChartView: LineChartView!
@@ -24,7 +25,6 @@ class CalibrationViewController: UIViewController {
     @IBOutlet weak var potential: UILabel!
     @IBOutlet weak var concTextView: UITextField!
     @IBOutlet weak var analyteDescriptionTextView: UITextField!
-    @IBOutlet weak var refreshButton: ActivityIndicatorButton!
     @IBOutlet weak var addAnalyteButton: ActivityIndicatorButton!
     @IBOutlet weak var analytesStackView: UIStackView!
     @IBOutlet weak var calibrationStackView: UIStackView!
@@ -117,7 +117,7 @@ class CalibrationViewController: UIViewController {
         viewModel.concentrationTableViewCellModels = []
     }
     
-    @IBAction func refButPressed(_ sender: UIButton) {
+    @objc private func refButPressed(_ sender: UIButton) {
         
         informationLAbel.text = ""
         corCoefficent.text = ""
@@ -291,8 +291,20 @@ class CalibrationViewController: UIViewController {
         concentrationTable.dataSource = self
         concentrationTable.register(UINib(nibName: ConcentrationTableViewCell.nibName, bundle: nil), forCellReuseIdentifier: ConcentrationTableViewCell.nibName)
         
+        
         analyteListTableView.delegate = self
         analyteListTableView.delaysContentTouches = false;
+        
+        let attributes = [NSAttributedString.Key.font: UIFont(name: "SourceSansPro-Bold", size: 16)!,
+                          NSAttributedString.Key.foregroundColor : AppColor.primary]
+        refreshControl.attributedTitle = NSAttributedString(string: "", attributes: attributes as [NSAttributedString.Key : Any])
+        refreshControl.tintColor = AppColor.primary
+        refreshControl.addTarget(self, action: #selector(self.refButPressed(_:)), for: .valueChanged)
+        refreshControl.layer.zPosition = -1
+
+        
+        analyteListTableView.addSubview(refreshControl)
+        
         //analyteListTable.allowsMultipleSelectionDuringEditing = true
         //analyteListTable.setEditing(true, animated: true)
         analyteListTableView.dataSource = self
@@ -322,7 +334,6 @@ class CalibrationViewController: UIViewController {
     private func startActivityIndicators(with info: InformationLabel){
         DispatchQueue.main.async {
             self.addAnalyteButton.startActivity()
-            self.refreshButton.startActivity()
             self.informationLAbel.textColor = .systemRed
             self.informationLAbel.text = info.rawValue
             self.informationLAbel.alpha = 1
@@ -332,7 +343,7 @@ class CalibrationViewController: UIViewController {
     private func stopActivityIndicators(with info: InformationLabel) {
         DispatchQueue.main.async {
             self.addAnalyteButton.stopActivity()
-            self.refreshButton.stopActivity()
+            self.refreshControl.endRefreshing()
             self.informationLAbel.textColor = .systemRed
             UIView.animate(withDuration: 2, animations: {
                 self.informationLAbel.alpha = 0
