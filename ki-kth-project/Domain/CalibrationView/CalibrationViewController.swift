@@ -42,6 +42,7 @@ class CalibrationViewController: UIViewController {
         }
     
         title = "Analyte Calibration"
+        
         setUI()
         if let id = viewModel.deviceID {
             viewModel.viewDidLoad(for: id)

@@ -20,7 +20,7 @@ class DeviceReadingViewController: UIViewController {
         viewModel.sendActionToViewController = { [weak self] action in
             self?.handleReceivedFromViewModel(action: action)
         }
-        
+        title = "Device List"
         setUI()
         viewModel.viewDidLoad()
     }
