@@ -52,6 +52,33 @@ final class DeviceReadingViewModel {
         sendActionToViewController?(.reloadDeviceListTableView)
     }
     
+    
+    func createDeviceRequired(name: String, personalID: Int) {
+        
+        sendActionToViewController?(.startActivityIndicators(message: .creating))
+
+        AnalyteDataAPI().createDevice(name: name, personalID: personalID) { [weak self] result in
+            
+            switch result {
+            case .success(let data):
+                
+                let device = Device(name: data.name, id: data.personalID)
+                
+                let model = DeviceListTableViewCellViewModel(name: device.name,
+                                                             id: device.id,
+                                                             serverID: data._id)
+                
+                self?.sendActionToViewController?(.stopActivityIndicators(message: .createdWithSuccess))
+                self?.deviceListTableViewViewModels.insert(model, at: 0)
+            
+            
+            case .failure(let error):
+                print(error.localizedDescription)
+                self?.sendActionToViewController?(.stopActivityIndicators(message: .createdWithFailure))
+            }
+        }
+    }
+    
     func getAnalytesByIdRequested(_ id: String) {
         
         sendActionToViewController?(.startActivityIndicators(message: .fetching))
@@ -226,9 +253,9 @@ enum DeviceInformationLabel: String {
     case fetchedWithSuccess = "Fetched with success!"
     case fetcedWithSuccessButNoAnalytesRegistered = "No analytes registered for this device!"
     case fetchedWithFailure = "Fetch failed!"
-    case creating = "Creating analyte..."
+    case creating = "Creating device..."
     case createdWithSuccess = "Created with success!"
-    case createdWithFailure = "Create analyte failed!"
+    case createdWithFailure = "Create device failed!"
     case invalidData = "Invalid data for graphing!"
     case deletingFromDatabase = "Deleting from database"
     case deletedWithSuccess = "Deleted with success!"

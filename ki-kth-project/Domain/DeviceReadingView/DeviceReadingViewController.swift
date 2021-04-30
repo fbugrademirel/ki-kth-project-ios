@@ -15,6 +15,9 @@ class DeviceReadingViewController: UIViewController {
     @IBOutlet weak var chartsStackView: UIStackView!
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var informationLabel: UILabel!
+    @IBOutlet weak var deviceNameTextField: UITextField!
+    @IBOutlet weak var personalIDTextField: UITextField!
+    @IBOutlet weak var registerDeviceButton: ActivityIndicatorButton!
     
     var viewModel: DeviceReadingViewModel!
     
@@ -55,10 +58,34 @@ class DeviceReadingViewController: UIViewController {
             present(view, animated: true, completion: nil)
         }
     }
+    @IBAction func registerButtonPressed(_ sender: Any) {
+        if deviceNameTextField.text == "" || personalIDTextField.text == "" {
+            return
+        }
+        guard let name = deviceNameTextField.text else { return }
+        guard let id = personalIDTextField.text else { return }
+
+        deviceNameTextField.text = ""
+        personalIDTextField.text = ""
+        
+        deviceNameTextField.resignFirstResponder()
+        personalIDTextField.resignFirstResponder()
+        
+        guard let intID = Int(id) else { return }
+        
+        viewModel.createDeviceRequired(name: name, personalID: intID)
+    }
     
     // MARK: - UI
     private func setUI() {
         
+        registerDeviceButton.titleLabel?.font = UIFont.appFont(placement: .buttonTitle)
+        registerDeviceButton.layer.cornerRadius = 10
+        
+        personalIDTextField.font = UIFont.appFont(placement: .text)
+        deviceNameTextField.font = UIFont.appFont(placement: .text)
+        
+    
         informationLabel.font = UIFont.appFont(placement: .title)
         informationLabel.alpha = 0
         informationLabel.text = ""
@@ -177,16 +204,25 @@ class DeviceReadingViewController: UIViewController {
             self.deviceListTableView.endUpdates()
         }))
         
-        alert.addAction(UIAlertAction(title: "Delete also from cloud (This operation will also delete related analytes' of this device)", style: .destructive, handler: { _ in
+        alert.addAction(UIAlertAction(title: "Delete also from cloud", style: .destructive, handler: { _ in
             
-            self.viewModel.deletionByIdRequested(id: self.viewModel.deviceListTableViewViewModels[path.row].serverID)
-            self.deviceListTableView.beginUpdates()
-            self.viewModel.deviceListTableViewViewModels.remove(at: path.row)
+            let alert = UIAlertController(title: "Warning!", message: "This operation will also delete related analytes' of this device", preferredStyle: .alert)
+            
+            alert.addAction(UIAlertAction(title: "Confirm", style: .destructive, handler: { _ in
+                self.viewModel.deletionByIdRequested(id: self.viewModel.deviceListTableViewViewModels[path.row].serverID)
+                self.deviceListTableView.beginUpdates()
+                self.viewModel.deviceListTableViewViewModels.remove(at: path.row)
 
-            self.deviceListTableView.deleteRows(at: [path], with: .fade)
-            self.deviceListTableView.endUpdates()
+                self.deviceListTableView.deleteRows(at: [path], with: .fade)
+                self.deviceListTableView.endUpdates()
+            }))
+            
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in
+                return
+            }))
+            
+            self.present(alert, animated: true, completion: nil)
         }))
-        
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in
             return
         }))

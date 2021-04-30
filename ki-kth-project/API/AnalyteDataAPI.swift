@@ -13,6 +13,36 @@ struct AnalyteDataAPI {
     private let networkingService = NetworkingService()
     
     
+    
+    func createDevice(name: String, personalID: Int, with completion: @escaping (Result<DeviceDataFetch,Error>) -> Void) {
+        
+        let uniqueIdentifier = UUID()
+        let device = DeviceCreationPatch (name: name, deviceID: uniqueIdentifier.uuidString, personalID: personalID)
+        let url = "https://ki-kth-project-api.herokuapp.com/onbodydevice"
+        let addHeader = ["Content-Type": "application/json"]
+        
+        networkingService.dispatchRequest(urlString: url, method: .post, additionalHeaders: addHeader, body: device) { result in
+            switch result {
+            case .success(let data):
+                do {
+                    let deviceData = try JSONDecoder().decode(DeviceDataFetch.self, from: data)
+                    DispatchQueue.main.async {
+                        completion(.success(deviceData))
+                    }
+                } catch {
+                    DispatchQueue.main.async {
+                        completion(.failure(error))
+                    }
+                }
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    completion(.failure(error))
+                }
+            }
+        }
+    }
+    
+    
     func deleteDeviceByID(id: String, completion: @escaping (Result<DeviceDataFetch, Error>) -> Void ) {
         
         let url =  "https://ki-kth-project-api.herokuapp.com/onbodydevice/\(id)"
@@ -232,6 +262,12 @@ struct AnalyteDataAPI {
 }
 
 // MARK: - Analyte Data Codable
+
+struct DeviceCreationPatch: Codable {
+    let name: String
+    let deviceID: String
+    let personalID: Int
+}
 
 struct AnalyteCalibrationPatch: Codable {
     let calibrationParameters: CalibrationParameter

@@ -3,10 +3,16 @@
     <device id="ipad12_9rounded" orientation="portrait" layout="fullscreen" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
+    <customFonts key="customFonts">
+        <array key="SourceSansPro-Regular.ttf">
+            <string>SourceSansPro-Regular</string>
+        </array>
+    </customFonts>
     <scenes>
         <!--Device Reading View Controller-->
         <scene sceneID="s0d-6b-0kx">
@@ -34,7 +40,7 @@
                                 <viewLayoutGuide key="frameLayoutGuide" id="doa-Rh-jK9"/>
                             </scrollView>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="ctG-xu-SYA">
-                                <rect key="frame" x="23" y="100" width="338" height="614.5"/>
+                                <rect key="frame" x="23" y="220" width="338" height="614.5"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </tableView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="en0-qB-4Qa">
@@ -43,6 +49,30 @@
                                 <color key="textColor" systemColor="systemRedColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="8vc-5s-nU6">
+                                <rect key="frame" x="23" y="104" width="338" height="110"/>
+                                <subviews>
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Name of patient" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="H4G-9U-2VJ">
+                                        <rect key="frame" x="0.0" y="0.0" width="338" height="34"/>
+                                        <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="PersonalID" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Shr-P9-Q6l">
+                                        <rect key="frame" x="0.0" y="40" width="338" height="34"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits" textContentType="tel"/>
+                                    </textField>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7p5-29-d95" customClass="ActivityIndicatorButton" customModule="ki_kth_project" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="80" width="338" height="30"/>
+                                        <state key="normal" title="Register">
+                                            <color key="titleColor" name="primary"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="registerButtonPressed:" destination="Y6W-OH-hqX" eventType="touchUpInside" id="jwD-z6-SF2"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </stackView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -53,18 +83,24 @@
                             <constraint firstItem="wmu-I6-sWx" firstAttribute="width" secondItem="5EZ-qb-Rvc" secondAttribute="width" multiplier="0.63" id="DLW-ZW-Tqn"/>
                             <constraint firstItem="ctG-xu-SYA" firstAttribute="height" secondItem="wmu-I6-sWx" secondAttribute="height" multiplier="0.5" id="I2n-ma-jmM"/>
                             <constraint firstItem="wmu-I6-sWx" firstAttribute="height" secondItem="5EZ-qb-Rvc" secondAttribute="height" multiplier="0.9" id="MlZ-SQ-Ach"/>
+                            <constraint firstItem="8vc-5s-nU6" firstAttribute="width" secondItem="ctG-xu-SYA" secondAttribute="width" id="XDj-W3-17r"/>
                             <constraint firstItem="ctG-xu-SYA" firstAttribute="width" secondItem="5EZ-qb-Rvc" secondAttribute="width" multiplier="0.33" id="YJT-E3-4PH"/>
-                            <constraint firstItem="ctG-xu-SYA" firstAttribute="firstBaseline" secondItem="wmu-I6-sWx" secondAttribute="firstBaseline" id="ZIB-rX-Xpn"/>
+                            <constraint firstItem="ctG-xu-SYA" firstAttribute="firstBaseline" secondItem="wmu-I6-sWx" secondAttribute="firstBaseline" constant="120" id="ZIB-rX-Xpn"/>
                             <constraint firstItem="wmu-I6-sWx" firstAttribute="top" secondItem="en0-qB-4Qa" secondAttribute="bottom" constant="6" id="aQv-2S-jy8"/>
+                            <constraint firstItem="8vc-5s-nU6" firstAttribute="bottom" secondItem="ctG-xu-SYA" secondAttribute="top" constant="-6" id="auT-gK-nVo"/>
                             <constraint firstItem="ctG-xu-SYA" firstAttribute="trailing" secondItem="wmu-I6-sWx" secondAttribute="leading" constant="-6" id="euB-9W-08V"/>
                             <constraint firstItem="en0-qB-4Qa" firstAttribute="height" secondItem="5EZ-qb-Rvc" secondAttribute="height" multiplier="0.04" id="ihl-ec-rVi"/>
                             <constraint firstItem="en0-qB-4Qa" firstAttribute="width" secondItem="5EZ-qb-Rvc" secondAttribute="width" multiplier="0.8" id="iqR-NG-Z5P"/>
+                            <constraint firstItem="8vc-5s-nU6" firstAttribute="centerX" secondItem="ctG-xu-SYA" secondAttribute="centerX" id="osI-li-0eP"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="chartsStackView" destination="eiS-1E-G0G" id="YDZ-j7-dYq"/>
                         <outlet property="deviceListTableView" destination="ctG-xu-SYA" id="ZKR-wH-5x1"/>
+                        <outlet property="deviceNameTextField" destination="H4G-9U-2VJ" id="1YL-nZ-DCm"/>
                         <outlet property="informationLabel" destination="en0-qB-4Qa" id="Vdg-rF-i6K"/>
+                        <outlet property="personalIDTextField" destination="Shr-P9-Q6l" id="ESC-Ti-ee9"/>
+                        <outlet property="registerDeviceButton" destination="7p5-29-d95" id="aVc-D1-Nyd"/>
                         <outlet property="scrollView" destination="wmu-I6-sWx" id="bpe-ZF-qdw"/>
                     </connections>
                 </viewController>
@@ -74,6 +110,9 @@
         </scene>
     </scenes>
     <resources>
+        <namedColor name="primary">
+            <color red="0.4309999942779541" green="0.046999998390674591" blue="0.25499999523162842" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
