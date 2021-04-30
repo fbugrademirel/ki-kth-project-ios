@@ -51,6 +51,8 @@ class DeviceReadingViewController: UIViewController {
             startActivityIndicators(with: message)
         case .stopActivityIndicators(message: let message):
             stopActivityIndicators(with: message)
+        case .presentView(with: let view):
+            present(view, animated: true, completion: nil)
         }
     }
     
@@ -163,12 +165,43 @@ class DeviceReadingViewController: UIViewController {
             view.removeFromSuperview()
         }
     }
+    
+    private func showAlert(path: IndexPath) {
+        let alert = UIAlertController(title: "Do you confirm deletion?", message: nil, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Delete only from this device", style: .default, handler: { _ in
+
+            self.deviceListTableView.beginUpdates()
+//            self.viewModel.analytes.remove(at: path.row)
+            self.viewModel.deviceListTableViewViewModels.remove(at: path.row)
+            self.deviceListTableView.deleteRows(at: [path], with: .fade)
+            self.deviceListTableView.endUpdates()
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Delete also from cloud (This operation will also delete related analytes' of this device)", style: .destructive, handler: { _ in
+            
+            self.viewModel.deletionByIdRequested(id: self.viewModel.deviceListTableViewViewModels[path.row].serverID)
+            self.deviceListTableView.beginUpdates()
+            self.viewModel.deviceListTableViewViewModels.remove(at: path.row)
+
+            self.deviceListTableView.deleteRows(at: [path], with: .fade)
+            self.deviceListTableView.endUpdates()
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in
+            return
+        }))
+        present(alert, animated: true, completion: nil)
+    }
 
 }
 
 // MARK: - TableView Data Source Extention
 
 extension DeviceReadingViewController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 100
+    }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         resetAllTablesAndChartData()
@@ -198,6 +231,22 @@ extension DeviceReadingViewController: UITableViewDataSource {
         
         cell.viewModel = viewModel.deviceListTableViewViewModels[indexPath.row]
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath)
+            -> UISwipeActionsConfiguration? {
+            let deleteAction = UIContextualAction(style: .destructive, title: nil) { (_, _, completionHandler) in
+                self.showAlert(path: indexPath)
+                completionHandler(true)
+            }
+            deleteAction.image = UIImage(systemName: "trash")
+            deleteAction.backgroundColor = .systemRed
+            let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
+            return configuration
     }
 }
 

@@ -275,18 +275,18 @@ final class CalibrationViewModel {
     
     func deletionByIdRequested(id: String) {
         self.sendActionToViewController?(.startActivityIndicators(message: .deletingFromDatabase))
-              AnalyteDataAPI().deleteAnalyte(id) { (result) in
-                  switch result {
-                  case .success(_):
-                    self.sendActionToViewController?(.stopActivityIndicators(message: .deletedWithSuccess))
-                    let alert = UIAlertController(title: "Deleted from database", message: "Server message", preferredStyle: .alert)
-                    alert.addAction(UIAlertAction(title: "I understand", style: .default, handler: nil))
-                    self.sendActionToViewController?(.presentView(view: alert))
-                  case .failure(let error):
-                    self.sendActionToViewController?(.stopActivityIndicators(message: .deletionFailed))
-                    print(error.localizedDescription)
-                  }
+          AnalyteDataAPI().deleteAnalyte(id) { (result) in
+              switch result {
+              case .success(_):
+                self.sendActionToViewController?(.stopActivityIndicators(message: .deletedWithSuccess))
+                let alert = UIAlertController(title: "Deleted from database", message: "Server message", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "I understand", style: .default, handler: nil))
+                self.sendActionToViewController?(.presentView(view: alert))
+              case .failure(let error):
+                self.sendActionToViewController?(.stopActivityIndicators(message: .deletionFailed))
+                print(error.localizedDescription)
               }
+          }
     }
     
     private func setDataForMainGraph() {

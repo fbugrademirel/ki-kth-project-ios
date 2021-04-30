@@ -16,6 +16,7 @@ final class DeviceReadingViewModel {
         case updateChartUI(with: [LineChartData])
         case startActivityIndicators(message: DeviceInformationLabel)
         case stopActivityIndicators(message: DeviceInformationLabel)
+        case presentView(with: UIAlertController)
     }
     
     var yValuesForMain: [ChartData] = [] {
@@ -82,6 +83,24 @@ final class DeviceReadingViewModel {
                 print(error.localizedDescription)
             }
         }
+    }
+    
+    func deletionByIdRequested(id: String) {
+        
+        self.sendActionToViewController?(.startActivityIndicators(message: .deletingFromDatabase))
+        
+          AnalyteDataAPI().deleteDeviceByID(id: id) { (result) in
+              switch result {
+              case .success(_):
+                self.sendActionToViewController?(.stopActivityIndicators(message: .deletedWithSuccess))
+                let alert = UIAlertController(title: "Deleted from database", message: "Server message", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "I understand", style: .default, handler: nil))
+                self.sendActionToViewController?(.presentView(with: alert))
+              case .failure(let error):
+                self.sendActionToViewController?(.stopActivityIndicators(message: .deletionFailed))
+                print(error.localizedDescription)
+              }
+          }
     }
     
     func fetchAllDevicesRequired() {

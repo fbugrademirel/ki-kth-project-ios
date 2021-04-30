@@ -13,6 +13,32 @@ struct AnalyteDataAPI {
     private let networkingService = NetworkingService()
     
     
+    func deleteDeviceByID(id: String, completion: @escaping (Result<DeviceDataFetch, Error>) -> Void ) {
+        
+        let url =  "https://ki-kth-project-api.herokuapp.com/onbodydevice/\(id)"
+        
+        networkingService.dispatchRequest(urlString: url, method: .delete, additionalHeaders: nil, body: nil) { result in
+            switch result {
+            case .success(let data):
+                do {
+                    let analyte = try JSONDecoder().decode(DeviceDataFetch.self, from: data)
+                    DispatchQueue.main.async {
+                        completion(.success(analyte))
+                    }
+                } catch {
+                    DispatchQueue.main.async {
+                        completion(.failure(error))
+                    }
+                }
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    completion(.failure(error))
+                }
+            }
+        }
+    }
+    
+    
     func calibrateAnalyte(slope: Double, constant: Double, id: String, completion: @escaping (Result<AnalyteDataFetch,Error>) -> Void ) {
     
         let url =  "https://ki-kth-project-api.herokuapp.com/analyte/\(id)"
