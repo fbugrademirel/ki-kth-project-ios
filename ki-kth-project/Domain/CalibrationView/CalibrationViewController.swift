@@ -42,9 +42,7 @@ class CalibrationViewController: UIViewController {
         viewModel.sendActionToViewController = { [weak self] action in
             self?.handleReceivedFromViewModel(action: action)
         }
-    
-        title = "Analyte Calibration"
-        
+
         setUI()
         if let id = viewModel.deviceID {
             viewModel.viewDidLoad(for: id)

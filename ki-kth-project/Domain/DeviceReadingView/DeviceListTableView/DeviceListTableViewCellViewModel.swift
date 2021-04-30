@@ -10,7 +10,7 @@ import Foundation
 final class DeviceListTableViewCellViewModel {
     
     enum ActionToParent {
-        case presentCalibrationView(id: String)
+        case presentCalibrationView(info: ViewInfoInCell)
     }
     
     enum ActionToOwnView{
@@ -31,7 +31,7 @@ final class DeviceListTableViewCellViewModel {
     }
     
     func calibrateViewRequested() {
-        sendActionToParentModel?(.presentCalibrationView(id: serverID))
+        sendActionToParentModel?(.presentCalibrationView(info: ViewInfoInCell(patientName: patientName, deviceId: serverID)))
     }
     
     func calibratedAnalytesForThisDeviceRequested() {
@@ -59,4 +59,9 @@ final class DeviceListTableViewCellViewModel {
             }
         }
     }
+}
+
+struct ViewInfoInCell {
+    let patientName: String
+    let deviceId: String
 }

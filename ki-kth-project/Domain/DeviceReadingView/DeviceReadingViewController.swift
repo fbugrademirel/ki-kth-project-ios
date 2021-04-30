@@ -47,9 +47,10 @@ class DeviceReadingViewController: UIViewController {
         switch action {
         case .reloadDeviceListTableView:
             deviceListTableView.reloadData()
-        case .presentCalibrationView(id: let id):
+        case .presentCalibrationView(info: let info):
             let vc = CalibrationViewController.instantiate(with: CalibrationViewModel())
-            vc.viewModel.deviceID = id
+            vc.viewModel.deviceID = info.deviceId
+            vc.title = "\(info.patientName)'s Analytes"
             navigationController?.pushViewController(vc, animated: true)
         case .updateChartUI(with: let data):
             updateChartUI(with: data)

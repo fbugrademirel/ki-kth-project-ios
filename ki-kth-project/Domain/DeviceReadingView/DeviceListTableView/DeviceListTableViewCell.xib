@@ -38,11 +38,11 @@
                                 </subviews>
                             </stackView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="3" translatesAutoresizingMaskIntoConstraints="NO" id="j66-Jg-ypX">
-                                <rect key="frame" x="51.5" y="0.0" width="365.5" height="94"/>
+                                <rect key="frame" x="51.5" y="0.0" width="359.5" height="94"/>
                             </stackView>
                             <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" horizontalCompressionResistancePriority="751" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SZK-6a-PYR" customClass="ActivityIndicatorButton" customModule="ki_kth_project" customModuleProvider="target">
-                                <rect key="frame" x="427" y="35" width="68" height="24"/>
-                                <inset key="contentEdgeInsets" minX="3" minY="3" maxX="3" maxY="3"/>
+                                <rect key="frame" x="421" y="32" width="74" height="30"/>
+                                <inset key="contentEdgeInsets" minX="6" minY="6" maxX="6" maxY="6"/>
                                 <state key="normal" title="Calibrate">
                                     <color key="titleColor" name="primary"/>
                                 </state>

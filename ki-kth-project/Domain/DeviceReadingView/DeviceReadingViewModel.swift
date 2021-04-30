@@ -12,7 +12,7 @@ final class DeviceReadingViewModel {
     
     enum Action {
         case reloadDeviceListTableView
-        case presentCalibrationView(id: String)
+        case presentCalibrationView(info: ViewInfo)
         case updateChartUI(with: [LineChartData])
         case startActivityIndicators(message: DeviceInformationLabel)
         case stopActivityIndicators(message: DeviceInformationLabel)
@@ -39,13 +39,13 @@ final class DeviceReadingViewModel {
     
     func handleReceivedFromDeviceTableViewCell(action: DeviceListTableViewCellViewModel.ActionToParent) {
         switch action {
-        case .presentCalibrationView(id: let id):
-            fetchAndPresentCalibrationView(id)
+        case .presentCalibrationView(info: let info):
+            fetchAndPresentCalibrationView(ViewInfo(patientName: info.patientName, deviceId: info.deviceId))
         }
     }
     
-    func fetchAndPresentCalibrationView(_ id: String) {
-        sendActionToViewController?(.presentCalibrationView(id: id))
+    func fetchAndPresentCalibrationView(_ info: ViewInfo) {
+        sendActionToViewController?(.presentCalibrationView(info: info))
     }
     
     func reloadTableViewsRequired() {
@@ -222,20 +222,15 @@ final class DeviceReadingViewModel {
         data.forEach { analyte in
             
             if analyte.calibrationParameters.isCalibrated { /// First check if the analyte is a calibrated one
-                let referenceTime = analyte.calibrationParameters.calibrationTime!
-            
-                var chartPoints: [ChartDataEntry] = []
-                    
-                    analyte.measurements.forEach { measurement in
                 
+                let referenceTime = analyte.calibrationParameters.calibrationTime!
+                var chartPoints: [ChartDataEntry] = []
+                analyte.measurements.forEach { measurement in
                     if Double(measurement.time)! > referenceTime {
-                        
                         ///Apply calibration params
                         var y = ((measurement.value) - (analyte.calibrationParameters.correlationEquationParameters?.constant)!) / (analyte.calibrationParameters.correlationEquationParameters?.slope)!
                         
                         y = pow(10, y)
-                        
-                        print(y)
                         
                         let entry = ChartDataEntry(x: Double(measurement.time)! - referenceTime, y: y)
                         chartPoints.append(entry)
@@ -248,6 +243,10 @@ final class DeviceReadingViewModel {
     }
 }
 
+struct ViewInfo {
+    let patientName: String
+    let deviceId: String
+}
 
 struct ChartData {
     let entries: [ChartDataEntry]
