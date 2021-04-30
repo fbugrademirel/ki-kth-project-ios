@@ -11,6 +11,8 @@ import Charts
 class DeviceReadingViewController: UIViewController {
 
     
+    var refreshController = UIRefreshControl()
+    
     @IBOutlet weak var deviceListTableView: UITableView!
     @IBOutlet weak var chartsStackView: UIStackView!
     @IBOutlet weak var scrollView: UIScrollView!
@@ -59,6 +61,7 @@ class DeviceReadingViewController: UIViewController {
             present(view, animated: true, completion: nil)
         }
     }
+    
     @IBAction func registerButtonPressed(_ sender: Any) {
         if deviceNameTextField.text == "" || personalIDTextField.text == "" {
             return
@@ -75,6 +78,10 @@ class DeviceReadingViewController: UIViewController {
         guard let intID = Int(id) else { return }
         
         viewModel.createDeviceRequired(name: name, personalID: intID)
+    }
+    
+    @objc func refButPressed(_ sender: UIButton) {
+        viewModel.fetchAllDevicesRequired()
     }
     
     // MARK: - UI
@@ -95,6 +102,15 @@ class DeviceReadingViewController: UIViewController {
         informationLabel.alpha = 0
         informationLabel.text = ""
         
+        let attributes = [NSAttributedString.Key.font: UIFont(name: "SourceSansPro-Bold", size: 16)!,
+                          NSAttributedString.Key.foregroundColor : AppColor.primary]
+        refreshController.attributedTitle = NSAttributedString(string: "", attributes: attributes as [NSAttributedString.Key : Any])
+        refreshController.tintColor = AppColor.primary
+        refreshController.addTarget(self, action: #selector(self.refButPressed(_:)), for: .valueChanged)
+        refreshController.layer.zPosition = -1
+
+        
+        deviceListTableView.addSubview(refreshController)
         deviceListTableView.delegate = self
         deviceListTableView.dataSource = self
         deviceListTableView.delaysContentTouches = false;
@@ -113,6 +129,7 @@ class DeviceReadingViewController: UIViewController {
     private func stopActivityIndicators(with info: DeviceInformationLabel) {
         DispatchQueue.main.async {
             self.registerDeviceButton.stopActivity()
+            self.refreshController.endRefreshing()
             self.informationLabel.textColor = .systemRed
             UIView.animate(withDuration: 2, animations: {
                 self.informationLabel.alpha = 0
