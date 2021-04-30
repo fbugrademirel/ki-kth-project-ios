@@ -64,12 +64,16 @@ final class DeviceReadingViewModel {
                 
                 let device = Device(name: data.name, id: data.personalID)
                 
-                let model = DeviceListTableViewCellViewModel(name: device.name,
+                let viewModel = DeviceListTableViewCellViewModel(name: device.name,
                                                              id: device.id,
                                                              serverID: data._id)
                 
+                viewModel.sendActionToParentModel = { [weak self] action in
+                    self?.handleReceivedFromDeviceTableViewCell(action: action)
+                }
+                
                 self?.sendActionToViewController?(.stopActivityIndicators(message: .createdWithSuccess))
-                self?.deviceListTableViewViewModels.insert(model, at: 0)
+                self?.deviceListTableViewViewModels.insert(viewModel, at: 0)
             
             
             case .failure(let error):
@@ -103,8 +107,18 @@ final class DeviceReadingViewModel {
                     return analyte
                 }
                 
-                self?.setGraphs(with: fetchedDataWithMeasurements)
-                self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithSuccess))
+                let filtered = fetchedDataWithMeasurements.filter { data in
+                    return !data.measurements.isEmpty
+                }
+                
+                self?.setGraphs(with: filtered)
+                
+                if filtered.isEmpty {
+                    self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithSuccessButEmpty))
+                } else {
+                    self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithSuccess))
+                }
+                
             case .failure(let error):
                 self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithFailure))
                 print(error.localizedDescription)
@@ -251,6 +265,7 @@ enum DeviceInformationLabel: String {
     case calibratedWithFailure = "Analyte calibration failed!"
     case fetching = "Fetching data from the server..."
     case fetchedWithSuccess = "Fetched with success!"
+    case fetchedWithSuccessButEmpty = "Empty collection!"
     case fetcedWithSuccessButNoAnalytesRegistered = "No analytes registered for this device!"
     case fetchedWithFailure = "Fetch failed!"
     case creating = "Creating device..."

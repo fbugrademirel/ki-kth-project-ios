@@ -73,14 +73,23 @@
                                     </button>
                                 </subviews>
                             </stackView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4we-wj-4nD">
+                                <rect key="frame" x="689.5" y="73.5" width="322.5" height="20.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" systemColor="systemRedColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="4we-wj-4nD" firstAttribute="bottom" secondItem="wmu-I6-sWx" secondAttribute="top" constant="-6" id="87Z-BR-Hc7"/>
+                            <constraint firstItem="4we-wj-4nD" firstAttribute="width" secondItem="wmu-I6-sWx" secondAttribute="width" multiplier="0.5" id="8sX-CE-qsn"/>
                             <constraint firstItem="wmu-I6-sWx" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" constant="100" id="BfE-0p-bbK"/>
                             <constraint firstItem="en0-qB-4Qa" firstAttribute="centerX" secondItem="vDu-zF-Fre" secondAttribute="centerX" id="CwK-Ed-mLW"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="wmu-I6-sWx" secondAttribute="trailing" constant="12" id="D2S-yb-bek"/>
                             <constraint firstItem="wmu-I6-sWx" firstAttribute="width" secondItem="5EZ-qb-Rvc" secondAttribute="width" multiplier="0.63" id="DLW-ZW-Tqn"/>
+                            <constraint firstItem="4we-wj-4nD" firstAttribute="trailing" secondItem="wmu-I6-sWx" secondAttribute="trailing" id="Gke-vP-29s"/>
                             <constraint firstItem="ctG-xu-SYA" firstAttribute="height" secondItem="wmu-I6-sWx" secondAttribute="height" multiplier="0.5" id="I2n-ma-jmM"/>
                             <constraint firstItem="wmu-I6-sWx" firstAttribute="height" secondItem="5EZ-qb-Rvc" secondAttribute="height" multiplier="0.9" id="MlZ-SQ-Ach"/>
                             <constraint firstItem="8vc-5s-nU6" firstAttribute="width" secondItem="ctG-xu-SYA" secondAttribute="width" id="XDj-W3-17r"/>
@@ -102,6 +111,7 @@
                         <outlet property="personalIDTextField" destination="Shr-P9-Q6l" id="ESC-Ti-ee9"/>
                         <outlet property="registerDeviceButton" destination="7p5-29-d95" id="aVc-D1-Nyd"/>
                         <outlet property="scrollView" destination="wmu-I6-sWx" id="bpe-ZF-qdw"/>
+                        <outlet property="valueOnTheGraphLabel" destination="4we-wj-4nD" id="IcW-Cn-5iX"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

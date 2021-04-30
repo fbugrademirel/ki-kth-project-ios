@@ -17,7 +17,7 @@
                 <rect key="frame" x="0.0" y="0.0" width="501" height="100"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="HGf-tb-Vh6">
+                    <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="HGf-tb-Vh6">
                         <rect key="frame" x="3" y="3" width="495" height="94"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="A76-Va-VQt">
@@ -37,8 +37,8 @@
                                     </label>
                                 </subviews>
                             </stackView>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="3" translatesAutoresizingMaskIntoConstraints="NO" id="j66-Jg-ypX">
-                                <rect key="frame" x="47.5" y="0.0" width="373.5" height="94"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="3" translatesAutoresizingMaskIntoConstraints="NO" id="j66-Jg-ypX">
+                                <rect key="frame" x="51.5" y="0.0" width="365.5" height="94"/>
                             </stackView>
                             <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" horizontalCompressionResistancePriority="751" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SZK-6a-PYR" customClass="ActivityIndicatorButton" customModule="ki_kth_project" customModuleProvider="target">
                                 <rect key="frame" x="427" y="35" width="68" height="24"/>

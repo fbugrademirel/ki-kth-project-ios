@@ -18,6 +18,7 @@ class DeviceReadingViewController: UIViewController {
     @IBOutlet weak var deviceNameTextField: UITextField!
     @IBOutlet weak var personalIDTextField: UITextField!
     @IBOutlet weak var registerDeviceButton: ActivityIndicatorButton!
+    @IBOutlet weak var valueOnTheGraphLabel: UILabel!
     
     var viewModel: DeviceReadingViewModel!
     
@@ -86,10 +87,13 @@ class DeviceReadingViewController: UIViewController {
         deviceNameTextField.font = UIFont.appFont(placement: .text)
         
     
+        valueOnTheGraphLabel.font = UIFont.appFont(placement: .title)
+        valueOnTheGraphLabel.text = ""
+        valueOnTheGraphLabel.textColor = .systemRed
+        
         informationLabel.font = UIFont.appFont(placement: .title)
         informationLabel.alpha = 0
         informationLabel.text = ""
-        informationLabel.textColor = AppColor.primary
         
         deviceListTableView.delegate = self
         deviceListTableView.dataSource = self
@@ -99,19 +103,16 @@ class DeviceReadingViewController: UIViewController {
     
     private func startActivityIndicators(with info: DeviceInformationLabel){
         DispatchQueue.main.async {
-//            self.addAnalyteButton.startActivity()
-//            self.calibrateButton.startActivity()
             self.informationLabel.textColor = .systemRed
             self.informationLabel.text = info.rawValue
             self.informationLabel.alpha = 1
+            self.registerDeviceButton.startActivity()
         }
     }
     
     private func stopActivityIndicators(with info: DeviceInformationLabel) {
         DispatchQueue.main.async {
-//            self.addAnalyteButton.stopActivity()
-//            self.calibrateButton.stopActivity()
-//            self.refreshControl.endRefreshing()
+            self.registerDeviceButton.stopActivity()
             self.informationLabel.textColor = .systemRed
             UIView.animate(withDuration: 2, animations: {
                 self.informationLabel.alpha = 0
@@ -148,6 +149,8 @@ class DeviceReadingViewController: UIViewController {
             lineChartView.data = lineChartData
             lineChartView.fitScreen()
             lineChartView.animate(xAxisDuration: 2)
+            
+            lineChartView.delegate = self
             
             DispatchQueue.main.async {
                 self.chartsStackView.addArrangedSubview(lineChartView)
@@ -187,6 +190,7 @@ class DeviceReadingViewController: UIViewController {
         
         viewModel.yValuesForMain = []
         informationLabel.text = ""
+        valueOnTheGraphLabel.text = ""
         chartsStackView.arrangedSubviews.forEach { view in
             chartsStackView.removeArrangedSubview(view)
             view.removeFromSuperview()
@@ -284,6 +288,14 @@ extension DeviceReadingViewController: UITableViewDataSource {
             let configuration = UISwipeActionsConfiguration(actions: [deleteAction])
             return configuration
     }
+}
+
+extension DeviceReadingViewController: ChartViewDelegate {
+    
+    func chartValueSelected(_ chartView: ChartViewBase, entry: ChartDataEntry, highlight: Highlight) {
+        valueOnTheGraphLabel.text = "Concentration: \(String(format:"%.2f" ,entry.y))"
+    }
+    
 }
 
 // MARK: - Storyboard Instantiable
