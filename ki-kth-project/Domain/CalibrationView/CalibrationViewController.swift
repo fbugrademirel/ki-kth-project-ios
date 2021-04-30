@@ -121,14 +121,8 @@ class CalibrationViewController: UIViewController {
     
     @objc private func refButPressed(_ sender: UIButton) {
         
-        informationLAbel.text = ""
-        corCoefficent.text = ""
-        corEquationLabel.text = ""
+        resetAllTablesAndChartData()
         
-        viewModel.concentrationTableViewCellModels = []
-        viewModel.yValuesForMain = []
-        viewModel.yValuesForCal1 = []
-        viewModel.yValuesForCal2 = []
         if let id = viewModel.deviceID {
             viewModel.fetchAllAnalytesForDevice(id: id)
         }
@@ -169,6 +163,24 @@ class CalibrationViewController: UIViewController {
         case .stopActivityIndicators(message: let message):
             stopActivityIndicators(with: message)
         }
+    }
+    
+// MARK: - Operations
+    
+    private func resetAllTablesAndChartData() {
+        
+        informationLAbel.text = ""
+        corCoefficent.text = ""
+        corEquationLabel.text = ""
+        
+        viewModel.regressionSlope = nil
+        viewModel.regressionConstant = nil
+        viewModel.latestHandledAnalyteId = nil
+        
+        viewModel.concentrationTableViewCellModels = []
+        viewModel.yValuesForMain = []
+        viewModel.yValuesForCal1 = []
+        viewModel.yValuesForCal2 = []
     }
     
 // MARK: - UI
@@ -423,6 +435,7 @@ extension CalibrationViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if tableView.isEqual(analyteListTableView) {
+            resetAllTablesAndChartData()
             viewModel.getAnalytesByIdRequested(viewModel.analyteListTableViewCellModels[indexPath.row].serverID)
         }
     }
