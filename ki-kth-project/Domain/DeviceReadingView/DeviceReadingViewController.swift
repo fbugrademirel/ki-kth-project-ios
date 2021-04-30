@@ -6,11 +6,16 @@
 //
 
 import UIKit
+import Charts
 
 class DeviceReadingViewController: UIViewController {
 
     
     @IBOutlet weak var deviceListTableView: UITableView!
+    @IBOutlet weak var chartsStackView: UIStackView!
+    @IBOutlet weak var scrollView: UIScrollView!
+    @IBOutlet weak var informationLabel: UILabel!
+    
     var viewModel: DeviceReadingViewModel!
     
     
@@ -23,6 +28,7 @@ class DeviceReadingViewController: UIViewController {
         title = "Device List"
         setUI()
         viewModel.viewDidLoad()
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -39,22 +45,135 @@ class DeviceReadingViewController: UIViewController {
             let vc = CalibrationViewController.instantiate(with: CalibrationViewModel())
             vc.viewModel.deviceID = id
             navigationController?.pushViewController(vc, animated: true)
+        case .updateChartUI(with: let data):
+            updateChartUI(with: data)
+        case .startActivityIndicators(message: let message):
+            startActivityIndicators(with: message)
+        case .stopActivityIndicators(message: let message):
+            stopActivityIndicators(with: message)
         }
     }
     
     // MARK: - UI
     private func setUI() {
+        
+        informationLabel.font = UIFont.appFont(placement: .title)
+        informationLabel.alpha = 0
+        informationLabel.text = ""
+        informationLabel.textColor = AppColor.primary
+        
         deviceListTableView.delegate = self
         deviceListTableView.dataSource = self
         deviceListTableView.delaysContentTouches = false;
         deviceListTableView.register(UINib(nibName: DeviceListTableViewCell.nibName, bundle: nil), forCellReuseIdentifier: DeviceListTableViewCell.nibName)
     }
     
+    private func startActivityIndicators(with info: DeviceInformationLabel){
+        DispatchQueue.main.async {
+//            self.addAnalyteButton.startActivity()
+//            self.calibrateButton.startActivity()
+            self.informationLabel.textColor = .systemRed
+            self.informationLabel.text = info.rawValue
+            self.informationLabel.alpha = 1
+        }
+    }
+    
+    private func stopActivityIndicators(with info: DeviceInformationLabel) {
+        DispatchQueue.main.async {
+//            self.addAnalyteButton.stopActivity()
+//            self.calibrateButton.stopActivity()
+//            self.refreshControl.endRefreshing()
+            self.informationLabel.textColor = .systemRed
+            UIView.animate(withDuration: 2, animations: {
+                self.informationLabel.alpha = 0
+            })
+            self.informationLabel.text = info.rawValue
+        }
+    }
+    
+    private func updateChartUI(with entries: [LineChartData]) {
+        
+        entries.forEach { lineChartData in
+            
+            let lineChartView = LineChartView()
+            lineChartView.alpha = 0
+            lineChartView.translatesAutoresizingMaskIntoConstraints = false
+            lineChartView.backgroundColor = .white
+            lineChartView.rightAxis.enabled = false
+            lineChartView.borderLineWidth = 1
+            lineChartView.legend.font = UIFont.appFont(placement: .boldText)
+            
+            let yAxis = lineChartView.leftAxis
+            yAxis.labelFont = UIFont.appFont(placement: .boldText)
+            yAxis.setLabelCount(6, force: false)
+            yAxis.labelTextColor = .darkGray
+            yAxis.axisLineColor = .darkGray
+            yAxis.labelPosition = .outsideChart
+
+            lineChartView.xAxis.labelPosition = .bottom
+            lineChartView.xAxis.axisLineColor = .darkGray
+            lineChartView.xAxis.labelFont = UIFont.appFont(placement: .boldText)
+            lineChartView.xAxis.setLabelCount(6, force: false)
+            lineChartView.xAxis.labelTextColor = .darkGray
+            
+            lineChartView.data = lineChartData
+            lineChartView.fitScreen()
+            lineChartView.animate(xAxisDuration: 2)
+            
+            DispatchQueue.main.async {
+                self.chartsStackView.addArrangedSubview(lineChartView)
+                lineChartView.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 0.6).isActive = true
+                lineChartView.heightAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 0.6).isActive = true
+                UIView.animate(withDuration: 1, delay: 0, options: .curveEaseIn) {
+                    lineChartView.alpha = 1
+                } 
+            }
+        }
+    }
+    
+    private func setView(with: LineChartData) {
+        
+        let lineChartView = LineChartView()
+        
+        lineChartView.translatesAutoresizingMaskIntoConstraints = false
+        lineChartView.backgroundColor = .white
+        lineChartView.rightAxis.enabled = false
+        lineChartView.borderLineWidth = 1
+        
+        let yAxis = lineChartView.leftAxis
+        yAxis.labelFont = .boldSystemFont(ofSize: 12)
+        yAxis.setLabelCount(6, force: false)
+        yAxis.labelTextColor = .darkGray
+        yAxis.axisLineColor = .darkGray
+        yAxis.labelPosition = .outsideChart
+
+        lineChartView.xAxis.labelPosition = .bottom
+        lineChartView.xAxis.axisLineColor = .darkGray
+        lineChartView.xAxis.labelFont = .boldSystemFont(ofSize: 12)
+        lineChartView.xAxis.setLabelCount(6, force: false)
+        lineChartView.xAxis.labelTextColor = .black
+    }
+    
+    private func resetAllTablesAndChartData() {
+        
+        viewModel.yValuesForMain = []
+        informationLabel.text = ""
+        chartsStackView.arrangedSubviews.forEach { view in
+            chartsStackView.removeArrangedSubview(view)
+            view.removeFromSuperview()
+        }
+    }
+
 }
 
 // MARK: - TableView Data Source Extention
 
 extension DeviceReadingViewController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        resetAllTablesAndChartData()
+        viewModel.getAnalytesByIdRequested(viewModel.deviceListTableViewViewModels[indexPath.row].serverID)
+    }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         cell.alpha = 0

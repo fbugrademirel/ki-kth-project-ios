@@ -83,8 +83,32 @@ final class CalibrationViewModel {
         
         AnalyteDataAPI().calibrateAnalyte(slope: slope, constant: constant, id: analyteID) { [weak self] result in
             switch result {
-            case .success(_):
+            case .success(let data):
+                
+                let analyte = Analyte(description: data.description,
+                                      identifier: data.uniqueIdentifier,
+                                      serverID: data._id,
+                                      calibrationParam: CalibrationParam(calibrationTime: data.calibrationParameters.calibrationTime ?? 0,
+                                                                         isCalibrated: data.calibrationParameters.isCalibrated,
+                                                                         slope: data.calibrationParameters.correlationEquationParameters?.slope ?? 0,
+                                                                         constant: data.calibrationParameters.correlationEquationParameters?.constant ?? 0))
+                
+                let model = AnalyteTableViewCellModel(description: analyte.description,
+                                                      identifier: analyte.identifier,
+                                                      serverID: analyte.serverID,
+                                                      isCalibrated: analyte.calibrationParam.isCalibrated)
+                
+                if let analyteCellViewModels = self?.analyteListTableViewCellModels {
+                    for (index, currentModel) in analyteCellViewModels.enumerated() {
+                        if model.serverID == currentModel.serverID {
+                            self?.analyteListTableViewCellModels.replaceSubrange(index...index, with: [model])
+                            break
+                        }
+                    }
+                }
+                
                 self?.sendActionToViewController?(.stopActivityIndicators(message: .calibratedWithSuccess))
+
             case .failure(let error):
                 self?.sendActionToViewController?(.stopActivityIndicators(message: .calibratedWithFailure))
                 print(error.localizedDescription)
@@ -107,7 +131,8 @@ final class CalibrationViewModel {
                     let analyte = Analyte(description: data.description,
                                           identifier: data.uniqueIdentifier,
                                           serverID: data._id,
-                                          calibrationParam: CalibrationParam(calibrationTime: data.calibrationParameters.calibrationTime ?? 0, isCalibrated: data.calibrationParameters.isCalibrated,
+                                          calibrationParam: CalibrationParam(calibrationTime: data.calibrationParameters.calibrationTime ?? 0,
+                                                                             isCalibrated: data.calibrationParameters.isCalibrated,
                                                                              slope: data.calibrationParameters.correlationEquationParameters?.slope ?? 0,
                                                                              constant: data.calibrationParameters.correlationEquationParameters?.constant ?? 0))
 
@@ -223,33 +248,18 @@ final class CalibrationViewModel {
                                             measurements: data.measurements,
                                             createdAt: data.createdAt,
                                             updatedAt: data.updatedAt)
+                
                 guard let time = data.measurements.first?.time else {
                     self?.sendActionToViewController?(.stopActivityIndicators(message: .invalidData))
                     return
                 }
                 
-                guard let interval = TimeInterval(time) else {
-                    self?.sendActionToViewController?(.stopActivityIndicators(message: .invalidData))
-                    return
-                }
-                
-                let firstDate = Date(timeIntervalSince1970: interval)
-                
+                let doubleTime = Double(time)
+            
                 let chartPoints = data.measurements.map { (measurement) -> ChartDataEntry in
                 
-                    var x: Double = -1
-                    let date2 = Date(timeIntervalSince1970: TimeInterval(measurement.time)!)
-
-                    let formatter = DateComponentsFormatter()
-                    formatter.allowedUnits = [.second]
-                        
-                    let difference = formatter.string(from: firstDate, to: date2)!
-                    guard let str = Double(difference.split(separator: ",").joined(separator: "")) else {
-                        x += 1
-                        self?.sendActionToViewController?(.stopActivityIndicators(message: .invalidData))
-                        return ChartDataEntry(x: x, y: 0)
-                    }
-                    let entry = ChartDataEntry(x: str, y: measurement.value)
+                    let entry = ChartDataEntry(x: Double(measurement.time)! - doubleTime!, y: measurement.value)
+                    
                     return entry
                 }
                 self?.latestHandledAnalyteId = data._id

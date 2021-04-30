@@ -16,40 +16,69 @@
                         <rect key="frame" x="0.0" y="0.0" width="1024" height="1366"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="cGD-ba-zcx">
-                                <rect key="frame" x="352.5" y="100" width="665.5" height="1229.5"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                            </tableView>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wmu-I6-sWx">
+                                <rect key="frame" x="367" y="100" width="645" height="1229.5"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="eiS-1E-G0G">
+                                        <rect key="frame" x="0.0" y="0.0" width="645" height="1"/>
+                                    </stackView>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="eiS-1E-G0G" firstAttribute="top" secondItem="wmu-I6-sWx" secondAttribute="top" id="2Bn-OA-N6R"/>
+                                    <constraint firstItem="eiS-1E-G0G" firstAttribute="trailing" secondItem="wmu-I6-sWx" secondAttribute="trailing" id="6dr-AS-F9A"/>
+                                    <constraint firstItem="eiS-1E-G0G" firstAttribute="width" secondItem="wmu-I6-sWx" secondAttribute="width" id="QBt-TQ-mE6"/>
+                                    <constraint firstItem="eiS-1E-G0G" firstAttribute="leading" secondItem="wmu-I6-sWx" secondAttribute="leading" id="a2h-wg-kAr"/>
+                                    <constraint firstItem="eiS-1E-G0G" firstAttribute="bottom" secondItem="wmu-I6-sWx" secondAttribute="bottom" id="sl1-59-xPM"/>
+                                </constraints>
+                                <viewLayoutGuide key="contentLayoutGuide" id="ni5-2N-w9G"/>
+                                <viewLayoutGuide key="frameLayoutGuide" id="doa-Rh-jK9"/>
+                            </scrollView>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="ctG-xu-SYA">
-                                <rect key="frame" x="8.5" y="100" width="338" height="614.5"/>
+                                <rect key="frame" x="23" y="100" width="338" height="614.5"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </tableView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="en0-qB-4Qa">
+                                <rect key="frame" x="102.5" y="39.5" width="819" height="54.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" systemColor="systemRedColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="cGD-ba-zcx" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" constant="100" id="KUj-zW-8kd"/>
-                            <constraint firstItem="ctG-xu-SYA" firstAttribute="top" secondItem="cGD-ba-zcx" secondAttribute="top" id="L2T-Wd-3LC"/>
+                            <constraint firstItem="wmu-I6-sWx" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" constant="100" id="BfE-0p-bbK"/>
+                            <constraint firstItem="en0-qB-4Qa" firstAttribute="centerX" secondItem="vDu-zF-Fre" secondAttribute="centerX" id="CwK-Ed-mLW"/>
+                            <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="wmu-I6-sWx" secondAttribute="trailing" constant="12" id="D2S-yb-bek"/>
+                            <constraint firstItem="wmu-I6-sWx" firstAttribute="width" secondItem="5EZ-qb-Rvc" secondAttribute="width" multiplier="0.63" id="DLW-ZW-Tqn"/>
+                            <constraint firstItem="ctG-xu-SYA" firstAttribute="height" secondItem="wmu-I6-sWx" secondAttribute="height" multiplier="0.5" id="I2n-ma-jmM"/>
+                            <constraint firstItem="wmu-I6-sWx" firstAttribute="height" secondItem="5EZ-qb-Rvc" secondAttribute="height" multiplier="0.9" id="MlZ-SQ-Ach"/>
                             <constraint firstItem="ctG-xu-SYA" firstAttribute="width" secondItem="5EZ-qb-Rvc" secondAttribute="width" multiplier="0.33" id="YJT-E3-4PH"/>
-                            <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="cGD-ba-zcx" secondAttribute="trailing" constant="6" id="bYS-6t-Jxz"/>
-                            <constraint firstItem="cGD-ba-zcx" firstAttribute="height" secondItem="5EZ-qb-Rvc" secondAttribute="height" multiplier="0.9" id="gNg-7Y-Thv"/>
-                            <constraint firstItem="ctG-xu-SYA" firstAttribute="height" secondItem="cGD-ba-zcx" secondAttribute="height" multiplier="0.5" id="iwH-0v-u55"/>
-                            <constraint firstItem="cGD-ba-zcx" firstAttribute="width" secondItem="5EZ-qb-Rvc" secondAttribute="width" multiplier="0.65" id="spi-Lk-HOB"/>
-                            <constraint firstItem="ctG-xu-SYA" firstAttribute="trailing" secondItem="cGD-ba-zcx" secondAttribute="leading" constant="-6" id="v5m-yk-L0p"/>
+                            <constraint firstItem="ctG-xu-SYA" firstAttribute="firstBaseline" secondItem="wmu-I6-sWx" secondAttribute="firstBaseline" id="ZIB-rX-Xpn"/>
+                            <constraint firstItem="wmu-I6-sWx" firstAttribute="top" secondItem="en0-qB-4Qa" secondAttribute="bottom" constant="6" id="aQv-2S-jy8"/>
+                            <constraint firstItem="ctG-xu-SYA" firstAttribute="trailing" secondItem="wmu-I6-sWx" secondAttribute="leading" constant="-6" id="euB-9W-08V"/>
+                            <constraint firstItem="en0-qB-4Qa" firstAttribute="height" secondItem="5EZ-qb-Rvc" secondAttribute="height" multiplier="0.04" id="ihl-ec-rVi"/>
+                            <constraint firstItem="en0-qB-4Qa" firstAttribute="width" secondItem="5EZ-qb-Rvc" secondAttribute="width" multiplier="0.8" id="iqR-NG-Z5P"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="chartsStackView" destination="eiS-1E-G0G" id="YDZ-j7-dYq"/>
                         <outlet property="deviceListTableView" destination="ctG-xu-SYA" id="ZKR-wH-5x1"/>
+                        <outlet property="informationLabel" destination="en0-qB-4Qa" id="Vdg-rF-i6K"/>
+                        <outlet property="scrollView" destination="wmu-I6-sWx" id="bpe-ZF-qdw"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-168" y="154"/>
+            <point key="canvasLocation" x="-168.1640625" y="153.73352855051243"/>
         </scene>
     </scenes>
     <resources>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemRedColor">
+            <color red="1" green="0.23137254901960785" blue="0.18823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

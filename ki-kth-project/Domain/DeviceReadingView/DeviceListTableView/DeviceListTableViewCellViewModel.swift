@@ -46,11 +46,13 @@ final class DeviceListTableViewCellViewModel {
                     let analyte = Analyte(description: data.description,
                                           identifier: data.uniqueIdentifier,
                                           serverID: data._id,
-                                          calibrationParam: CalibrationParam(calibrationTime: data.calibrationParameters.calibrationTime ?? 0, isCalibrated: data.calibrationParameters.isCalibrated, slope: data.calibrationParameters.correlationEquationParameters?.slope ?? 0, constant: data.calibrationParameters.correlationEquationParameters?.constant ?? 0))
+                                          calibrationParam: CalibrationParam(calibrationTime: data.calibrationParameters.calibrationTime ?? 0,
+                                                                             isCalibrated: data.calibrationParameters.isCalibrated, slope: data.calibrationParameters.correlationEquationParameters?.slope ?? 0, constant: data.calibrationParameters.correlationEquationParameters?.constant ?? 0))
                         
                     return analyte
                 }
                 self?.sendActionToOwnView?(.showCalibratedAnalytes(analytes: fetched))
+
             case .failure(let error):
              //   self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithFailure))
                 print(error.localizedDescription)

@@ -21,7 +21,7 @@
                         <rect key="frame" x="3" y="3" width="495" height="94"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="A76-Va-VQt">
-                                <rect key="frame" x="0.0" y="0.0" width="250" height="94"/>
+                                <rect key="frame" x="0.0" y="0.0" width="132.5" height="94"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3nJ-3T-NIo">
                                         <rect key="frame" x="0.0" y="0.0" width="41.5" height="47"/>
@@ -38,7 +38,7 @@
                                 </subviews>
                             </stackView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="j66-Jg-ypX">
-                                <rect key="frame" x="256" y="0.0" width="165" height="94"/>
+                                <rect key="frame" x="138.5" y="0.0" width="282.5" height="94"/>
                             </stackView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SZK-6a-PYR" customClass="ActivityIndicatorButton" customModule="ki_kth_project" customModuleProvider="target">
                                 <rect key="frame" x="427" y="0.0" width="68" height="94"/>
