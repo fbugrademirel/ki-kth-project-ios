@@ -7,7 +7,7 @@
 
 import UIKit
 
-class DeviceListTableViewCell: UITableViewCell {
+final class DeviceListTableViewCell: UITableViewCell {
     
     static let nibName = "DeviceListTableViewCell"
     

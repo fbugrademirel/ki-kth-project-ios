@@ -8,7 +8,7 @@
 import UIKit
 import Charts
 
-class CalibrationViewController: UIViewController {
+final class CalibrationViewController: UIViewController {
     
     let service = NetworkingService()
     

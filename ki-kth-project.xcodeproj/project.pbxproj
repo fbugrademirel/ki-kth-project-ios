@@ -28,6 +28,7 @@
 		7C3C27E92625C1EB00F83DAA /* ActivityIndicatorButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C3C27E82625C1EB00F83DAA /* ActivityIndicatorButton.swift */; };
 		7C4E33F72624754000C42669 /* ConcentrationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C4E33F52624754000C42669 /* ConcentrationTableViewCell.swift */; };
 		7C4E33F82624754100C42669 /* ConcentrationTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7C4E33F62624754000C42669 /* ConcentrationTableViewCell.xib */; };
+		7C943D11263D854600EC7AFC /* DeviceDataAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C943D10263D854600EC7AFC /* DeviceDataAPI.swift */; };
 		7CDA38002623B0D700874665 /* AnalyteDataAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CDA37FF2623B0D700874665 /* AnalyteDataAPI.swift */; };
 		7CDC8E1E2623AE6B00430BD7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CDC8E1D2623AE6B00430BD7 /* AppDelegate.swift */; };
 		7CDC8E202623AE6B00430BD7 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CDC8E1F2623AE6B00430BD7 /* SceneDelegate.swift */; };
@@ -71,6 +72,7 @@
 		7C3C27E82625C1EB00F83DAA /* ActivityIndicatorButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicatorButton.swift; sourceTree = "<group>"; };
 		7C4E33F52624754000C42669 /* ConcentrationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcentrationTableViewCell.swift; sourceTree = "<group>"; };
 		7C4E33F62624754000C42669 /* ConcentrationTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConcentrationTableViewCell.xib; sourceTree = "<group>"; };
+		7C943D10263D854600EC7AFC /* DeviceDataAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceDataAPI.swift; sourceTree = "<group>"; };
 		7CDA37FF2623B0D700874665 /* AnalyteDataAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyteDataAPI.swift; sourceTree = "<group>"; };
 		7CDC8E1A2623AE6B00430BD7 /* ki-kth-project.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ki-kth-project.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7CDC8E1D2623AE6B00430BD7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -167,6 +169,7 @@
 			isa = PBXGroup;
 			children = (
 				7CDA37FF2623B0D700874665 /* AnalyteDataAPI.swift */,
+				7C943D10263D854600EC7AFC /* DeviceDataAPI.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -428,6 +431,7 @@
 				7C066D8E2634777E0030B103 /* AppColor.swift in Sources */,
 				7CDC8E1E2623AE6B00430BD7 /* AppDelegate.swift in Sources */,
 				7C4E33F72624754000C42669 /* ConcentrationTableViewCell.swift in Sources */,
+				7C943D11263D854600EC7AFC /* DeviceDataAPI.swift in Sources */,
 				7CE2238326399BC000BD8C5B /* DeviceListTableViewCellViewModel.swift in Sources */,
 				7C3C27E92625C1EB00F83DAA /* ActivityIndicatorButton.swift in Sources */,
 				7CDEFBA62629C23000CA3E66 /* CalibrationViewModel.swift in Sources */,

@@ -8,7 +8,7 @@
 import UIKit
 import Charts
 
-class DeviceReadingViewController: UIViewController {
+final class DeviceReadingViewController: UIViewController {
 
     
     var refreshController = UIRefreshControl()

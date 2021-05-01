@@ -43,7 +43,7 @@ final class NetworkingService {
             return
         }
 
-        /// Create an URL Request to be used with dataTast of URL Session. Designate HTTP Method as GET
+        /// Create an URL Request to be used with dataTast of URL Session. 
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = method.rawValue
         urlRequest.allHTTPHeaderFields = additionalHeaders

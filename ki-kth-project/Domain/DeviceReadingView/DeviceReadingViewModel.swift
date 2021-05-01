@@ -57,7 +57,7 @@ final class DeviceReadingViewModel {
         
         sendActionToViewController?(.startActivityIndicators(message: .creating))
 
-        AnalyteDataAPI().createDevice(name: name, personalID: personalID) { [weak self] result in
+        DeviceDataAPI().createDevice(name: name, personalID: personalID) { [weak self] result in
             
             switch result {
             case .success(let data):
@@ -87,7 +87,7 @@ final class DeviceReadingViewModel {
         
         sendActionToViewController?(.startActivityIndicators(message: .fetching))
         
-        AnalyteDataAPI().getAllAnalytesForDevice(id) { [weak self] result in
+        DeviceDataAPI().getAllAnalytesForDevice(id) { [weak self] result in
             switch result {
             case .success(let data):
                 let sorted = data.sorted {
@@ -130,7 +130,7 @@ final class DeviceReadingViewModel {
         
         self.sendActionToViewController?(.startActivityIndicators(message: .deletingFromDatabase))
         
-          AnalyteDataAPI().deleteDeviceByID(id: id) { (result) in
+          DeviceDataAPI().deleteDeviceByID(id: id) { (result) in
               switch result {
               case .success(_):
                 self.sendActionToViewController?(.stopActivityIndicators(message: .deletedWithSuccess))
@@ -148,7 +148,7 @@ final class DeviceReadingViewModel {
         
         sendActionToViewController?(.startActivityIndicators(message: .fetching))
 
-        AnalyteDataAPI().getAllDevices { [weak self] result in
+        DeviceDataAPI().getAllDevices { [weak self] result in
             
             switch result {
             case .success(let data):
