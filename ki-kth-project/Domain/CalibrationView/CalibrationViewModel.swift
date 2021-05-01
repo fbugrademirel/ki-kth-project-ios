@@ -21,6 +21,11 @@ final class CalibrationViewModel {
         case stopActivityIndicators(message: InformationLabel)
     }
     
+    var deviceID: String?
+    var latestHandledAnalyteId: String?
+    var regressionSlope: Double?
+    var regressionConstant: Double?
+    
     var concentrationTableViewCellModels: [ConcentrationTableViewCellModel] = [] {
         didSet {
             sendActionToViewController?(.reloadConcentrationListTableView)
@@ -52,8 +57,8 @@ final class CalibrationViewModel {
     
     var sendActionToViewController: ((Action) -> Void)?
             
-    func viewDidLoad() {
-        fetchAllAnaytesRequired()
+    func viewDidLoad(for id: String) {
+        fetchAllAnalytesForDevice(id: id)
     }
     
     func handleFromAnalyteTableView(action: AnalyteTableViewCellModel.ActionToParent) {
@@ -70,24 +75,67 @@ final class CalibrationViewModel {
         }
     }
     
-    func fetchAllAnaytesRequired() {
+    func analyteCalibrationRequired() {
+        sendActionToViewController?(.startActivityIndicators(message: .creating))
+        guard let slope = self.regressionSlope, let constant = self.regressionConstant, let analyteID = self.latestHandledAnalyteId else {
+            sendActionToViewController?(.stopActivityIndicators(message: .calibrationParameterError))
+        return }
         
-        sendActionToViewController?(.startActivityIndicators(message: .fetching))
-        AnalyteDataAPI().getAllAnalytes { [weak self] result in
+        AnalyteDataAPI().calibrateAnalyte(slope: slope, constant: constant, id: analyteID) { [weak self] result in
             switch result {
-            
             case .success(let data):
                 
+                let analyte = Analyte(description: data.description,
+                                      identifier: data.uniqueIdentifier,
+                                      serverID: data._id,
+                                      calibrationParam: CalibrationParam(calibrationTime: data.calibrationParameters.calibrationTime ?? 0,
+                                                                         isCalibrated: data.calibrationParameters.isCalibrated,
+                                                                         slope: data.calibrationParameters.correlationEquationParameters?.slope ?? 0,
+                                                                         constant: data.calibrationParameters.correlationEquationParameters?.constant ?? 0))
+                
+                let model = AnalyteTableViewCellModel(description: analyte.description,
+                                                      identifier: analyte.identifier,
+                                                      serverID: analyte.serverID,
+                                                      isCalibrated: analyte.calibrationParam.isCalibrated)
+                
+                if let analyteCellViewModels = self?.analyteListTableViewCellModels {
+                    for (index, currentModel) in analyteCellViewModels.enumerated() {
+                        if model.serverID == currentModel.serverID {
+                            self?.analyteListTableViewCellModels.replaceSubrange(index...index, with: [model])
+                            break
+                        }
+                    }
+                }
+                
+                self?.sendActionToViewController?(.stopActivityIndicators(message: .calibratedWithSuccess))
+
+            case .failure(let error):
+                self?.sendActionToViewController?(.stopActivityIndicators(message: .calibratedWithFailure))
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    func fetchAllAnalytesForDevice(id: String) {
+        sendActionToViewController?(.startActivityIndicators(message: .fetching))
+        AnalyteDataAPI().getAllAnalytesForDevice(id) { [weak self] result in
+            switch result {
+
+            case .success(let data):
+                //TODO: Adjust sorting according to time
                 let sorted = data.sorted {
                     $0.updatedAt > $1.updatedAt
                 }
-                
+
                 let fetched = sorted.map { (data) -> AnalyteTableViewCellModel in
                     let analyte = Analyte(description: data.description,
                                           identifier: data.uniqueIdentifier,
                                           serverID: data._id,
-                                          calibrationParam: CalibrationParam(isCalibrated: data.calibrationParameters.isCalibrated, slope: data.calibrationParameters.slope ?? 0, constant: data.calibrationParameters.constant ?? 0))
-                    
+                                          calibrationParam: CalibrationParam(calibrationTime: data.calibrationParameters.calibrationTime ?? 0,
+                                                                             isCalibrated: data.calibrationParameters.isCalibrated,
+                                                                             slope: data.calibrationParameters.correlationEquationParameters?.slope ?? 0,
+                                                                             constant: data.calibrationParameters.correlationEquationParameters?.constant ?? 0))
+
                     let viewModel = AnalyteTableViewCellModel(description: analyte.description,
                                                           identifier: analyte.identifier,
                                                           serverID: analyte.serverID,
@@ -97,10 +145,13 @@ final class CalibrationViewModel {
                     }
                     return viewModel
                 }
-                
-                self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithSuccess))
+                if data.isEmpty {
+                    self?.sendActionToViewController?(.stopActivityIndicators(message: .fetcedWithSuccessButNoAnalytesRegistered))
+                } else {
+                    self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithSuccess))
+                }
                 self?.analyteListTableViewCellModels = fetched
-        
+
             case .failure(let error):
                 self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithFailure))
                 print(error.localizedDescription)
@@ -108,20 +159,66 @@ final class CalibrationViewModel {
         }
     }
     
+    
+    /// This method will not be used in current implementation
+    /*
+     func fetchAllAnaytesRequired() {
+
+         sendActionToViewController?(.startActivityIndicators(message: .fetching))
+         AnalyteDataAPI().getAllAnalytes { [weak self] result in
+             switch result {
+
+             case .success(let data):
+                 //TODO: Adjust sorting according to time
+                 let sorted = data.sorted {
+                     $0.updatedAt > $1.updatedAt
+                 }
+
+                 let fetched = sorted.map { (data) -> AnalyteTableViewCellModel in
+                     let analyte = Analyte(description: data.description,
+                                           identifier: data.uniqueIdentifier,
+                                           serverID: data._id,
+                                           calibrationParam: CalibrationParam(isCalibrated: data.calibrationParameters.isCalibrated, slope: data.calibrationParameters.slope ?? 0, constant: data.calibrationParameters.constant ?? 0))
+
+                     let viewModel = AnalyteTableViewCellModel(description: analyte.description,
+                                                           identifier: analyte.identifier,
+                                                           serverID: analyte.serverID,
+                                                           isCalibrated: analyte.calibrationParam.isCalibrated)
+                     viewModel.sendActionToParentModel = { [weak self] action in
+                         self?.handleFromAnalyteTableView(action: action)
+                     }
+                     return viewModel
+                 }
+
+                 self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithSuccess))
+                 self?.analyteListTableViewCellModels = fetched
+
+             case .failure(let error):
+                 self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithFailure))
+                 print(error.localizedDescription)
+             }
+         }
+     }
+     */
+    
+    
     func createAndPatchAnalyteRequested(by description: String) {
+        
+        guard let id = deviceID else { return }
         
         sendActionToViewController?(.startActivityIndicators(message: .creating))
 
-        AnalyteDataAPI().createAnalyte(description: description) { [weak self] result in
+        AnalyteDataAPI().createAnalyte(description: description, owner: id) { [weak self] result in
             switch result {
             case .success(let data):
 
                 let analyte = Analyte(description: data.description,
                                       identifier: data.uniqueIdentifier,
                                       serverID: data._id,
-                                      calibrationParam: CalibrationParam(isCalibrated: data.calibrationParameters.isCalibrated,
-                                                                         slope: data.calibrationParameters.slope ?? 0,
-                                                                         constant: data.calibrationParameters.constant ?? 0))
+                                      calibrationParam: CalibrationParam(calibrationTime: data.calibrationParameters.calibrationTime ?? 0,
+                                                                         isCalibrated: data.calibrationParameters.isCalibrated,
+                                                                         slope: data.calibrationParameters.correlationEquationParameters?.slope ?? 0,
+                                                                         constant: data.calibrationParameters.correlationEquationParameters?.constant ?? 0))
                 
                 let model = AnalyteTableViewCellModel(description: analyte.description,
                                                       identifier: analyte.identifier,
@@ -145,42 +242,27 @@ final class CalibrationViewModel {
             switch result {
             case .success(let data):
 
-                let data = AnalyteDataFetch(_id: data._id,
+                let data = AnalyteDataFetch(calibrationParameters: data.calibrationParameters, _id: data._id,
                                             description: data.description,
                                             uniqueIdentifier: data.uniqueIdentifier,
                                             measurements: data.measurements,
                                             createdAt: data.createdAt,
-                                            updatedAt: data.updatedAt,
-                                            calibrationParameters: CalibrationParameter(isCalibrated: data.calibrationParameters.isCalibrated, slope: data.calibrationParameters.slope, constant: data.calibrationParameters.constant))
+                                            updatedAt: data.updatedAt)
+                
                 guard let time = data.measurements.first?.time else {
                     self?.sendActionToViewController?(.stopActivityIndicators(message: .invalidData))
                     return
                 }
                 
-                guard let interval = TimeInterval(time) else {
-                    self?.sendActionToViewController?(.stopActivityIndicators(message: .invalidData))
-                    return
-                }
-                
-                let firstDate = Date(timeIntervalSince1970: interval)
-                
+                let doubleTime = Double(time)
+            
                 let chartPoints = data.measurements.map { (measurement) -> ChartDataEntry in
                 
-                    var x: Double = -1
-                    let date2 = Date(timeIntervalSince1970: TimeInterval(measurement.time)!)
-
-                    let formatter = DateComponentsFormatter()
-                    formatter.allowedUnits = [.second]
-                        
-                    let difference = formatter.string(from: firstDate, to: date2)!
-                    guard let str = Double(difference.split(separator: ",").joined(separator: "")) else {
-                        x += 1
-                        self?.sendActionToViewController?(.stopActivityIndicators(message: .invalidData))
-                        return ChartDataEntry(x: x, y: 0)
-                    }
-                    let entry = ChartDataEntry(x: str, y: measurement.value)
+                    let entry = ChartDataEntry(x: Double(measurement.time)! - doubleTime!, y: measurement.value)
+                    
                     return entry
                 }
+                self?.latestHandledAnalyteId = data._id
                 self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithSuccess))
 
                 self?.yValuesForMain = chartPoints
@@ -193,18 +275,18 @@ final class CalibrationViewModel {
     
     func deletionByIdRequested(id: String) {
         self.sendActionToViewController?(.startActivityIndicators(message: .deletingFromDatabase))
-              AnalyteDataAPI().deleteAnalyte(id) { (result) in
-                  switch result {
-                  case .success(_):
-                    self.sendActionToViewController?(.stopActivityIndicators(message: .deletedWithSuccess))
-                    let alert = UIAlertController(title: "Deleted from database", message: "Server message", preferredStyle: .alert)
-                    alert.addAction(UIAlertAction(title: "I understand", style: .default, handler: nil))
-                    self.sendActionToViewController?(.presentView(view: alert))
-                  case .failure(let error):
-                    self.sendActionToViewController?(.stopActivityIndicators(message: .deletionFailed))
-                    print(error.localizedDescription)
-                  }
+          AnalyteDataAPI().deleteAnalyte(id) { (result) in
+              switch result {
+              case .success(_):
+                self.sendActionToViewController?(.stopActivityIndicators(message: .deletedWithSuccess))
+                let alert = UIAlertController(title: "Deleted from database", message: "Server message", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "I understand", style: .default, handler: nil))
+                self.sendActionToViewController?(.presentView(view: alert))
+              case .failure(let error):
+                self.sendActionToViewController?(.stopActivityIndicators(message: .deletionFailed))
+                print(error.localizedDescription)
               }
+          }
     }
     
     private func setDataForMainGraph() {
@@ -329,6 +411,8 @@ final class CalibrationViewModel {
         
         //Correaleiotn coefficent
         let r = Sxy / (sqrt(Sxx) * sqrt(Syy))
+        self.regressionSlope = B
+        self.regressionConstant = A
         sendActionToViewController?(.makeCorrLabelVisible(parameters:
                                                             CorrealetionParameters(rValue: r,
                                                                                    slope: B,
@@ -361,8 +445,12 @@ enum ChartViews {
 }
 
 enum InformationLabel: String {
+    case calibrationParameterError = "Regression Data is not calculated!"
+    case calibratedWithSuccess = "Analyte calibrated with success!"
+    case calibratedWithFailure = "Analyte calibration failed!"
     case fetching = "Fetching data from the server..."
     case fetchedWithSuccess = "Fetched with success!"
+    case fetcedWithSuccessButNoAnalytesRegistered = "No analytes registered for this device!"
     case fetchedWithFailure = "Fetch failed!"
     case creating = "Creating analyte..."
     case createdWithSuccess = "Created with success!"
@@ -393,6 +481,7 @@ struct Analyte {
 }
 
 struct CalibrationParam {
+    let calibrationTime: Double
     let isCalibrated: Bool
     let slope: Double
     let constant: Double

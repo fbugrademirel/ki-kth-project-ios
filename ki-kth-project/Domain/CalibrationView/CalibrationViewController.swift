@@ -14,6 +14,8 @@ class CalibrationViewController: UIViewController {
     
     var viewModel: CalibrationViewModel!
     
+    var refreshControl = UIRefreshControl()
+    
     @IBOutlet weak var informationLAbel: UILabel!
     @IBOutlet weak var corCoefficent: UILabel!
     @IBOutlet weak var mainChartView: LineChartView!
@@ -24,13 +26,13 @@ class CalibrationViewController: UIViewController {
     @IBOutlet weak var potential: UILabel!
     @IBOutlet weak var concTextView: UITextField!
     @IBOutlet weak var analyteDescriptionTextView: UITextField!
-    @IBOutlet weak var refreshButton: ActivityIndicatorButton!
     @IBOutlet weak var addAnalyteButton: ActivityIndicatorButton!
     @IBOutlet weak var analytesStackView: UIStackView!
     @IBOutlet weak var calibrationStackView: UIStackView!
     @IBOutlet weak var clearButtonsStackView: UIStackView!
     @IBOutlet weak var calLabelsStackView: UIStackView!
     @IBOutlet weak var corEquationLabel: UILabel!
+    @IBOutlet weak var calibrateButton: ActivityIndicatorButton!
     
     
 // MARK: - Lifecyle
@@ -40,17 +42,13 @@ class CalibrationViewController: UIViewController {
         viewModel.sendActionToViewController = { [weak self] action in
             self?.handleReceivedFromViewModel(action: action)
         }
-    
-        title = "Analyte Calibration"
+
         setUI()
-        viewModel.viewDidLoad()
+        if let id = viewModel.deviceID {
+            viewModel.viewDidLoad(for: id)
+        }
     }
     
-    override func viewDidLayoutSubviews() {
-
-  
-    }
-
 // MARK: - IBAction
     @IBAction func addConc(_ sender: UIButton) {
         
@@ -119,17 +117,13 @@ class CalibrationViewController: UIViewController {
         viewModel.concentrationTableViewCellModels = []
     }
     
-    @IBAction func refButPressed(_ sender: UIButton) {
+    @objc private func refButPressed(_ sender: UIButton) {
         
-        informationLAbel.text = ""
-        corCoefficent.text = ""
-        corEquationLabel.text = ""
+        resetAllTablesAndChartData()
         
-        viewModel.concentrationTableViewCellModels = []
-        viewModel.yValuesForMain = []
-        viewModel.yValuesForCal1 = []
-        viewModel.yValuesForCal2 = []
-        viewModel.fetchAllAnaytesRequired()
+        if let id = viewModel.deviceID {
+            viewModel.fetchAllAnalytesForDevice(id: id)
+        }
     }
     
 
@@ -141,6 +135,9 @@ class CalibrationViewController: UIViewController {
         viewModel.yValuesForCal1 = entries
     }
     
+    @IBAction func calibrateButtonPressed(_ sender: Any) {
+        viewModel.analyteCalibrationRequired()
+    }
     
 // MARK: - Handle from view model
     func handleReceivedFromViewModel(action :CalibrationViewModel.Action) {
@@ -166,7 +163,23 @@ class CalibrationViewController: UIViewController {
         }
     }
     
-
+// MARK: - Operations
+    
+    private func resetAllTablesAndChartData() {
+        
+        informationLAbel.text = ""
+        corCoefficent.text = ""
+        corEquationLabel.text = ""
+        
+        viewModel.regressionSlope = nil
+        viewModel.regressionConstant = nil
+        viewModel.latestHandledAnalyteId = nil
+        
+        viewModel.concentrationTableViewCellModels = []
+        viewModel.yValuesForMain = []
+        viewModel.yValuesForCal1 = []
+        viewModel.yValuesForCal2 = []
+    }
     
 // MARK: - UI
     private func makeCorrLabelsVisible(corValue: Double, slope: Double, constant: Double) {
@@ -250,10 +263,12 @@ class CalibrationViewController: UIViewController {
         clearButtonsStackView.subviews.forEach {
             if let btn = $0 as? ActivityIndicatorButton {
                 btn.titleLabel?.font = UIFont.appFont(placement: .buttonTitle)
-                btn.backgroundColor = AppColor.secondary
                 btn.layer.cornerRadius = 10
             }
         }
+        
+        calibrateButton.titleLabel?.font = UIFont.appFont(placement: .buttonTitle)
+        calibrateButton.layer.cornerRadius = 10
         
         analytesStackView.subviews.forEach {
             if let btn = $0 as? ActivityIndicatorButton {
@@ -291,8 +306,20 @@ class CalibrationViewController: UIViewController {
         concentrationTable.dataSource = self
         concentrationTable.register(UINib(nibName: ConcentrationTableViewCell.nibName, bundle: nil), forCellReuseIdentifier: ConcentrationTableViewCell.nibName)
         
+        
         analyteListTableView.delegate = self
         analyteListTableView.delaysContentTouches = false;
+        
+        let attributes = [NSAttributedString.Key.font: UIFont(name: "SourceSansPro-Bold", size: 16)!,
+                          NSAttributedString.Key.foregroundColor : AppColor.primary]
+        refreshControl.attributedTitle = NSAttributedString(string: "", attributes: attributes as [NSAttributedString.Key : Any])
+        refreshControl.tintColor = AppColor.primary
+        refreshControl.addTarget(self, action: #selector(self.refButPressed(_:)), for: .valueChanged)
+        refreshControl.layer.zPosition = -1
+
+        
+        analyteListTableView.addSubview(refreshControl)
+        
         //analyteListTable.allowsMultipleSelectionDuringEditing = true
         //analyteListTable.setEditing(true, animated: true)
         analyteListTableView.dataSource = self
@@ -322,7 +349,7 @@ class CalibrationViewController: UIViewController {
     private func startActivityIndicators(with info: InformationLabel){
         DispatchQueue.main.async {
             self.addAnalyteButton.startActivity()
-            self.refreshButton.startActivity()
+            self.calibrateButton.startActivity()
             self.informationLAbel.textColor = .systemRed
             self.informationLAbel.text = info.rawValue
             self.informationLAbel.alpha = 1
@@ -332,7 +359,8 @@ class CalibrationViewController: UIViewController {
     private func stopActivityIndicators(with info: InformationLabel) {
         DispatchQueue.main.async {
             self.addAnalyteButton.stopActivity()
-            self.refreshButton.stopActivity()
+            self.calibrateButton.stopActivity()
+            self.refreshControl.endRefreshing()
             self.informationLAbel.textColor = .systemRed
             UIView.animate(withDuration: 2, animations: {
                 self.informationLAbel.alpha = 0
@@ -405,6 +433,7 @@ extension CalibrationViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if tableView.isEqual(analyteListTableView) {
+            resetAllTablesAndChartData()
             viewModel.getAnalytesByIdRequested(viewModel.analyteListTableViewCellModels[indexPath.row].serverID)
         }
     }

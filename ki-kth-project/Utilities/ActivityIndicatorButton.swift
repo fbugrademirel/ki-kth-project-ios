@@ -15,11 +15,13 @@ class ActivityIndicatorButton: UIButton {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setActivityIndicator()
+        self.backgroundColor = AppColor.secondary
     }
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setActivityIndicator()
+        self.backgroundColor = AppColor.secondary
     }
     
     override open var isHighlighted: Bool {
