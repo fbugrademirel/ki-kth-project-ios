@@ -52,15 +52,15 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="rcL-2p-Mf6" userLabel="AnalytesStackView">
-                                <rect key="frame" x="7" y="156" width="246" height="484"/>
+                                <rect key="frame" x="7" y="156" width="246" height="468.5"/>
                                 <subviews>
-                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter Analyte Description..." textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="rKL-xW-bBk">
-                                        <rect key="frame" x="0.0" y="0.0" width="246" height="34"/>
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Enter Analyte Description..." textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="rKL-xW-bBk" customClass="IndicatorTextField" customModule="ki_kth_project" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="246" height="18.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
                                     </textField>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tI0-UI-iTA" customClass="ActivityIndicatorButton" customModule="ki_kth_project" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="40" width="246" height="28"/>
+                                        <rect key="frame" x="0.0" y="24.5" width="246" height="28"/>
                                         <inset key="contentEdgeInsets" minX="6" minY="3" maxX="6" maxY="3"/>
                                         <state key="normal" title="Register">
                                             <color key="titleColor" name="primary"/>
@@ -70,27 +70,27 @@
                                         </connections>
                                     </button>
                                     <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="tZ2-yM-rbM">
-                                        <rect key="frame" x="0.0" y="74" width="246" height="410"/>
+                                        <rect key="frame" x="0.0" y="58.5" width="246" height="410"/>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                     </tableView>
                                 </subviews>
                             </stackView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="U4L-id-Swy" userLabel="CalibrationStackView">
-                                <rect key="frame" x="771" y="156" width="246" height="559.5"/>
+                                <rect key="frame" x="771" y="156" width="246" height="542"/>
                                 <subviews>
-                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter Concentration..." textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="jFB-fG-wcz">
-                                        <rect key="frame" x="0.0" y="0.0" width="246" height="34"/>
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Enter Concentration..." textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="jFB-fG-wcz" customClass="IndicatorTextField" customModule="ki_kth_project" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="246" height="18.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" keyboardType="phonePad"/>
                                     </textField>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Potential (mV)" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Tq8-Td-vE1">
-                                        <rect key="frame" x="0.0" y="40" width="246" height="24"/>
+                                        <rect key="frame" x="0.0" y="24.5" width="246" height="24"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                         <color key="textColor" systemColor="systemRedColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="R1P-eD-5wr" customClass="ActivityIndicatorButton" customModule="ki_kth_project" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="70" width="246" height="34"/>
+                                        <rect key="frame" x="0.0" y="54.5" width="246" height="32"/>
                                         <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="17"/>
                                         <state key="normal" title="Add to List">
                                             <color key="titleColor" name="primary"/>
@@ -100,7 +100,7 @@
                                         </connections>
                                     </button>
                                     <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="fJc-L6-Kdd">
-                                        <rect key="frame" x="0.0" y="110" width="246" height="341.5"/>
+                                        <rect key="frame" x="0.0" y="92.5" width="246" height="341.5"/>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <stackView key="tableHeaderView" opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" id="n0e-as-ZbR">
                                             <rect key="frame" x="0.0" y="0.0" width="246" height="44"/>
@@ -134,7 +134,7 @@
                                         </stackView>
                                     </tableView>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="ebE-N4-pQB">
-                                        <rect key="frame" x="0.0" y="457.5" width="246" height="30"/>
+                                        <rect key="frame" x="0.0" y="440" width="246" height="30"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4IJ-fd-glk" customClass="ActivityIndicatorButton" customModule="ki_kth_project" customModuleProvider="target">
                                                 <rect key="frame" x="0.0" y="0.0" width="151.5" height="30"/>
@@ -157,7 +157,7 @@
                                         </subviews>
                                     </stackView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="At1-E8-BbU" customClass="ActivityIndicatorButton" customModule="ki_kth_project" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="493.5" width="246" height="30"/>
+                                        <rect key="frame" x="0.0" y="476" width="246" height="30"/>
                                         <state key="normal" title="Draw Calibration Curve">
                                             <color key="titleColor" name="primary"/>
                                         </state>
@@ -166,7 +166,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ztU-M1-Rcs" customClass="ActivityIndicatorButton" customModule="ki_kth_project" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="529.5" width="246" height="30"/>
+                                        <rect key="frame" x="0.0" y="512" width="246" height="30"/>
                                         <state key="normal" title="Draw Linear Calibration Graph">
                                             <color key="titleColor" name="primary"/>
                                         </state>

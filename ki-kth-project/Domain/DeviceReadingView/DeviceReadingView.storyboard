@@ -49,21 +49,27 @@
                                 <color key="textColor" systemColor="systemRedColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="8vc-5s-nU6">
-                                <rect key="frame" x="23" y="104" width="338" height="110"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4we-wj-4nD">
+                                <rect key="frame" x="689.5" y="73.5" width="322.5" height="20.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" systemColor="systemRedColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="8vc-5s-nU6" userLabel="RegisterItemsStackView">
+                                <rect key="frame" x="23" y="134" width="338" height="80"/>
                                 <subviews>
-                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Name of patient" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="H4G-9U-2VJ">
-                                        <rect key="frame" x="0.0" y="0.0" width="338" height="34"/>
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Name of patient" textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="H4G-9U-2VJ" customClass="IndicatorTextField" customModule="ki_kth_project" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="338" height="19.5"/>
                                         <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="14"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
-                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="PersonalID" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Shr-P9-Q6l">
-                                        <rect key="frame" x="0.0" y="40" width="338" height="34"/>
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="PersonalID" textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="Shr-P9-Q6l" customClass="IndicatorTextField" customModule="ki_kth_project" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="25.5" width="338" height="18.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" textContentType="tel"/>
                                     </textField>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7p5-29-d95" customClass="ActivityIndicatorButton" customModule="ki_kth_project" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="80" width="338" height="30"/>
+                                        <rect key="frame" x="0.0" y="50" width="338" height="30"/>
                                         <state key="normal" title="Register">
                                             <color key="titleColor" name="primary"/>
                                         </state>
@@ -73,12 +79,10 @@
                                     </button>
                                 </subviews>
                             </stackView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4we-wj-4nD">
-                                <rect key="frame" x="689.5" y="73.5" width="322.5" height="20.5"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" systemColor="systemRedColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                            <view userInteractionEnabled="NO" alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nNa-5l-Ppq" userLabel="BlockViewForCancelling">
+                                <rect key="frame" x="0.0" y="0.0" width="1024" height="1346"/>
+                                <color key="backgroundColor" systemColor="systemGray4Color"/>
+                            </view>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -92,24 +96,30 @@
                             <constraint firstItem="4we-wj-4nD" firstAttribute="trailing" secondItem="wmu-I6-sWx" secondAttribute="trailing" id="Gke-vP-29s"/>
                             <constraint firstItem="ctG-xu-SYA" firstAttribute="height" secondItem="wmu-I6-sWx" secondAttribute="height" multiplier="0.5" id="I2n-ma-jmM"/>
                             <constraint firstItem="wmu-I6-sWx" firstAttribute="height" secondItem="5EZ-qb-Rvc" secondAttribute="height" multiplier="0.9" id="MlZ-SQ-Ach"/>
+                            <constraint firstItem="nNa-5l-Ppq" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" id="NVU-Ch-B8y"/>
+                            <constraint firstItem="vDu-zF-Fre" firstAttribute="bottom" secondItem="nNa-5l-Ppq" secondAttribute="bottom" id="WmE-vO-qoD"/>
                             <constraint firstItem="8vc-5s-nU6" firstAttribute="width" secondItem="ctG-xu-SYA" secondAttribute="width" id="XDj-W3-17r"/>
                             <constraint firstItem="ctG-xu-SYA" firstAttribute="width" secondItem="5EZ-qb-Rvc" secondAttribute="width" multiplier="0.33" id="YJT-E3-4PH"/>
                             <constraint firstItem="ctG-xu-SYA" firstAttribute="firstBaseline" secondItem="wmu-I6-sWx" secondAttribute="firstBaseline" constant="120" id="ZIB-rX-Xpn"/>
                             <constraint firstItem="wmu-I6-sWx" firstAttribute="top" secondItem="en0-qB-4Qa" secondAttribute="bottom" constant="6" id="aQv-2S-jy8"/>
                             <constraint firstItem="8vc-5s-nU6" firstAttribute="bottom" secondItem="ctG-xu-SYA" secondAttribute="top" constant="-6" id="auT-gK-nVo"/>
                             <constraint firstItem="ctG-xu-SYA" firstAttribute="trailing" secondItem="wmu-I6-sWx" secondAttribute="leading" constant="-6" id="euB-9W-08V"/>
+                            <constraint firstItem="nNa-5l-Ppq" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="gHK-I5-4As"/>
                             <constraint firstItem="en0-qB-4Qa" firstAttribute="height" secondItem="5EZ-qb-Rvc" secondAttribute="height" multiplier="0.04" id="ihl-ec-rVi"/>
                             <constraint firstItem="en0-qB-4Qa" firstAttribute="width" secondItem="5EZ-qb-Rvc" secondAttribute="width" multiplier="0.8" id="iqR-NG-Z5P"/>
+                            <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="nNa-5l-Ppq" secondAttribute="trailing" id="o1r-CS-jIK"/>
                             <constraint firstItem="8vc-5s-nU6" firstAttribute="centerX" secondItem="ctG-xu-SYA" secondAttribute="centerX" id="osI-li-0eP"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="blockViewForCancelling" destination="nNa-5l-Ppq" id="wve-Xs-h42"/>
                         <outlet property="chartsStackView" destination="eiS-1E-G0G" id="YDZ-j7-dYq"/>
                         <outlet property="deviceListTableView" destination="ctG-xu-SYA" id="ZKR-wH-5x1"/>
                         <outlet property="deviceNameTextField" destination="H4G-9U-2VJ" id="1YL-nZ-DCm"/>
                         <outlet property="informationLabel" destination="en0-qB-4Qa" id="Vdg-rF-i6K"/>
                         <outlet property="personalIDTextField" destination="Shr-P9-Q6l" id="ESC-Ti-ee9"/>
                         <outlet property="registerDeviceButton" destination="7p5-29-d95" id="aVc-D1-Nyd"/>
+                        <outlet property="registerItemsStackView" destination="8vc-5s-nU6" id="zsw-0o-nUt"/>
                         <outlet property="scrollView" destination="wmu-I6-sWx" id="bpe-ZF-qdw"/>
                         <outlet property="valueOnTheGraphLabel" destination="4we-wj-4nD" id="IcW-Cn-5iX"/>
                     </connections>
@@ -125,6 +135,9 @@
         </namedColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemGray4Color">
+            <color red="0.81960784313725488" green="0.81960784313725488" blue="0.83921568627450982" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemRedColor">
             <color red="1" green="0.23137254901960785" blue="0.18823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

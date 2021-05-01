@@ -24,8 +24,8 @@ final class CalibrationViewController: UIViewController {
     @IBOutlet weak var concentrationTable: UITableView!
     @IBOutlet weak var analyteListTableView: UITableView!
     @IBOutlet weak var potential: UILabel!
-    @IBOutlet weak var concTextView: UITextField!
-    @IBOutlet weak var analyteDescriptionTextView: UITextField!
+    @IBOutlet weak var concTextView: IndicatorTextField!
+    @IBOutlet weak var analyteDescriptionTextView: IndicatorTextField!
     @IBOutlet weak var addAnalyteButton: ActivityIndicatorButton!
     @IBOutlet weak var analytesStackView: UIStackView!
     @IBOutlet weak var calibrationStackView: UIStackView!
