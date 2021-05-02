@@ -9,8 +9,10 @@ import Foundation
 
 struct DeviceDataAPI {
     
+    // MARK: - Properties
     private let networkingService = NetworkingService()
     
+    // MARK: - Operations
     func createDevice(name: String, personalID: Int, with completion: @escaping (Result<DeviceDataFetch,Error>) -> Void) {
         
         let uniqueIdentifier = UUID()
