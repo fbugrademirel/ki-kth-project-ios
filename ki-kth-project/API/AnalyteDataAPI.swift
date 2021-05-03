@@ -5,6 +5,12 @@
 //  Created by Faruk Buğra DEMIREL on 2021-04-12.
 //
 
+
+// MARK: TODO: Refactor this API
+/*
+ There is too much code reuse in methods
+ */
+
 import Foundation
 
 struct AnalyteDataAPI {

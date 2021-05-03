@@ -24,8 +24,8 @@ final class CalibrationViewController: UIViewController {
     @IBOutlet weak var concentrationTable: UITableView!
     @IBOutlet weak var analyteListTableView: UITableView!
     @IBOutlet weak var potential: UILabel!
-    @IBOutlet weak var concTextView: IndicatorTextField!
-    @IBOutlet weak var analyteDescriptionTextView: IndicatorTextField!
+    @IBOutlet weak var concTextField: IndicatorTextField!
+    @IBOutlet weak var analyteDescriptionTextField: IndicatorTextField!
     @IBOutlet weak var addAnalyteButton: ActivityIndicatorButton!
     @IBOutlet weak var analytesStackView: UIStackView!
     @IBOutlet weak var calibrationStackView: UIStackView!
@@ -33,6 +33,7 @@ final class CalibrationViewController: UIViewController {
     @IBOutlet weak var calLabelsStackView: UIStackView!
     @IBOutlet weak var corEquationLabel: UILabel!
     @IBOutlet weak var calibrateButton: ActivityIndicatorButton!
+    @IBOutlet weak var blockViewForCancelling: UIView!
     
     
 // MARK: - Lifecyle
@@ -52,7 +53,7 @@ final class CalibrationViewController: UIViewController {
 // MARK: - IBAction
     @IBAction func addConc(_ sender: UIButton) {
         
-        guard let conc1 = concTextView.text, let pot1 = potential.text?.replacingOccurrences(of: " mV", with: "") else { return }
+        guard let conc1 = concTextField.text, let pot1 = potential.text?.replacingOccurrences(of: " mV", with: "") else { return }
         guard let conc2 = Double(conc1), let pot2 = Double(pot1) else {
             
             potential.text = "Invalid entry"
@@ -61,18 +62,18 @@ final class CalibrationViewController: UIViewController {
                 
         let model = ConcentrationTableViewCellModel(concentration: conc2, log: log10(conc2), potential: Double(pot2))
         viewModel.concentrationTableViewCellModels.append(model)
-        concTextView.text = ""
-        concTextView.resignFirstResponder()
+        concTextField.text = ""
+        concTextField.resignFirstResponder()
     }
     
     
     @IBAction func createAndRegisterAnalyte(_ sender: Any) {
-        if analyteDescriptionTextView.text == "" {
+        if analyteDescriptionTextField.text == "" {
             return
         }
-        guard let desc = analyteDescriptionTextView.text else { return }
-        analyteDescriptionTextView.text = ""
-        analyteDescriptionTextView.resignFirstResponder()
+        guard let desc = analyteDescriptionTextField.text else { return }
+        analyteDescriptionTextField.text = ""
+        dismissKeyboard()
         viewModel.createAndPatchAnalyteRequested(by: desc)
         
     }
@@ -137,6 +138,19 @@ final class CalibrationViewController: UIViewController {
     
     @IBAction func calibrateButtonPressed(_ sender: Any) {
         viewModel.analyteCalibrationRequired()
+    }
+    
+    @objc func dismissKeyboard() {
+        self.blockViewForCancelling.isUserInteractionEnabled = false
+        analytesStackView.isUserInteractionEnabled = false
+        UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut) {
+            self.blockViewForCancelling.alpha = 0
+        } completion: { _ in
+            self.view.sendSubviewToBack(self.analytesStackView)
+            self.analytesStackView.isUserInteractionEnabled = true
+        }
+        analyteDescriptionTextField.resignFirstResponder()
+        concTextField.resignFirstResponder()
     }
     
 // MARK: - Handle from view model
@@ -237,7 +251,15 @@ final class CalibrationViewController: UIViewController {
     
     private func setUI() {
         
+        //Block View For Cancelling
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        blockViewForCancelling.addGestureRecognizer(tapGesture)
         
+        
+        //Text Field Delegates
+        concTextField.delegate = self
+        analyteDescriptionTextField.delegate = self
+                
         // Information label
         informationLAbel.font = UIFont.appFont(placement: .title)
         informationLAbel.alpha = 0
@@ -398,10 +420,22 @@ final class CalibrationViewController: UIViewController {
 }
 
 
+// MARK: - TextField Delegate Extention
+extension CalibrationViewController: UITextFieldDelegate {
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        self.view.bringSubviewToFront(analytesStackView)
+        blockViewForCancelling.isUserInteractionEnabled = true
+        UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseIn) {
+            self.blockViewForCancelling.alpha = 0.9
+        }
+    }
+}
+
+
+
 // MARK: - TextView Delegate Extension
 
 extension CalibrationViewController: UITextViewDelegate {
-    
     func textViewDidEndEditing(_ textView: UITextView) {
         textView.text = ""
     }

@@ -7,6 +7,12 @@
 
 import Foundation
 
+
+// MARK: TODO: Refactor this API
+/*
+ There is too much code reuse in methods
+ */
+
 struct DeviceDataAPI {
     
     // MARK: - Properties
