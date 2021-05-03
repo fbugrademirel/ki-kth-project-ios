@@ -45,6 +45,30 @@
                                     <constraint firstItem="XWU-bd-GDu" firstAttribute="width" secondItem="szc-r6-D3d" secondAttribute="width" id="WII-dG-bj8"/>
                                 </constraints>
                             </stackView>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="rcL-2p-Mf6" userLabel="AnalytesStackView">
+                                <rect key="frame" x="7" y="156" width="246" height="52.5"/>
+                                <subviews>
+                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Enter Analyte Description..." textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="rKL-xW-bBk" customClass="IndicatorTextField" customModule="ki_kth_project" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="0.0" width="246" height="18.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
+                                    </textField>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tI0-UI-iTA" customClass="ActivityIndicatorButton" customModule="ki_kth_project" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="24.5" width="246" height="28"/>
+                                        <inset key="contentEdgeInsets" minX="6" minY="3" maxX="6" maxY="3"/>
+                                        <state key="normal" title="Register">
+                                            <color key="titleColor" name="primary"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="createAndRegisterAnalyte:" destination="uSr-49-Bbt" eventType="touchUpInside" id="bWn-p3-xDP"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </stackView>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="tZ2-yM-rbM">
+                                <rect key="frame" x="7" y="214.5" width="246" height="517"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </tableView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="U4L-id-Swy" userLabel="CalibrationStackView">
                                 <rect key="frame" x="771" y="156" width="246" height="544"/>
                                 <subviews>
@@ -158,36 +182,12 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="rcL-2p-Mf6" userLabel="AnalytesStackView">
-                                <rect key="frame" x="7" y="156" width="246" height="52.5"/>
-                                <subviews>
-                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Enter Analyte Description..." textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="rKL-xW-bBk" customClass="IndicatorTextField" customModule="ki_kth_project" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="0.0" width="246" height="18.5"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                        <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
-                                    </textField>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tI0-UI-iTA" customClass="ActivityIndicatorButton" customModule="ki_kth_project" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="24.5" width="246" height="28"/>
-                                        <inset key="contentEdgeInsets" minX="6" minY="3" maxX="6" maxY="3"/>
-                                        <state key="normal" title="Register">
-                                            <color key="titleColor" name="primary"/>
-                                        </state>
-                                        <connections>
-                                            <action selector="createAndRegisterAnalyte:" destination="uSr-49-Bbt" eventType="touchUpInside" id="bWn-p3-xDP"/>
-                                        </connections>
-                                    </button>
-                                </subviews>
-                            </stackView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Mzr-cR-Dg1" userLabel="Cor Equation">
                                 <rect key="frame" x="320" y="1233.5" width="384" height="25.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="tZ2-yM-rbM">
-                                <rect key="frame" x="7" y="214.5" width="246" height="517"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                            </tableView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="syh-WV-n72" customClass="ActivityIndicatorButton" customModule="ki_kth_project" customModuleProvider="target">
                                 <rect key="frame" x="416" y="1262" width="192" height="30"/>
                                 <inset key="titleEdgeInsets" minX="6" minY="6" maxX="6" maxY="6"/>
@@ -198,7 +198,7 @@
                                     <action selector="calibrateButtonPressed:" destination="uSr-49-Bbt" eventType="touchUpInside" id="TAm-S4-mOs"/>
                                 </connections>
                             </button>
-                            <view userInteractionEnabled="NO" alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iy6-Iy-SIc" userLabel="BlockViewForCancelling">
+                            <view userInteractionEnabled="NO" alpha="0.0" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iy6-Iy-SIc" userLabel="BlockViewForCancelling">
                                 <rect key="frame" x="0.0" y="0.0" width="1024" height="1366"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" systemColor="systemGray4Color"/>
@@ -238,11 +238,6 @@
                             <constraint firstItem="fJc-L6-Kdd" firstAttribute="width" secondItem="itM-KU-kqu" secondAttribute="width" multiplier="0.24" id="yXw-W0-bp6"/>
                             <constraint firstItem="rcL-2p-Mf6" firstAttribute="top" secondItem="YZs-qh-20f" secondAttribute="top" id="zNc-kH-su5"/>
                         </constraints>
-                        <variation key="default">
-                            <mask key="subviews">
-                                <exclude reference="iy6-Iy-SIc"/>
-                            </mask>
-                        </variation>
                     </view>
                     <connections>
                         <outlet property="addAnalyteButton" destination="tI0-UI-iTA" id="3nE-Qq-tKd"/>
