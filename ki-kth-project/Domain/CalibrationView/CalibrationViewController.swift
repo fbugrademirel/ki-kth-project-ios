@@ -34,6 +34,7 @@ final class CalibrationViewController: UIViewController {
     @IBOutlet weak var corEquationLabel: UILabel!
     @IBOutlet weak var calibrateButton: ActivityIndicatorButton!
     @IBOutlet weak var blockViewForCancelling: UIView!
+    @IBOutlet weak var concentrationElementsStackView: UIStackView!
     
     
 // MARK: - Lifecyle
@@ -54,8 +55,9 @@ final class CalibrationViewController: UIViewController {
     @IBAction func addConc(_ sender: UIButton) {
         
         guard let conc1 = concTextField.text, let pot1 = potential.text?.replacingOccurrences(of: " mV", with: "") else { return }
+        
         guard let conc2 = Double(conc1), let pot2 = Double(pot1) else {
-            
+            concTextField.indicatesError = true
             potential.text = "Invalid entry"
             return
         }
@@ -63,15 +65,19 @@ final class CalibrationViewController: UIViewController {
         let model = ConcentrationTableViewCellModel(concentration: conc2, log: log10(conc2), potential: Double(pot2))
         viewModel.concentrationTableViewCellModels.append(model)
         concTextField.text = ""
-        concTextField.resignFirstResponder()
+        dismissKeyboard()
     }
     
     
     @IBAction func createAndRegisterAnalyte(_ sender: Any) {
+        
+        guard let desc = analyteDescriptionTextField.text else { return }
+        
         if analyteDescriptionTextField.text == "" {
+            analyteDescriptionTextField.indicatesError = true
             return
         }
-        guard let desc = analyteDescriptionTextField.text else { return }
+        
         analyteDescriptionTextField.text = ""
         dismissKeyboard()
         viewModel.createAndPatchAnalyteRequested(by: desc)
@@ -143,11 +149,14 @@ final class CalibrationViewController: UIViewController {
     @objc func dismissKeyboard() {
         self.blockViewForCancelling.isUserInteractionEnabled = false
         analytesStackView.isUserInteractionEnabled = false
+        concentrationElementsStackView.isUserInteractionEnabled = false
         UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut) {
             self.blockViewForCancelling.alpha = 0
         } completion: { _ in
             self.view.sendSubviewToBack(self.analytesStackView)
+            self.view.sendSubviewToBack(self.concentrationElementsStackView)
             self.analytesStackView.isUserInteractionEnabled = true
+            self.concentrationElementsStackView.isUserInteractionEnabled = true
         }
         analyteDescriptionTextField.resignFirstResponder()
         concTextField.resignFirstResponder()
@@ -302,6 +311,18 @@ final class CalibrationViewController: UIViewController {
             }
         }
         
+        concentrationElementsStackView.subviews.forEach {
+            if let btn = $0 as? ActivityIndicatorButton {
+                btn.titleLabel?.font = UIFont.appFont(placement: .buttonTitle)
+                btn.backgroundColor = AppColor.secondary
+                btn.layer.cornerRadius = 10
+            } else if let text = $0 as? UITextField {
+                text.font = UIFont.appFont(placement: .text)
+            } else if let label = $0 as? UILabel {
+                label.font = UIFont.appFont(placement: .boldText)
+            }
+        }
+        
         calibrationStackView.subviews.forEach {
             if let btn = $0 as? ActivityIndicatorButton {
                 btn.titleLabel?.font = UIFont.appFont(placement: .buttonTitle)
@@ -395,7 +416,6 @@ final class CalibrationViewController: UIViewController {
         alert.addAction(UIAlertAction(title: "Delete only from this device", style: .default, handler: { _ in
 
             self.analyteListTableView.beginUpdates()
-//            self.viewModel.analytes.remove(at: path.row)
             self.viewModel.analyteListTableViewCellModels.remove(at: path.row)
             self.analyteListTableView.deleteRows(at: [path], with: .fade)
             self.analyteListTableView.endUpdates()
@@ -417,27 +437,47 @@ final class CalibrationViewController: UIViewController {
         }))
         present(alert, animated: true, completion: nil)
     }
+    
+    private func clearErrorIndication() {
+        analyteDescriptionTextField.indicatesError = false
+        concTextField.indicatesError = false
+    }
 }
 
 
 // MARK: - TextField Delegate Extention
 extension CalibrationViewController: UITextFieldDelegate {
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        self.view.bringSubviewToFront(analytesStackView)
-        blockViewForCancelling.isUserInteractionEnabled = true
-        UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseIn) {
-            self.blockViewForCancelling.alpha = 0.9
-        }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+       clearErrorIndication()
     }
-}
-
-
-
-// MARK: - TextView Delegate Extension
-
-extension CalibrationViewController: UITextViewDelegate {
-    func textViewDidEndEditing(_ textView: UITextView) {
-        textView.text = ""
+    
+    func textFieldDidChangeSelection(_ textField: UITextField) {
+        clearErrorIndication()
+    }
+    
+    func textFieldShouldClear(_ textField: UITextField) -> Bool {
+        clearErrorIndication()
+        return true
+    }
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        
+        if textField.isEqual(analyteDescriptionTextField) {
+            analyteDescriptionTextField.indicatesError = false
+            self.view.bringSubviewToFront(analytesStackView)
+            blockViewForCancelling.isUserInteractionEnabled = true
+            UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseIn) {
+                self.blockViewForCancelling.alpha = 0.9
+            }
+        } else if textField .isEqual(concTextField){
+            concTextField.indicatesError = false
+            self.view.bringSubviewToFront(concentrationElementsStackView)
+            blockViewForCancelling.isUserInteractionEnabled = true
+            UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseIn) {
+                self.blockViewForCancelling.alpha = 0.9
+            }
+        }
     }
 }
 

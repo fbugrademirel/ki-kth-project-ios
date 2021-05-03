@@ -20,8 +20,15 @@ final public class IndicatorTextField: UITextField {
         didSet {
             if indicatesError {
                 layer.borderColor = UIColor.red.cgColor
+                                
+                UIView.animate(withDuration: 0.05) {
+                    self.transform = self.transform.rotated(by: (.pi / 24))
+                } completion: {_ in
+                    self.transform = CGAffineTransform(rotationAngle: 0)
+                }
+
             } else {
-                layer.borderColor = UIColor.gray.cgColor
+                layer.borderColor = UIColor.systemGray6.cgColor
             }
         }
     }
