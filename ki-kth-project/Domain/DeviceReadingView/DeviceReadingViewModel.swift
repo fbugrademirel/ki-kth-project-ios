@@ -14,8 +14,8 @@ final class DeviceReadingViewModel {
         case reloadDeviceListTableView
         case presentCalibrationView(info: ViewInfo)
         case updateChartUI(with: [LineChartData])
-        case startActivityIndicators(message: DeviceInformationLabel)
-        case stopActivityIndicators(message: DeviceInformationLabel)
+        case startActivityIndicators(message: DeviceInformationLabel, alert: DevicePageAlertType)
+        case stopActivityIndicators(message: DeviceInformationLabel, alert: DevicePageAlertType)
         case presentView(with: UIAlertController)
     }
     
@@ -55,7 +55,7 @@ final class DeviceReadingViewModel {
     
     func createDeviceRequired(name: String, personalID: Int) {
         
-        sendActionToViewController?(.startActivityIndicators(message: .creating))
+        sendActionToViewController?(.startActivityIndicators(message: .creating, alert: .neutralAppColor))
 
         DeviceDataAPI().createDevice(name: name, personalID: personalID) { [weak self] result in
             
@@ -72,20 +72,20 @@ final class DeviceReadingViewModel {
                     self?.handleReceivedFromDeviceTableViewCell(action: action)
                 }
                 
-                self?.sendActionToViewController?(.stopActivityIndicators(message: .createdWithSuccess))
+                self?.sendActionToViewController?(.stopActivityIndicators(message: .createdWithSuccess, alert: .greenInfo))
                 self?.deviceListTableViewViewModels.insert(viewModel, at: 0)
             
             
             case .failure(let error):
                 print(error.localizedDescription)
-                self?.sendActionToViewController?(.stopActivityIndicators(message: .createdWithFailure))
+                self?.sendActionToViewController?(.stopActivityIndicators(message: .createdWithFailure, alert: .redWarning))
             }
         }
     }
     
     func getAnalytesByIdRequested(_ id: String) {
         
-        sendActionToViewController?(.startActivityIndicators(message: .fetching))
+        sendActionToViewController?(.startActivityIndicators(message: .fetching, alert: .neutralAppColor))
         
         DeviceDataAPI().getAllAnalytesForDevice(id) { [weak self] result in
             switch result {
@@ -114,13 +114,13 @@ final class DeviceReadingViewModel {
                 self?.setGraphs(with: filtered)
                 
                 if filtered.isEmpty {
-                    self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithSuccessButEmpty))
+                    self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithSuccessButEmpty, alert: .greenInfo))
                 } else {
-                    self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithSuccess))
+                    self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithSuccess, alert: .greenInfo))
                 }
                 
             case .failure(let error):
-                self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithFailure))
+                self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithFailure, alert: .redWarning))
                 print(error.localizedDescription)
             }
         }
@@ -128,17 +128,17 @@ final class DeviceReadingViewModel {
     
     func deletionByIdRequested(id: String) {
         
-        self.sendActionToViewController?(.startActivityIndicators(message: .deletingFromDatabase))
+        self.sendActionToViewController?(.startActivityIndicators(message: .deletingFromDatabase, alert: .neutralAppColor))
         
           DeviceDataAPI().deleteDeviceByID(id: id) { (result) in
               switch result {
               case .success(_):
-                self.sendActionToViewController?(.stopActivityIndicators(message: .deletedWithSuccess))
+                self.sendActionToViewController?(.stopActivityIndicators(message: .deletedWithSuccess, alert: .greenInfo))
                 let alert = UIAlertController(title: "Deleted from database", message: "Server message", preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "I understand", style: .default, handler: nil))
                 self.sendActionToViewController?(.presentView(with: alert))
               case .failure(let error):
-                self.sendActionToViewController?(.stopActivityIndicators(message: .deletionFailed))
+                self.sendActionToViewController?(.stopActivityIndicators(message: .deletionFailed, alert: .redWarning))
                 print(error.localizedDescription)
               }
           }
@@ -146,7 +146,7 @@ final class DeviceReadingViewModel {
     
     func fetchAllDevicesRequired() {
         
-        sendActionToViewController?(.startActivityIndicators(message: .fetching))
+        sendActionToViewController?(.startActivityIndicators(message: .fetching, alert: .neutralAppColor))
 
         DeviceDataAPI().getAllDevices { [weak self] result in
             
@@ -170,11 +170,11 @@ final class DeviceReadingViewModel {
                 }
                 
                 self?.deviceListTableViewViewModels = fetchedDevices
-                self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithSuccess))
+                self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithSuccess, alert: .greenInfo))
             
             case .failure(let error):
                 print(error.localizedDescription)
-                self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithFailure))
+                self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithFailure, alert: .redWarning))
             }
         }
     }
@@ -258,6 +258,13 @@ struct Device {
     let id: Int
 }
 
+
+enum DevicePageAlertType {
+    case redWarning
+    case greenInfo
+    case neutralAppColor
+}
+
 enum DeviceInformationLabel: String {
     case calibrationParameterError = "Regression Data is not calculated!"
     case calibratedWithSuccess = "Analyte calibrated with success!"
@@ -271,7 +278,7 @@ enum DeviceInformationLabel: String {
     case createdWithSuccess = "Created with success!"
     case createdWithFailure = "Create device failed!"
     case invalidData = "Invalid data for graphing!"
-    case deletingFromDatabase = "Deleting from database"
+    case deletingFromDatabase = "Deleting from database..."
     case deletedWithSuccess = "Deleted with success!"
     case deletionFailed = "Deletion from database failed!"
 }

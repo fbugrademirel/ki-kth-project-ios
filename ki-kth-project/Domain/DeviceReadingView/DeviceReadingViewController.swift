@@ -55,10 +55,10 @@ final class DeviceReadingViewController: UIViewController {
             navigationController?.pushViewController(vc, animated: true)
         case .updateChartUI(with: let data):
             updateChartUI(with: data)
-        case .startActivityIndicators(message: let message):
-            startActivityIndicators(with: message)
-        case .stopActivityIndicators(message: let message):
-            stopActivityIndicators(with: message)
+        case .startActivityIndicators(message: let message, alert: let alert):
+            startActivityIndicators(with: message, with: alert)
+        case .stopActivityIndicators(message: let message, alert: let alert):
+            stopActivityIndicators(with: message, with: alert)
         case .presentView(with: let view):
             present(view, animated: true, completion: nil)
         }
@@ -135,20 +135,37 @@ final class DeviceReadingViewController: UIViewController {
         deviceNameTextField.resignFirstResponder()
     }
     
-    private func startActivityIndicators(with info: DeviceInformationLabel){
+    private func startActivityIndicators(with info: DeviceInformationLabel, with alert: DevicePageAlertType){
         DispatchQueue.main.async {
-            self.informationLabel.textColor = .systemRed
+
+            switch alert {
+            case .greenInfo:
+                self.informationLabel.textColor = .systemGreen
+            case .redWarning:
+                self.informationLabel.textColor = .systemRed
+            case .neutralAppColor:
+                self.informationLabel.textColor = AppColor.primary
+            }
+            
             self.informationLabel.text = info.rawValue
             self.informationLabel.alpha = 1
             self.registerDeviceButton.startActivity()
         }
     }
     
-    private func stopActivityIndicators(with info: DeviceInformationLabel) {
+    private func stopActivityIndicators(with info: DeviceInformationLabel, with alert: DevicePageAlertType) {
         DispatchQueue.main.async {
             self.registerDeviceButton.stopActivity()
             self.refreshController.endRefreshing()
-            self.informationLabel.textColor = .systemRed
+            switch alert {
+            case .greenInfo:
+                self.informationLabel.textColor = .systemGreen
+            case .redWarning:
+                self.informationLabel.textColor = .systemRed
+            case .neutralAppColor:
+                self.informationLabel.textColor = AppColor.primary
+            }
+
             UIView.animate(withDuration: 2, animations: {
                 self.informationLabel.alpha = 0
             })

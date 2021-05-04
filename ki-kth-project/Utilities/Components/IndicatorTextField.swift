@@ -19,16 +19,18 @@ final public class IndicatorTextField: UITextField {
     public var indicatesError: Bool = false {
         didSet {
             if indicatesError {
-                layer.borderColor = UIColor.red.cgColor
-                                
-                UIView.animate(withDuration: 0.05) {
-                    self.transform = self.transform.rotated(by: (.pi / 24))
-                } completion: {_ in
-                    self.transform = CGAffineTransform(rotationAngle: 0)
+                DispatchQueue.main.async {
+                    self.layer.borderColor = UIColor.red.cgColor
+                    UIView.animate(withDuration: 0.05) {
+                        self.transform = self.transform.rotated(by: (.pi / 24))
+                    } completion: {_ in
+                        self.transform = CGAffineTransform(rotationAngle: 0)
+                    }
                 }
-
             } else {
-                layer.borderColor = UIColor.systemGray6.cgColor
+                DispatchQueue.main.async {
+                    self.layer.borderColor = UIColor.systemGray6.cgColor
+                }
             }
         }
     }

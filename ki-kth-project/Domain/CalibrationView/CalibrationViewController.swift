@@ -16,7 +16,7 @@ final class CalibrationViewController: UIViewController {
     
     var refreshControl = UIRefreshControl()
     
-    @IBOutlet weak var informationLAbel: UILabel!
+    @IBOutlet weak var informationLabel: UILabel!
     @IBOutlet weak var corCoefficent: UILabel!
     @IBOutlet weak var mainChartView: LineChartView!
     @IBOutlet weak var calGraphView1: LineChartView!
@@ -179,10 +179,10 @@ final class CalibrationViewController: UIViewController {
             updateUIforAnalyteListTableView()
         case .reloadConcentrationListTableView:
             updateUIforConcentrationListTableView()
-        case .startActivityIndicators(let message):
-            startActivityIndicators(with: message)
-        case .stopActivityIndicators(message: let message):
-            stopActivityIndicators(with: message)
+        case .startActivityIndicators(let message, let alert):
+            startActivityIndicators(with: message, with: alert)
+        case .stopActivityIndicators(let message, let alert):
+            stopActivityIndicators(with: message, with: alert)
         }
     }
     
@@ -190,7 +190,7 @@ final class CalibrationViewController: UIViewController {
     
     private func resetAllTablesAndChartData() {
         
-        informationLAbel.text = ""
+        informationLabel.text = ""
         corCoefficent.text = ""
         corEquationLabel.text = ""
         
@@ -270,10 +270,10 @@ final class CalibrationViewController: UIViewController {
         analyteDescriptionTextField.delegate = self
                 
         // Information label
-        informationLAbel.font = UIFont.appFont(placement: .title)
-        informationLAbel.alpha = 0
-        informationLAbel.text = ""
-        informationLAbel.textColor = AppColor.primary
+        informationLabel.font = UIFont.appFont(placement: .title)
+        informationLabel.alpha = 0
+        informationLabel.text = ""
+        informationLabel.textColor = AppColor.primary
         
         // Cor. Coefficient label
         corCoefficent.alpha = 0
@@ -389,26 +389,44 @@ final class CalibrationViewController: UIViewController {
         lineChartView.xAxis.labelTextColor = .black
     }
     
-    private func startActivityIndicators(with info: InformationLabel){
+    private func startActivityIndicators(with info: InformationLabel, with alert: AnalytePageAlertType){
         DispatchQueue.main.async {
             self.addAnalyteButton.startActivity()
             self.calibrateButton.startActivity()
-            self.informationLAbel.textColor = .systemRed
-            self.informationLAbel.text = info.rawValue
-            self.informationLAbel.alpha = 1
+            
+            switch alert {
+            case .greenInfo:
+                self.informationLabel.textColor = .systemGreen
+            case .redWarning:
+                self.informationLabel.textColor = .systemRed
+            case .neutralAppColor:
+                self.informationLabel.textColor = AppColor.primary
+            }
+        
+            self.informationLabel.text = info.rawValue
+            self.informationLabel.alpha = 1
         }
     }
     
-    private func stopActivityIndicators(with info: InformationLabel) {
+    private func stopActivityIndicators(with info: InformationLabel, with alert: AnalytePageAlertType) {
         DispatchQueue.main.async {
             self.addAnalyteButton.stopActivity()
             self.calibrateButton.stopActivity()
             self.refreshControl.endRefreshing()
-            self.informationLAbel.textColor = .systemRed
+            
+            switch alert {
+            case .greenInfo:
+                self.informationLabel.textColor = .systemGreen
+            case .redWarning:
+                self.informationLabel.textColor = .systemRed
+            case .neutralAppColor:
+                self.informationLabel.textColor = AppColor.primary
+            }
+            
             UIView.animate(withDuration: 2, animations: {
-                self.informationLAbel.alpha = 0
+                self.informationLabel.alpha = 0
             })
-            self.informationLAbel.text = info.rawValue
+            self.informationLabel.text = info.rawValue
         }
     }
     private func showAlert(path: IndexPath) {
