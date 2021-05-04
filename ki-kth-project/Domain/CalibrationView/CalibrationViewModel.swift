@@ -17,8 +17,8 @@ final class CalibrationViewModel {
         case reloadAnayteListTableView
         case reloadConcentrationListTableView
         case updateChartUI(for: ChartViews, with: LineChartData)
-        case startActivityIndicators(message: InformationLabel)
-        case stopActivityIndicators(message: InformationLabel)
+        case startActivityIndicators(message: InformationLabel, alertType: AnalytePageAlertType)
+        case stopActivityIndicators(message: InformationLabel, alertType: AnalytePageAlertType)
     }
     
     var deviceID: String?
@@ -29,7 +29,6 @@ final class CalibrationViewModel {
     var concentrationTableViewCellModels: [ConcentrationTableViewCellModel] = [] {
         didSet {
             sendActionToViewController?(.reloadConcentrationListTableView)
-
         }
     }
     
@@ -64,21 +63,21 @@ final class CalibrationViewModel {
     func handleFromAnalyteTableView(action: AnalyteTableViewCellModel.ActionToParent) {
         switch action {
         case .toParent:
-            print("Handled by WelcomeViewModel")
+            print("Handled by CalibrationViewModel from analyte table view")
         }
     }
     
     func handleFromConcentrationTableView(action: ConcentrationTableViewCellModel.ActionToParent) {
         switch action {
         case .toParent:
-            print("Handled by WelcomeViewModel")
+            print("Handled by CalibrationViewModel from concentration table view")
         }
     }
     
     func analyteCalibrationRequired() {
-        sendActionToViewController?(.startActivityIndicators(message: .creating))
+        sendActionToViewController?(.startActivityIndicators(message: .creating, alertType: .neutralAppColor))
         guard let slope = self.regressionSlope, let constant = self.regressionConstant, let analyteID = self.latestHandledAnalyteId else {
-            sendActionToViewController?(.stopActivityIndicators(message: .calibrationParameterError))
+            sendActionToViewController?(.stopActivityIndicators(message: .calibrationParameterError, alertType: .redWarning))
         return }
         
         AnalyteDataAPI().calibrateAnalyte(slope: slope, constant: constant, id: analyteID) { [weak self] result in
@@ -107,18 +106,18 @@ final class CalibrationViewModel {
                     }
                 }
                 
-                self?.sendActionToViewController?(.stopActivityIndicators(message: .calibratedWithSuccess))
+                self?.sendActionToViewController?(.stopActivityIndicators(message: .calibratedWithSuccess, alertType: .greenInfo))
 
             case .failure(let error):
-                self?.sendActionToViewController?(.stopActivityIndicators(message: .calibratedWithFailure))
+                self?.sendActionToViewController?(.stopActivityIndicators(message: .calibratedWithFailure, alertType: .redWarning))
                 print(error.localizedDescription)
             }
         }
     }
     
     func fetchAllAnalytesForDevice(id: String) {
-        sendActionToViewController?(.startActivityIndicators(message: .fetching))
-        AnalyteDataAPI().getAllAnalytesForDevice(id) { [weak self] result in
+        sendActionToViewController?(.startActivityIndicators(message: .fetching, alertType: .neutralAppColor))
+        DeviceDataAPI().getAllAnalytesForDevice(id) { [weak self] result in
             switch result {
 
             case .success(let data):
@@ -146,67 +145,24 @@ final class CalibrationViewModel {
                     return viewModel
                 }
                 if data.isEmpty {
-                    self?.sendActionToViewController?(.stopActivityIndicators(message: .fetcedWithSuccessButNoAnalytesRegistered))
+                    self?.sendActionToViewController?(.stopActivityIndicators(message: .fetcedWithSuccessButNoAnalytesRegistered, alertType: .greenInfo))
                 } else {
-                    self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithSuccess))
+                    self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithSuccess, alertType: .greenInfo))
                 }
                 self?.analyteListTableViewCellModels = fetched
 
             case .failure(let error):
-                self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithFailure))
+                self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithFailure, alertType: .redWarning))
                 print(error.localizedDescription)
             }
         }
     }
     
-    
-    /// This method will not be used in current implementation
-    /*
-     func fetchAllAnaytesRequired() {
-
-         sendActionToViewController?(.startActivityIndicators(message: .fetching))
-         AnalyteDataAPI().getAllAnalytes { [weak self] result in
-             switch result {
-
-             case .success(let data):
-                 //TODO: Adjust sorting according to time
-                 let sorted = data.sorted {
-                     $0.updatedAt > $1.updatedAt
-                 }
-
-                 let fetched = sorted.map { (data) -> AnalyteTableViewCellModel in
-                     let analyte = Analyte(description: data.description,
-                                           identifier: data.uniqueIdentifier,
-                                           serverID: data._id,
-                                           calibrationParam: CalibrationParam(isCalibrated: data.calibrationParameters.isCalibrated, slope: data.calibrationParameters.slope ?? 0, constant: data.calibrationParameters.constant ?? 0))
-
-                     let viewModel = AnalyteTableViewCellModel(description: analyte.description,
-                                                           identifier: analyte.identifier,
-                                                           serverID: analyte.serverID,
-                                                           isCalibrated: analyte.calibrationParam.isCalibrated)
-                     viewModel.sendActionToParentModel = { [weak self] action in
-                         self?.handleFromAnalyteTableView(action: action)
-                     }
-                     return viewModel
-                 }
-
-                 self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithSuccess))
-                 self?.analyteListTableViewCellModels = fetched
-
-             case .failure(let error):
-                 self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithFailure))
-                 print(error.localizedDescription)
-             }
-         }
-     }
-     */
-    
-    
     func createAndPatchAnalyteRequested(by description: String) {
         
         guard let id = deviceID else { return }
         
-        sendActionToViewController?(.startActivityIndicators(message: .creating))
+        sendActionToViewController?(.startActivityIndicators(message: .creating, alertType: .neutralAppColor))
 
         AnalyteDataAPI().createAnalyte(description: description, owner: id) { [weak self] result in
             switch result {
@@ -225,18 +181,18 @@ final class CalibrationViewModel {
                                                       serverID: analyte.serverID,
                                                       isCalibrated: analyte.calibrationParam.isCalibrated)
                 
-                self?.sendActionToViewController?(.stopActivityIndicators(message: .createdWithSuccess))// here
+                self?.sendActionToViewController?(.stopActivityIndicators(message: .createdWithSuccess, alertType: .greenInfo))// here
                 self?.analyteListTableViewCellModels.insert(model, at: 0)
             case .failure(let error):
                 print(error.localizedDescription)
-                self?.sendActionToViewController?(.stopActivityIndicators(message: .createdWithFailure))
+                self?.sendActionToViewController?(.stopActivityIndicators(message: .createdWithFailure, alertType: .redWarning))
             }
         }
     }
     
     func getAnalytesByIdRequested(_ id: String){
         
-        sendActionToViewController?(.startActivityIndicators(message: .fetching))
+        sendActionToViewController?(.startActivityIndicators(message: .fetching, alertType: .neutralAppColor))
 
         AnalyteDataAPI().getAnalyteData(id) { [weak self] result  in
             switch result {
@@ -250,11 +206,11 @@ final class CalibrationViewModel {
                                             updatedAt: data.updatedAt)
                 
                 guard let time = data.measurements.first?.time else {
-                    self?.sendActionToViewController?(.stopActivityIndicators(message: .invalidData))
+                    self?.sendActionToViewController?(.stopActivityIndicators(message: .invalidData, alertType: .redWarning))
                     return
                 }
                 
-                let doubleTime = Double(time)
+                let doubleTime = Double(time) /// cast to double
             
                 let chartPoints = data.measurements.map { (measurement) -> ChartDataEntry in
                 
@@ -263,27 +219,27 @@ final class CalibrationViewModel {
                     return entry
                 }
                 self?.latestHandledAnalyteId = data._id
-                self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithSuccess))
+                self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithSuccess, alertType: .greenInfo))
 
                 self?.yValuesForMain = chartPoints
             case .failure(let error):
-                self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithFailure))
+                self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithFailure,  alertType: .redWarning))
                 print(error.localizedDescription)
             }
         }
     }
     
     func deletionByIdRequested(id: String) {
-        self.sendActionToViewController?(.startActivityIndicators(message: .deletingFromDatabase))
+        self.sendActionToViewController?(.startActivityIndicators(message: .deletingFromDatabase, alertType: .neutralAppColor))
           AnalyteDataAPI().deleteAnalyte(id) { (result) in
               switch result {
               case .success(_):
-                self.sendActionToViewController?(.stopActivityIndicators(message: .deletedWithSuccess))
+                self.sendActionToViewController?(.stopActivityIndicators(message: .deletedWithSuccess, alertType: .greenInfo))
                 let alert = UIAlertController(title: "Deleted from database", message: "Server message", preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "I understand", style: .default, handler: nil))
                 self.sendActionToViewController?(.presentView(view: alert))
               case .failure(let error):
-                self.sendActionToViewController?(.stopActivityIndicators(message: .deletionFailed))
+                self.sendActionToViewController?(.stopActivityIndicators(message: .deletionFailed, alertType: .redWarning))
                 print(error.localizedDescription)
               }
           }
@@ -434,6 +390,47 @@ final class CalibrationViewModel {
         data.setDrawValues(false)
         sendActionToViewController?(.updateChartUI(for: .linearRegressionChart, with: data))
     }
+    
+    /// This method will not be used in current implementation
+    /*
+     func fetchAllAnaytesRequired() {
+
+         sendActionToViewController?(.startActivityIndicators(message: .fetching))
+         AnalyteDataAPI().getAllAnalytes { [weak self] result in
+             switch result {
+
+             case .success(let data):
+                 //TODO: Adjust sorting according to time
+                 let sorted = data.sorted {
+                     $0.updatedAt > $1.updatedAt
+                 }
+
+                 let fetched = sorted.map { (data) -> AnalyteTableViewCellModel in
+                     let analyte = Analyte(description: data.description,
+                                           identifier: data.uniqueIdentifier,
+                                           serverID: data._id,
+                                           calibrationParam: CalibrationParam(isCalibrated: data.calibrationParameters.isCalibrated, slope: data.calibrationParameters.slope ?? 0, constant: data.calibrationParameters.constant ?? 0))
+
+                     let viewModel = AnalyteTableViewCellModel(description: analyte.description,
+                                                           identifier: analyte.identifier,
+                                                           serverID: analyte.serverID,
+                                                           isCalibrated: analyte.calibrationParam.isCalibrated)
+                     viewModel.sendActionToParentModel = { [weak self] action in
+                         self?.handleFromAnalyteTableView(action: action)
+                     }
+                     return viewModel
+                 }
+
+                 self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithSuccess))
+                 self?.analyteListTableViewCellModels = fetched
+
+             case .failure(let error):
+                 self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithFailure))
+                 print(error.localizedDescription)
+             }
+         }
+     }
+     */
 }
 
 // MARK: - MODELS
@@ -442,6 +439,12 @@ enum ChartViews {
     case mainChartForRawData
     case calibrationChart
     case linearRegressionChart
+}
+
+enum AnalytePageAlertType {
+    case redWarning
+    case greenInfo
+    case neutralAppColor
 }
 
 enum InformationLabel: String {
@@ -456,7 +459,7 @@ enum InformationLabel: String {
     case createdWithSuccess = "Created with success!"
     case createdWithFailure = "Create analyte failed!"
     case invalidData = "Invalid data for graphing!"
-    case deletingFromDatabase = "Deleting from database"
+    case deletingFromDatabase = "Deleting from database..."
     case deletedWithSuccess = "Deleted with success!"
     case deletionFailed = "Deletion from database failed!"
 }

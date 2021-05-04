@@ -7,7 +7,7 @@
 
 import UIKit
 
-class AnalyteListTableViewCell: UITableViewCell {
+final class AnalyteListTableViewCell: UITableViewCell {
 
     static let nibName = "AnalyteListTableViewCell"
     

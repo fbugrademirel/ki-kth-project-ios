@@ -33,7 +33,8 @@ class ActivityIndicatorButton: UIButton {
     private func setActivityIndicator() {
         ai.isHidden = true
         ai.alpha = 0
-        ai.tintColor = .systemBackground
+        ai.color = AppColor.primary
+        ai.tintColor = AppColor.primary
         ai.isUserInteractionEnabled = false
         ai.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(ai)

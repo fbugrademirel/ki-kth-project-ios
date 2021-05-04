@@ -8,7 +8,7 @@
 import UIKit
 import Charts
 
-class CalibrationViewController: UIViewController {
+final class CalibrationViewController: UIViewController {
     
     let service = NetworkingService()
     
@@ -16,7 +16,7 @@ class CalibrationViewController: UIViewController {
     
     var refreshControl = UIRefreshControl()
     
-    @IBOutlet weak var informationLAbel: UILabel!
+    @IBOutlet weak var informationLabel: UILabel!
     @IBOutlet weak var corCoefficent: UILabel!
     @IBOutlet weak var mainChartView: LineChartView!
     @IBOutlet weak var calGraphView1: LineChartView!
@@ -24,8 +24,8 @@ class CalibrationViewController: UIViewController {
     @IBOutlet weak var concentrationTable: UITableView!
     @IBOutlet weak var analyteListTableView: UITableView!
     @IBOutlet weak var potential: UILabel!
-    @IBOutlet weak var concTextView: UITextField!
-    @IBOutlet weak var analyteDescriptionTextView: UITextField!
+    @IBOutlet weak var concTextField: IndicatorTextField!
+    @IBOutlet weak var analyteDescriptionTextField: IndicatorTextField!
     @IBOutlet weak var addAnalyteButton: ActivityIndicatorButton!
     @IBOutlet weak var analytesStackView: UIStackView!
     @IBOutlet weak var calibrationStackView: UIStackView!
@@ -33,6 +33,8 @@ class CalibrationViewController: UIViewController {
     @IBOutlet weak var calLabelsStackView: UIStackView!
     @IBOutlet weak var corEquationLabel: UILabel!
     @IBOutlet weak var calibrateButton: ActivityIndicatorButton!
+    @IBOutlet weak var blockViewForCancelling: UIView!
+    @IBOutlet weak var concentrationElementsStackView: UIStackView!
     
     
 // MARK: - Lifecyle
@@ -52,27 +54,32 @@ class CalibrationViewController: UIViewController {
 // MARK: - IBAction
     @IBAction func addConc(_ sender: UIButton) {
         
-        guard let conc1 = concTextView.text, let pot1 = potential.text?.replacingOccurrences(of: " mV", with: "") else { return }
+        guard let conc1 = concTextField.text, let pot1 = potential.text?.replacingOccurrences(of: " mV", with: "") else { return }
+        
         guard let conc2 = Double(conc1), let pot2 = Double(pot1) else {
-            
+            concTextField.indicatesError = true
             potential.text = "Invalid entry"
             return
         }
                 
         let model = ConcentrationTableViewCellModel(concentration: conc2, log: log10(conc2), potential: Double(pot2))
         viewModel.concentrationTableViewCellModels.append(model)
-        concTextView.text = ""
-        concTextView.resignFirstResponder()
+        concTextField.text = ""
+        dismissKeyboard()
     }
     
     
     @IBAction func createAndRegisterAnalyte(_ sender: Any) {
-        if analyteDescriptionTextView.text == "" {
+        
+        guard let desc = analyteDescriptionTextField.text else { return }
+        
+        if analyteDescriptionTextField.text == "" {
+            analyteDescriptionTextField.indicatesError = true
             return
         }
-        guard let desc = analyteDescriptionTextView.text else { return }
-        analyteDescriptionTextView.text = ""
-        analyteDescriptionTextView.resignFirstResponder()
+        
+        analyteDescriptionTextField.text = ""
+        dismissKeyboard()
         viewModel.createAndPatchAnalyteRequested(by: desc)
         
     }
@@ -139,6 +146,22 @@ class CalibrationViewController: UIViewController {
         viewModel.analyteCalibrationRequired()
     }
     
+    @objc func dismissKeyboard() {
+        self.blockViewForCancelling.isUserInteractionEnabled = false
+        analytesStackView.isUserInteractionEnabled = false
+        concentrationElementsStackView.isUserInteractionEnabled = false
+        UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut) {
+            self.blockViewForCancelling.alpha = 0
+        } completion: { _ in
+            self.view.sendSubviewToBack(self.analytesStackView)
+            self.view.sendSubviewToBack(self.concentrationElementsStackView)
+            self.analytesStackView.isUserInteractionEnabled = true
+            self.concentrationElementsStackView.isUserInteractionEnabled = true
+        }
+        analyteDescriptionTextField.resignFirstResponder()
+        concTextField.resignFirstResponder()
+    }
+    
 // MARK: - Handle from view model
     func handleReceivedFromViewModel(action :CalibrationViewModel.Action) {
         switch action {
@@ -156,10 +179,10 @@ class CalibrationViewController: UIViewController {
             updateUIforAnalyteListTableView()
         case .reloadConcentrationListTableView:
             updateUIforConcentrationListTableView()
-        case .startActivityIndicators(let message):
-            startActivityIndicators(with: message)
-        case .stopActivityIndicators(message: let message):
-            stopActivityIndicators(with: message)
+        case .startActivityIndicators(let message, let alert):
+            startActivityIndicators(with: message, with: alert)
+        case .stopActivityIndicators(let message, let alert):
+            stopActivityIndicators(with: message, with: alert)
         }
     }
     
@@ -167,7 +190,7 @@ class CalibrationViewController: UIViewController {
     
     private func resetAllTablesAndChartData() {
         
-        informationLAbel.text = ""
+        informationLabel.text = ""
         corCoefficent.text = ""
         corEquationLabel.text = ""
         
@@ -237,12 +260,20 @@ class CalibrationViewController: UIViewController {
     
     private func setUI() {
         
+        //Block View For Cancelling
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        blockViewForCancelling.addGestureRecognizer(tapGesture)
         
+        
+        //Text Field Delegates
+        concTextField.delegate = self
+        analyteDescriptionTextField.delegate = self
+                
         // Information label
-        informationLAbel.font = UIFont.appFont(placement: .title)
-        informationLAbel.alpha = 0
-        informationLAbel.text = ""
-        informationLAbel.textColor = AppColor.primary
+        informationLabel.font = UIFont.appFont(placement: .title)
+        informationLabel.alpha = 0
+        informationLabel.text = ""
+        informationLabel.textColor = AppColor.primary
         
         // Cor. Coefficient label
         corCoefficent.alpha = 0
@@ -277,6 +308,18 @@ class CalibrationViewController: UIViewController {
                 btn.layer.cornerRadius = 10
             } else if let text = $0 as? UITextField {
                 text.font = UIFont.appFont(placement: .text)
+            }
+        }
+        
+        concentrationElementsStackView.subviews.forEach {
+            if let btn = $0 as? ActivityIndicatorButton {
+                btn.titleLabel?.font = UIFont.appFont(placement: .buttonTitle)
+                btn.backgroundColor = AppColor.secondary
+                btn.layer.cornerRadius = 10
+            } else if let text = $0 as? UITextField {
+                text.font = UIFont.appFont(placement: .text)
+            } else if let label = $0 as? UILabel {
+                label.font = UIFont.appFont(placement: .boldText)
             }
         }
         
@@ -346,26 +389,44 @@ class CalibrationViewController: UIViewController {
         lineChartView.xAxis.labelTextColor = .black
     }
     
-    private func startActivityIndicators(with info: InformationLabel){
+    private func startActivityIndicators(with info: InformationLabel, with alert: AnalytePageAlertType){
         DispatchQueue.main.async {
             self.addAnalyteButton.startActivity()
             self.calibrateButton.startActivity()
-            self.informationLAbel.textColor = .systemRed
-            self.informationLAbel.text = info.rawValue
-            self.informationLAbel.alpha = 1
+            
+            switch alert {
+            case .greenInfo:
+                self.informationLabel.textColor = .systemGreen
+            case .redWarning:
+                self.informationLabel.textColor = .systemRed
+            case .neutralAppColor:
+                self.informationLabel.textColor = AppColor.primary
+            }
+        
+            self.informationLabel.text = info.rawValue
+            self.informationLabel.alpha = 1
         }
     }
     
-    private func stopActivityIndicators(with info: InformationLabel) {
+    private func stopActivityIndicators(with info: InformationLabel, with alert: AnalytePageAlertType) {
         DispatchQueue.main.async {
             self.addAnalyteButton.stopActivity()
             self.calibrateButton.stopActivity()
             self.refreshControl.endRefreshing()
-            self.informationLAbel.textColor = .systemRed
+            
+            switch alert {
+            case .greenInfo:
+                self.informationLabel.textColor = .systemGreen
+            case .redWarning:
+                self.informationLabel.textColor = .systemRed
+            case .neutralAppColor:
+                self.informationLabel.textColor = AppColor.primary
+            }
+            
             UIView.animate(withDuration: 2, animations: {
-                self.informationLAbel.alpha = 0
+                self.informationLabel.alpha = 0
             })
-            self.informationLAbel.text = info.rawValue
+            self.informationLabel.text = info.rawValue
         }
     }
     private func showAlert(path: IndexPath) {
@@ -373,7 +434,6 @@ class CalibrationViewController: UIViewController {
         alert.addAction(UIAlertAction(title: "Delete only from this device", style: .default, handler: { _ in
 
             self.analyteListTableView.beginUpdates()
-//            self.viewModel.analytes.remove(at: path.row)
             self.viewModel.analyteListTableViewCellModels.remove(at: path.row)
             self.analyteListTableView.deleteRows(at: [path], with: .fade)
             self.analyteListTableView.endUpdates()
@@ -395,15 +455,47 @@ class CalibrationViewController: UIViewController {
         }))
         present(alert, animated: true, completion: nil)
     }
+    
+    private func clearErrorIndication() {
+        analyteDescriptionTextField.indicatesError = false
+        concTextField.indicatesError = false
+    }
 }
 
 
-// MARK: - TextView Delegate Extension
-
-extension CalibrationViewController: UITextViewDelegate {
+// MARK: - TextField Delegate Extention
+extension CalibrationViewController: UITextFieldDelegate {
     
-    func textViewDidEndEditing(_ textView: UITextView) {
-        textView.text = ""
+    func textFieldDidEndEditing(_ textField: UITextField) {
+       clearErrorIndication()
+    }
+    
+    func textFieldDidChangeSelection(_ textField: UITextField) {
+        clearErrorIndication()
+    }
+    
+    func textFieldShouldClear(_ textField: UITextField) -> Bool {
+        clearErrorIndication()
+        return true
+    }
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        
+        if textField.isEqual(analyteDescriptionTextField) {
+            analyteDescriptionTextField.indicatesError = false
+            self.view.bringSubviewToFront(analytesStackView)
+            blockViewForCancelling.isUserInteractionEnabled = true
+            UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseIn) {
+                self.blockViewForCancelling.alpha = 0.9
+            }
+        } else if textField .isEqual(concTextField){
+            concTextField.indicatesError = false
+            self.view.bringSubviewToFront(concentrationElementsStackView)
+            blockViewForCancelling.isUserInteractionEnabled = true
+            UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseIn) {
+                self.blockViewForCancelling.alpha = 0.9
+            }
+        }
     }
 }
 

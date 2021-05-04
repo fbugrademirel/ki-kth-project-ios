@@ -8,19 +8,20 @@
 import UIKit
 import Charts
 
-class DeviceReadingViewController: UIViewController {
+final class DeviceReadingViewController: UIViewController {
 
-    
     var refreshController = UIRefreshControl()
     
     @IBOutlet weak var deviceListTableView: UITableView!
     @IBOutlet weak var chartsStackView: UIStackView!
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var informationLabel: UILabel!
-    @IBOutlet weak var deviceNameTextField: UITextField!
-    @IBOutlet weak var personalIDTextField: UITextField!
+    @IBOutlet weak var deviceNameTextField: IndicatorTextField!
+    @IBOutlet weak var personalIDTextField: IndicatorTextField!
     @IBOutlet weak var registerDeviceButton: ActivityIndicatorButton!
     @IBOutlet weak var valueOnTheGraphLabel: UILabel!
+    @IBOutlet weak var blockViewForCancelling: UIView!
+    @IBOutlet weak var registerItemsStackView: UIStackView!
     
     var viewModel: DeviceReadingViewModel!
     
@@ -54,10 +55,10 @@ class DeviceReadingViewController: UIViewController {
             navigationController?.pushViewController(vc, animated: true)
         case .updateChartUI(with: let data):
             updateChartUI(with: data)
-        case .startActivityIndicators(message: let message):
-            startActivityIndicators(with: message)
-        case .stopActivityIndicators(message: let message):
-            stopActivityIndicators(with: message)
+        case .startActivityIndicators(message: let message, alert: let alert):
+            startActivityIndicators(with: message, with: alert)
+        case .stopActivityIndicators(message: let message, alert: let alert):
+            stopActivityIndicators(with: message, with: alert)
         case .presentView(with: let view):
             present(view, animated: true, completion: nil)
         }
@@ -73,8 +74,7 @@ class DeviceReadingViewController: UIViewController {
         deviceNameTextField.text = ""
         personalIDTextField.text = ""
         
-        deviceNameTextField.resignFirstResponder()
-        personalIDTextField.resignFirstResponder()
+        dismissKeyboard()
         
         guard let intID = Int(id) else { return }
         
@@ -88,13 +88,17 @@ class DeviceReadingViewController: UIViewController {
     // MARK: - UI
     private func setUI() {
         
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        blockViewForCancelling.addGestureRecognizer(gesture)
+
         registerDeviceButton.titleLabel?.font = UIFont.appFont(placement: .buttonTitle)
         registerDeviceButton.layer.cornerRadius = 10
         
         personalIDTextField.font = UIFont.appFont(placement: .text)
+        personalIDTextField.delegate = self
         deviceNameTextField.font = UIFont.appFont(placement: .text)
+        deviceNameTextField.delegate = self
         
-    
         valueOnTheGraphLabel.font = UIFont.appFont(placement: .title)
         valueOnTheGraphLabel.text = ""
         valueOnTheGraphLabel.textColor = .systemRed
@@ -118,20 +122,50 @@ class DeviceReadingViewController: UIViewController {
         deviceListTableView.register(UINib(nibName: DeviceListTableViewCell.nibName, bundle: nil), forCellReuseIdentifier: DeviceListTableViewCell.nibName)
     }
     
-    private func startActivityIndicators(with info: DeviceInformationLabel){
+    @objc func dismissKeyboard() {
+        self.blockViewForCancelling.isUserInteractionEnabled = false
+        registerItemsStackView.isUserInteractionEnabled = false
+        UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut) {
+            self.blockViewForCancelling.alpha = 0
+        } completion: { _ in
+            self.view.sendSubviewToBack(self.registerItemsStackView)
+            self.registerItemsStackView.isUserInteractionEnabled = true
+        }
+        personalIDTextField.resignFirstResponder()
+        deviceNameTextField.resignFirstResponder()
+    }
+    
+    private func startActivityIndicators(with info: DeviceInformationLabel, with alert: DevicePageAlertType){
         DispatchQueue.main.async {
-            self.informationLabel.textColor = .systemRed
+
+            switch alert {
+            case .greenInfo:
+                self.informationLabel.textColor = .systemGreen
+            case .redWarning:
+                self.informationLabel.textColor = .systemRed
+            case .neutralAppColor:
+                self.informationLabel.textColor = AppColor.primary
+            }
+            
             self.informationLabel.text = info.rawValue
             self.informationLabel.alpha = 1
             self.registerDeviceButton.startActivity()
         }
     }
     
-    private func stopActivityIndicators(with info: DeviceInformationLabel) {
+    private func stopActivityIndicators(with info: DeviceInformationLabel, with alert: DevicePageAlertType) {
         DispatchQueue.main.async {
             self.registerDeviceButton.stopActivity()
             self.refreshController.endRefreshing()
-            self.informationLabel.textColor = .systemRed
+            switch alert {
+            case .greenInfo:
+                self.informationLabel.textColor = .systemGreen
+            case .redWarning:
+                self.informationLabel.textColor = .systemRed
+            case .neutralAppColor:
+                self.informationLabel.textColor = AppColor.primary
+            }
+
             UIView.animate(withDuration: 2, animations: {
                 self.informationLabel.alpha = 0
             })
@@ -251,6 +285,20 @@ class DeviceReadingViewController: UIViewController {
         present(alert, animated: true, completion: nil)
     }
 
+}
+
+
+
+// MARK: - TextField Delegate
+
+extension DeviceReadingViewController: UITextFieldDelegate {
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        self.view.bringSubviewToFront(registerItemsStackView)
+        blockViewForCancelling.isUserInteractionEnabled = true
+        UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseIn) {
+            self.blockViewForCancelling.alpha = 0.9
+        }
+    }
 }
 
 // MARK: - TableView Data Source Extention
