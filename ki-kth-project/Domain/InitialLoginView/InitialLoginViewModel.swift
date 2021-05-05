@@ -19,4 +19,18 @@ final class InitialLoginViewModel {
         
     }
     
+    func loginRequested(email: String, password: String) {
+        AccountManager.login(email: email, password: password) { error in
+            Log.e(error)
+        }
+        
+        AuthenticationManager().getAuthToken { result in
+            switch result {
+            case .success(let token):
+                Log.s(token)
+            case .failure(let error):
+                Log.e(error)
+            }
+        }
+    }
 }

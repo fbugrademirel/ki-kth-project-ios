@@ -38,6 +38,7 @@ final class DeviceReadingViewController: UIViewController {
         
     }
     
+    // MARK: -TODO: Move expensive operations to the viewDidAppear if you need a smoother first login!
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         viewModel.reloadTableViewsRequired()

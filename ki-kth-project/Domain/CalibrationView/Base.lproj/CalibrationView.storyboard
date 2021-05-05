@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="uSr-49-Bbt">
-    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <device id="ipad12_9rounded" orientation="portrait" layout="fullscreen" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
@@ -19,22 +19,22 @@
             <objects>
                 <viewController id="uSr-49-Bbt" customClass="CalibrationViewController" customModule="ki_kth_project" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="itM-KU-kqu">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <rect key="frame" x="0.0" y="0.0" width="1024" height="1366"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="YZs-qh-20f" userLabel="ChartsStackView">
-                                <rect key="frame" x="103.5" y="241" width="207" height="424"/>
+                                <rect key="frame" x="256" y="156" width="512" height="1034"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="szc-r6-D3d" customClass="LineChartView" customModule="Charts">
-                                        <rect key="frame" x="0.0" y="0.0" width="207" height="207"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="512" height="512"/>
                                         <color key="backgroundColor" systemColor="systemGray2Color"/>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="XWU-bd-GDu" userLabel="Cal Graph View1" customClass="LineChartView" customModule="Charts">
-                                        <rect key="frame" x="0.0" y="212" width="207" height="103.5"/>
+                                        <rect key="frame" x="0.0" y="517" width="512" height="256"/>
                                         <color key="backgroundColor" systemColor="systemGray2Color"/>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dWn-pK-gpg" userLabel="Cal Graph View2" customClass="LineChartView" customModule="Charts">
-                                        <rect key="frame" x="26" y="320.5" width="155" height="103.5"/>
+                                        <rect key="frame" x="64" y="778" width="384" height="256"/>
                                         <color key="backgroundColor" systemColor="systemGray2Color"/>
                                     </view>
                                 </subviews>
@@ -46,15 +46,15 @@
                                 </constraints>
                             </stackView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="rcL-2p-Mf6" userLabel="AnalytesStackView">
-                                <rect key="frame" x="1" y="241" width="99.5" height="52.5"/>
+                                <rect key="frame" x="7" y="156" width="246" height="52.5"/>
                                 <subviews>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Enter Analyte Description..." textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="rKL-xW-bBk" customClass="IndicatorTextField" customModule="ki_kth_project" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="0.0" width="99.5" height="18.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="246" height="18.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
                                     </textField>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tI0-UI-iTA" customClass="ActivityIndicatorButton" customModule="ki_kth_project" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="24.5" width="99.5" height="28"/>
+                                        <rect key="frame" x="0.0" y="24.5" width="246" height="28"/>
                                         <inset key="contentEdgeInsets" minX="6" minY="3" maxX="6" maxY="3"/>
                                         <state key="normal" title="Register">
                                             <color key="titleColor" name="primary"/>
@@ -66,25 +66,25 @@
                                 </subviews>
                             </stackView>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="tZ2-yM-rbM">
-                                <rect key="frame" x="1" y="299.5" width="99.5" height="212"/>
+                                <rect key="frame" x="7" y="214.5" width="246" height="517"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </tableView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="ujh-HR-eCL" userLabel="ConcentationStackView">
-                                <rect key="frame" x="313.5" y="241" width="99.5" height="88.5"/>
+                                <rect key="frame" x="771" y="156" width="246" height="88.5"/>
                                 <subviews>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Enter Concentration..." textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="jFB-fG-wcz" customClass="IndicatorTextField" customModule="ki_kth_project" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="0.0" width="99.5" height="18.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="246" height="18.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" keyboardType="phonePad"/>
                                     </textField>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Potential (mV)" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Tq8-Td-vE1">
-                                        <rect key="frame" x="0.0" y="24.5" width="99.5" height="24"/>
+                                        <rect key="frame" x="0.0" y="24.5" width="246" height="24"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                         <color key="textColor" systemColor="systemRedColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="R1P-eD-5wr" customClass="ActivityIndicatorButton" customModule="ki_kth_project" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="54.5" width="99.5" height="34"/>
+                                        <rect key="frame" x="0.0" y="54.5" width="246" height="34"/>
                                         <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="17"/>
                                         <state key="normal" title="Add to List">
                                             <color key="titleColor" name="primary"/>
@@ -96,35 +96,35 @@
                                 </subviews>
                             </stackView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="U4L-id-Swy" userLabel="CalibrationStackView">
-                                <rect key="frame" x="313.5" y="335.5" width="99.5" height="332"/>
+                                <rect key="frame" x="771" y="250.5" width="246" height="449.5"/>
                                 <subviews>
                                     <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="fJc-L6-Kdd">
-                                        <rect key="frame" x="0.0" y="0.0" width="99.5" height="224"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="246" height="341.5"/>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <stackView key="tableHeaderView" opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" id="n0e-as-ZbR">
-                                            <rect key="frame" x="0.0" y="0.0" width="99.5" height="44"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="246" height="44"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="#" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IxV-Q2-o8f">
-                                                    <rect key="frame" x="0.0" y="13.5" width="25" height="17"/>
+                                                    <rect key="frame" x="0.0" y="13.5" width="61.5" height="17"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Conc." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BRv-RX-X8q">
-                                                    <rect key="frame" x="25" y="13.5" width="25" height="17"/>
+                                                    <rect key="frame" x="61.5" y="13.5" width="61.5" height="17"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Log(c)" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eNA-Qk-fbJ">
-                                                    <rect key="frame" x="50" y="13.5" width="24.5" height="17"/>
+                                                    <rect key="frame" x="123" y="13.5" width="61.5" height="17"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="   mV" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eHx-E3-Hpr">
-                                                    <rect key="frame" x="74.5" y="13.5" width="25" height="17"/>
+                                                    <rect key="frame" x="184.5" y="13.5" width="61.5" height="17"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <color key="textColor" systemColor="systemRedColor"/>
                                                     <nil key="highlightedColor"/>
@@ -133,10 +133,10 @@
                                         </stackView>
                                     </tableView>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="ebE-N4-pQB">
-                                        <rect key="frame" x="0.0" y="230" width="99.5" height="30"/>
+                                        <rect key="frame" x="0.0" y="347.5" width="246" height="30"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4IJ-fd-glk" customClass="ActivityIndicatorButton" customModule="ki_kth_project" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="0.0" width="61" height="30"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="151.5" height="30"/>
                                                 <state key="normal" title="Clear Selected">
                                                     <color key="titleColor" name="primary"/>
                                                 </state>
@@ -145,7 +145,7 @@
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eMS-I0-BDs" customClass="ActivityIndicatorButton" customModule="ki_kth_project" customModuleProvider="target">
-                                                <rect key="frame" x="67" y="0.0" width="32.5" height="30"/>
+                                                <rect key="frame" x="157.5" y="0.0" width="88.5" height="30"/>
                                                 <state key="normal" title="Clear All">
                                                     <color key="titleColor" name="primary"/>
                                                 </state>
@@ -156,7 +156,7 @@
                                         </subviews>
                                     </stackView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="At1-E8-BbU" customClass="ActivityIndicatorButton" customModule="ki_kth_project" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="266" width="99.5" height="30"/>
+                                        <rect key="frame" x="0.0" y="383.5" width="246" height="30"/>
                                         <state key="normal" title="Draw Calibration Curve">
                                             <color key="titleColor" name="primary"/>
                                         </state>
@@ -165,7 +165,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ztU-M1-Rcs" customClass="ActivityIndicatorButton" customModule="ki_kth_project" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="302" width="99.5" height="30"/>
+                                        <rect key="frame" x="0.0" y="419.5" width="246" height="30"/>
                                         <state key="normal" title="Draw Linear Calibration Graph">
                                             <color key="titleColor" name="primary"/>
                                         </state>
@@ -176,25 +176,25 @@
                                 </subviews>
                             </stackView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Information Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="98u-zR-Seg">
-                                <rect key="frame" x="72.5" y="208.5" width="269" height="20.5"/>
+                                <rect key="frame" x="179" y="93" width="666" height="51"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="L9W-fP-mIU">
-                                <rect key="frame" x="129.5" y="677" width="155" height="10.5"/>
+                                <rect key="frame" x="320" y="1202" width="384" height="25.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Mzr-cR-Dg1" userLabel="Cor Equation">
-                                <rect key="frame" x="129.5" y="693.5" width="155" height="10"/>
+                                <rect key="frame" x="320" y="1233.5" width="384" height="25.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="syh-WV-n72" customClass="ActivityIndicatorButton" customModule="ki_kth_project" customModuleProvider="target">
-                                <rect key="frame" x="168" y="706.5" width="78" height="30"/>
+                                <rect key="frame" x="416" y="1262" width="192" height="30"/>
                                 <inset key="titleEdgeInsets" minX="6" minY="6" maxX="6" maxY="6"/>
                                 <state key="normal" title="Calibrate">
                                     <color key="titleColor" name="primary"/>

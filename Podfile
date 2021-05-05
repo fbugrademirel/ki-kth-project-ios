@@ -6,5 +6,7 @@ target 'ki-kth-project' do
 
   # Pods for ki-kth-project
   pod 'Charts'
+  pod 'KeychainAccess', '~> 4.2'
+  pod 'JWTDecode', '~> 2.6'
 
 end

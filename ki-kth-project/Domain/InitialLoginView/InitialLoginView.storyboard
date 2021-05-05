@@ -21,7 +21,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="1024" height="1346"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bFx-bX-2oI">
-                                        <rect key="frame" x="0.0" y="0.0" width="1024" height="1346"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="1024" height="1347"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacing="12" translatesAutoresizingMaskIntoConstraints="NO" id="tWg-nm-vcH">
                                                 <rect key="frame" x="256" y="150" width="512" height="114"/>
@@ -29,7 +29,7 @@
                                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Enter your e-mail..." textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="DaY-4J-Jli" customClass="IndicatorTextField" customModule="ki_kth_project" customModuleProvider="target">
                                                         <rect key="frame" x="0.0" y="0.0" width="512" height="30"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                        <textInputTraits key="textInputTraits" textContentType="email"/>
+                                                        <textInputTraits key="textInputTraits" autocorrectionType="no" keyboardType="emailAddress" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no" textContentType="email"/>
                                                     </textField>
                                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Enter your password..." textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="mJC-g5-NVY" customClass="IndicatorTextField" customModule="ki_kth_project" customModuleProvider="target">
                                                         <rect key="frame" x="0.0" y="42" width="512" height="30"/>
@@ -57,11 +57,11 @@
                                     </view>
                                 </subviews>
                                 <constraints>
+                                    <constraint firstItem="bFx-bX-2oI" firstAttribute="height" secondItem="5UA-dP-7a8" secondAttribute="height" constant="1" id="9gI-xM-ccW"/>
                                     <constraint firstAttribute="trailing" secondItem="bFx-bX-2oI" secondAttribute="trailing" id="Ghh-dB-HqB"/>
                                     <constraint firstAttribute="bottom" secondItem="bFx-bX-2oI" secondAttribute="bottom" id="VDq-dw-EzG"/>
                                     <constraint firstItem="bFx-bX-2oI" firstAttribute="top" secondItem="5UA-dP-7a8" secondAttribute="top" id="Ven-7X-hqr"/>
                                     <constraint firstItem="bFx-bX-2oI" firstAttribute="leading" secondItem="5UA-dP-7a8" secondAttribute="leading" id="dNs-GP-CK2"/>
-                                    <constraint firstItem="bFx-bX-2oI" firstAttribute="height" secondItem="5UA-dP-7a8" secondAttribute="height" id="fVI-Ou-k54"/>
                                     <constraint firstItem="bFx-bX-2oI" firstAttribute="width" secondItem="5UA-dP-7a8" secondAttribute="width" id="qxw-ok-Xj4"/>
                                 </constraints>
                                 <viewLayoutGuide key="contentLayoutGuide" id="gN6-GD-gAa"/>
@@ -79,6 +79,12 @@
                             <constraint firstItem="5UA-dP-7a8" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="trT-oa-or6"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="emailTextField" destination="DaY-4J-Jli" id="ozA-7c-ccE"/>
+                        <outlet property="loginButton" destination="Rld-ks-mV1" id="CsY-7R-NDo"/>
+                        <outlet property="passwordTextField" destination="mJC-g5-NVY" id="EN8-WG-RLC"/>
+                        <outlet property="scrollView" destination="5UA-dP-7a8" id="eOD-12-MH8"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>

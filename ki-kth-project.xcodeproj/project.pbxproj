@@ -23,6 +23,10 @@
 		7C066DB82634BF450030B103 /* SourceSansPro-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7C066DAB2634BF450030B103 /* SourceSansPro-SemiBold.ttf */; };
 		7C066DB92634BF450030B103 /* SourceSansPro-ExtraLightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7C066DAC2634BF450030B103 /* SourceSansPro-ExtraLightItalic.ttf */; };
 		7C066DBA2634BF450030B103 /* SourceSansPro-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7C066DAD2634BF450030B103 /* SourceSansPro-Italic.ttf */; };
+		7C22FEEF2643372D005861E9 /* AuthenticationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C22FEEE2643372D005861E9 /* AuthenticationManager.swift */; };
+		7C22FEF226433795005861E9 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C22FEF126433795005861E9 /* Log.swift */; };
+		7C22FEF426433889005861E9 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C22FEF326433889005861E9 /* UserDefaults.swift */; };
+		7C22FEF626435A43005861E9 /* AccountManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C22FEF526435A43005861E9 /* AccountManager.swift */; };
 		7C3C27DF26258FBD00F83DAA /* AnalyteListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C3C27DD26258FBD00F83DAA /* AnalyteListTableViewCell.swift */; };
 		7C3C27E026258FBD00F83DAA /* AnalyteListTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7C3C27DE26258FBD00F83DAA /* AnalyteListTableViewCell.xib */; };
 		7C3C27E92625C1EB00F83DAA /* ActivityIndicatorButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C3C27E82625C1EB00F83DAA /* ActivityIndicatorButton.swift */; };
@@ -71,6 +75,10 @@
 		7C066DAB2634BF450030B103 /* SourceSansPro-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceSansPro-SemiBold.ttf"; sourceTree = "<group>"; };
 		7C066DAC2634BF450030B103 /* SourceSansPro-ExtraLightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceSansPro-ExtraLightItalic.ttf"; sourceTree = "<group>"; };
 		7C066DAD2634BF450030B103 /* SourceSansPro-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceSansPro-Italic.ttf"; sourceTree = "<group>"; };
+		7C22FEEE2643372D005861E9 /* AuthenticationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationManager.swift; sourceTree = "<group>"; };
+		7C22FEF126433795005861E9 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
+		7C22FEF326433889005861E9 /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
+		7C22FEF526435A43005861E9 /* AccountManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountManager.swift; sourceTree = "<group>"; };
 		7C3C27DD26258FBD00F83DAA /* AnalyteListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyteListTableViewCell.swift; sourceTree = "<group>"; };
 		7C3C27DE26258FBD00F83DAA /* AnalyteListTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AnalyteListTableViewCell.xib; sourceTree = "<group>"; };
 		7C3C27E82625C1EB00F83DAA /* ActivityIndicatorButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicatorButton.swift; sourceTree = "<group>"; };
@@ -153,6 +161,14 @@
 			path = SourceSansPro;
 			sourceTree = "<group>";
 		};
+		7C22FEF026433789005861E9 /* Log */ = {
+			isa = PBXGroup;
+			children = (
+				7C22FEF126433795005861E9 /* Log.swift */,
+			);
+			path = Log;
+			sourceTree = "<group>";
+		};
 		7C3C27D526258F2D00F83DAA /* ConcentrationTableViewCell */ = {
 			isa = PBXGroup;
 			children = (
@@ -185,8 +201,10 @@
 		7CDA37FE2623B0C700874665 /* API */ = {
 			isa = PBXGroup;
 			children = (
-				7CDA37FF2623B0D700874665 /* AnalyteDataAPI.swift */,
+				7C22FEF526435A43005861E9 /* AccountManager.swift */,
+				7C22FEEE2643372D005861E9 /* AuthenticationManager.swift */,
 				7C943D10263D854600EC7AFC /* DeviceDataAPI.swift */,
+				7CDA37FF2623B0D700874665 /* AnalyteDataAPI.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -251,6 +269,7 @@
 		7CDC8E392623AF4200430BD7 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				7C22FEF026433789005861E9 /* Log */,
 				7C9E01F5263D8E72003ACC6A /* Components */,
 				7C066D9F2634BF450030B103 /* Fonts */,
 				7C066D8C2634775F0030B103 /* UI */,
@@ -271,6 +290,7 @@
 			isa = PBXGroup;
 			children = (
 				7CDEFBA02629C15B00CA3E66 /* StoryboardInstantiable.swift */,
+				7C22FEF326433889005861E9 /* UserDefaults.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -458,11 +478,14 @@
 				7CDC8E222623AE6B00430BD7 /* CalibrationViewController.swift in Sources */,
 				7CF344B22642F79C00968E7F /* InitialLoginViewController.swift in Sources */,
 				7CDEFBA12629C15B00CA3E66 /* StoryboardInstantiable.swift in Sources */,
+				7C22FEF426433889005861E9 /* UserDefaults.swift in Sources */,
 				7C066D8E2634777E0030B103 /* AppColor.swift in Sources */,
 				7CDC8E1E2623AE6B00430BD7 /* AppDelegate.swift in Sources */,
 				7C4E33F72624754000C42669 /* ConcentrationTableViewCell.swift in Sources */,
+				7C22FEF226433795005861E9 /* Log.swift in Sources */,
 				7C943D11263D854600EC7AFC /* DeviceDataAPI.swift in Sources */,
 				7CE2238326399BC000BD8C5B /* DeviceListTableViewCellViewModel.swift in Sources */,
+				7C22FEEF2643372D005861E9 /* AuthenticationManager.swift in Sources */,
 				7C3C27E92625C1EB00F83DAA /* ActivityIndicatorButton.swift in Sources */,
 				7CDEFBA62629C23000CA3E66 /* CalibrationViewModel.swift in Sources */,
 				7C066D84262B2F140030B103 /* ConcentrationTableViewCellModel.swift in Sources */,
@@ -474,6 +497,7 @@
 				7C3C27DF26258FBD00F83DAA /* AnalyteListTableViewCell.swift in Sources */,
 				7C066D87262B31FE0030B103 /* AnalyteTableViewCellModel.swift in Sources */,
 				7C066DAE2634BF450030B103 /* UIFont+Extension.swift in Sources */,
+				7C22FEF626435A43005861E9 /* AccountManager.swift in Sources */,
 				7C9E01F7263D8ECB003ACC6A /* IndicatorTextField.swift in Sources */,
 				7CDC8E282623AE6B00430BD7 /* ki_kth_project.xcdatamodeld in Sources */,
 				7CE223782639977300BD8C5B /* DeviceReadingViewController.swift in Sources */,

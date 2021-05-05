@@ -10,26 +10,48 @@ import UIKit
 class InitialLoginViewController: UIViewController {
     
     var viewModel: InitialLoginViewModel!
-
+    
+    @IBOutlet weak var scrollView: UIScrollView!
+    @IBOutlet weak var loginButton: ActivityIndicatorButton!
+    @IBOutlet weak var emailTextField: IndicatorTextField!
+    @IBOutlet weak var passwordTextField: IndicatorTextField!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         viewModel.sendActionToViewController = { [weak self] action in
             self?.handleReceivedFromViewModel(action: action)
         }
-        title = "Login"
-       // setUI()
+        setUI()
         viewModel.viewDidLoad()
     }
     
     @IBAction func loginButtonPressed(_ sender: Any) {
         
-        let vc = DeviceReadingViewController.instantiate(with: DeviceReadingViewModel())
-        navigationController?.pushViewController(vc, animated: true)
+        guard let email = emailTextField.text, let password = passwordTextField.text else {
+            return
+        }
+        
+        if emailTextField.text == "" || passwordTextField.text == "" {
+            return
+        }
+        
+        viewModel.loginRequested(email: email, password: password)
+        
+//        let vc = DeviceReadingViewController.instantiate(with: DeviceReadingViewModel())
+//        navigationController?.pushViewController(vc, animated: true)
     }
+    
     func handleReceivedFromViewModel(action: InitialLoginViewModel.Action) -> Void {
         switch action {
         }
+    }
+    
+    private func setUI() {
+        title = "Login"
+        scrollView.delaysContentTouches = false
+        
+        loginButton.titleLabel?.font = UIFont.appFont(placement: .buttonTitle)
     }
 }
 

@@ -2,17 +2,25 @@ PODS:
   - Charts (3.6.0):
     - Charts/Core (= 3.6.0)
   - Charts/Core (3.6.0)
+  - JWTDecode (2.6.0)
+  - KeychainAccess (4.2.2)
 
 DEPENDENCIES:
   - Charts
+  - JWTDecode (~> 2.6)
+  - KeychainAccess (~> 4.2)
 
 SPEC REPOS:
   trunk:
     - Charts
+    - JWTDecode
+    - KeychainAccess
 
 SPEC CHECKSUMS:
   Charts: b1e3a1f5a1c9ba5394438ca3b91bd8c9076310af
+  JWTDecode: 480ca441ddbd5fbfb2abf17870af62f86436be58
+  KeychainAccess: c0c4f7f38f6fc7bbe58f5702e25f7bd2f65abf51
 
-PODFILE CHECKSUM: df101db0d46f7bab233705fe7e8a028d2351a9d4
+PODFILE CHECKSUM: 32a68d1626dd35f8087e906c8103f9c5c465a9c2
 
 COCOAPODS: 1.10.1
