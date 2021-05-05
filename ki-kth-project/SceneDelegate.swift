@@ -18,7 +18,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let windowScene = (scene as? UIWindowScene) else { return }
         //let welcomeViewController = CalibrationViewController.instantiate(with: CalibrationViewModel())
-        let welcomeViewController = DeviceReadingViewController.instantiate(with: DeviceReadingViewModel())
+        //let welcomeViewController = DeviceReadingViewController.instantiate(with: DeviceReadingViewModel())
+        let welcomeViewController = InitialLoginViewController.instantiate(with: InitialLoginViewModel())
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
         let navigationController = UINavigationController(rootViewController: welcomeViewController)

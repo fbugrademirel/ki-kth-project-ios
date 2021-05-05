@@ -21,7 +21,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSMainNibFile~ipad</key>
-	<string>CalibrationView</string>
+	<string>InitialLoginView</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>SourceSansPro-Italic.ttf</string>
@@ -51,7 +51,7 @@
 					<key>UISceneDelegateClassName</key>
 					<string>$(PRODUCT_MODULE_NAME).SceneDelegate</string>
 					<key>UISceneStoryboardFile</key>
-					<string>CalibrationView</string>
+					<string>InitialLoginView</string>
 				</dict>
 			</array>
 		</dict>
@@ -61,7 +61,7 @@
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
-	<string>CalibrationView</string>
+	<string>InitialLoginView</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>
