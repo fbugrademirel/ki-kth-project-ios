@@ -10,7 +10,9 @@ import Foundation
 final class InitialLoginViewModel {
     
     enum Action {
-        
+        case startActivityIndicators(message: InitialLoginInfoLabel, alert: InitialLoginAlertType)
+        case stopActivityIndicators(message: InitialLoginInfoLabel, alert: InitialLoginAlertType)
+        case loginSuccessDismissAndContinueToDeviceView
     }
     
     var sendActionToViewController: ((Action) -> Void)?
@@ -20,17 +22,24 @@ final class InitialLoginViewModel {
     }
     
     func loginRequested(email: String, password: String) {
+        sendActionToViewController?(.startActivityIndicators(message: .logginIn, alert: .neutralAppColor))
         AccountManager.login(email: email, password: password) { error in
-            Log.e(error)
-        }
-        
-        AuthenticationManager().getAuthToken { result in
-            switch result {
-            case .success(let token):
-                Log.s(token)
-            case .failure(let error):
-                Log.e(error)
+            if let _ = error {
+                self.sendActionToViewController?(.stopActivityIndicators(message: .loginFail, alert: .redWarning))
             }
+            self.sendActionToViewController?(.loginSuccessDismissAndContinueToDeviceView)
         }
     }
+}
+
+enum InitialLoginInfoLabel: String {
+    case logginIn = "Logging in..."
+    case loggedInWithSuccess = "Logged in with success..."
+    case loginFail = "Login failed..."
+}
+
+enum InitialLoginAlertType {
+    case redWarning
+    case greenInfo
+    case neutralAppColor
 }

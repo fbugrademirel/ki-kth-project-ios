@@ -38,12 +38,18 @@ class InitialLoginViewController: UIViewController {
         
         viewModel.loginRequested(email: email, password: password)
         
-//        let vc = DeviceReadingViewController.instantiate(with: DeviceReadingViewModel())
-//        navigationController?.pushViewController(vc, animated: true)
     }
     
     func handleReceivedFromViewModel(action: InitialLoginViewModel.Action) -> Void {
         switch action {
+        case .loginSuccessDismissAndContinueToDeviceView:
+            let vc = DeviceReadingViewController.instantiate(with: DeviceReadingViewModel())
+            navigationController?.setViewControllers([vc], animated: true)
+            navigationController?.popToRootViewController(animated: true)
+        case .startActivityIndicators(message: let label, alert: let alertType):
+            print("Start")
+        case .stopActivityIndicators(message: let label, alert: let alertType):
+            print("Stop")
         }
     }
     
