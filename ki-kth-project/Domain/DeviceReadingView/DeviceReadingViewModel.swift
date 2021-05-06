@@ -12,6 +12,7 @@ final class DeviceReadingViewModel {
     
     enum Action {
         case reloadDeviceListTableView
+        case deleteRows(path: IndexPath)
         case presentCalibrationView(info: ViewInfo)
         case updateChartUI(with: [LineChartData])
         case startActivityIndicators(message: DeviceInformationLabel, alert: DevicePageAlertType)
@@ -141,13 +142,14 @@ final class DeviceReadingViewModel {
         }
     }
     
-    func deletionByIdRequested(id: String) {
+    func deletionByIdRequested(id: String, path: IndexPath) {
         
         self.sendActionToViewController?(.startActivityIndicators(message: .deletingFromDatabase, alert: .neutralAppColor))
         
           DeviceDataAPI().deleteDeviceByID(id: id) { (result) in
               switch result {
               case .success(_):
+                self.sendActionToViewController?(.deleteRows(path: path))
                 self.sendActionToViewController?(.stopActivityIndicators(message: .deletedWithSuccess, alert: .greenInfo))
                 let alert = UIAlertController(title: "Deleted from database", message: "Server message", preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "I understand", style: .default, handler: nil))

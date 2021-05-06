@@ -17,13 +17,15 @@ struct DeviceDataAPI {
     
     // MARK: - Properties
     private let networkingService = NetworkingService()
+    let prodUrl = "https://ki-kth-project-api.herokuapp.com"
+    let devUrl = "http://localhost:3000"
     
     // MARK: - Operations
     
     
     func login(email: String, password: String, with completion: @escaping (Result<LoginUserDataFetch, Error>) -> Void) {
         
-        let url = "http://localhost:3000/user/login"
+        let url = "\(devUrl)/user/login"
         let login = LoginUserPost(email: email, password: password)
         let addHeader = ["Content-Type": "application/json"]
         networkingService.dispatchRequest(urlString: url, method: .post, additionalHeaders: addHeader, body: login) { result in
@@ -49,7 +51,7 @@ struct DeviceDataAPI {
     
     func createAccount(name: String, email: String, password: String, with completion: @escaping (Result<CreateUserDataFetch, Error>) -> Void) {
         
-        let url = "http://localhost:3000/user"
+        let url = "\(devUrl)/user"
         let createUser = CreateUserPost(name: name, email: email, password: password)
         let addHeader = ["Content-Type": "application/json"]
 
@@ -78,7 +80,7 @@ struct DeviceDataAPI {
     
     func logout(completion: @escaping (Error?) -> Void) {
         
-        let url = "http://localhost:3000/user/logout"
+        let url = "\(devUrl)/user/logout"
         AuthenticationManager().getAuthToken { result in
             switch result {
             case .success(let token):
@@ -101,26 +103,33 @@ struct DeviceDataAPI {
         
         let uniqueIdentifier = UUID()
         let device = DeviceCreationPost (name: name, deviceID: uniqueIdentifier.uuidString, personalID: personalID)
-        let url = "https://ki-kth-project-api.herokuapp.com/onbodydevice"
-        let addHeader = ["Content-Type": "application/json"]
-        
-        networkingService.dispatchRequest(urlString: url, method: .post, additionalHeaders: addHeader, body: device) { result in
+        let url = "\(devUrl)/onbodydevice"
+                
+        AuthenticationManager().getAuthToken { result in
             switch result {
-            case .success(let data):
-                do {
-                    let deviceData = try JSONDecoder().decode(DeviceDataFetch.self, from: data)
-                    DispatchQueue.main.async {
-                        completion(.success(deviceData))
-                    }
-                } catch {
-                    DispatchQueue.main.async {
-                        completion(.failure(error))
+            case .success(let token):
+                let addHeaderToken = ["Content-Type": "application/json", "Authorization": "Bearer \(token)"]
+                self.networkingService.dispatchRequest(urlString: url, method: .post, additionalHeaders: addHeaderToken, body: device) { result in
+                    switch result {
+                    case .success(let data):
+                        do {
+                            let deviceData = try JSONDecoder().decode(DeviceDataFetch.self, from: data)
+                            DispatchQueue.main.async {
+                                completion(.success(deviceData))
+                            }
+                        } catch {
+                            DispatchQueue.main.async {
+                                completion(.failure(error))
+                            }
+                        }
+                    case .failure(let error):
+                        DispatchQueue.main.async {
+                            completion(.failure(error))
+                        }
                     }
                 }
             case .failure(let error):
-                DispatchQueue.main.async {
-                    completion(.failure(error))
-                }
+                completion(.failure(error))
             }
         }
     }
@@ -128,77 +137,102 @@ struct DeviceDataAPI {
     
     func deleteDeviceByID(id: String, completion: @escaping (Result<DeviceDataFetch, Error>) -> Void ) {
         
-        let url =  "https://ki-kth-project-api.herokuapp.com/onbodydevice/\(id)"
+        let url =  "\(devUrl)/onbodydevice/\(id)"
         
-        networkingService.dispatchRequest(urlString: url, method: .delete, additionalHeaders: nil, body: nil) { result in
+        AuthenticationManager().getAuthToken { result in
             switch result {
-            case .success(let data):
-                do {
-                    let analyte = try JSONDecoder().decode(DeviceDataFetch.self, from: data)
-                    DispatchQueue.main.async {
-                        completion(.success(analyte))
-                    }
-                } catch {
-                    DispatchQueue.main.async {
-                        completion(.failure(error))
+            case .success(let token):
+                let addHeader = ["Authorization": "Bearer \(token)"]
+                networkingService.dispatchRequest(urlString: url, method: .delete, additionalHeaders: addHeader, body: nil) { result in
+                    switch result {
+                    case .success(let data):
+                        do {
+                            let analyte = try JSONDecoder().decode(DeviceDataFetch.self, from: data)
+                            DispatchQueue.main.async {
+                                completion(.success(analyte))
+                            }
+                        } catch {
+                            DispatchQueue.main.async {
+                                completion(.failure(error))
+                            }
+                        }
+                    case .failure(let error):
+                        DispatchQueue.main.async {
+                            completion(.failure(error))
+                        }
                     }
                 }
             case .failure(let error):
-                DispatchQueue.main.async {
-                    completion(.failure(error))
-                }
+                completion(.failure(error))
             }
         }
     }
     
     func getAllAnalytesForDevice(_ id: String, completion: @escaping (Result<[AnalyteDataFetch], Error>) -> Void ) {
         
-        let url = "https://ki-kth-project-api.herokuapp.com/onbodydevice/allanalytes/\(id)"
+        let url = "\(devUrl)/onbodydevice/allanalytes/\(id)"
         
-        networkingService.dispatchRequest(urlString: url, method: .get) { result in
+        AuthenticationManager().getAuthToken { result in
             switch result {
-            case .success(let data):
-                do {
-                    let analytes = try JSONDecoder().decode([AnalyteDataFetch].self, from: data)
-                    DispatchQueue.main.async {
-                        completion(.success(analytes))
-                    }
-                } catch {
-                    DispatchQueue.main.async {
-                        completion(.failure(error))
+            case .success(let token):
+                let addHeader = ["Authorization": "Bearer \(token)"]
+                networkingService.dispatchRequest(urlString: url, method: .get, additionalHeaders: addHeader) { result in
+                    switch result {
+                    case .success(let data):
+                        
+                        do {
+                            let device = try JSONDecoder().decode([AnalyteDataFetch].self, from: data)
+                            DispatchQueue.main.async {
+                                completion(.success(device))
+                            }
+                        } catch {
+                            DispatchQueue.main.async {
+                                completion(.failure(error))
+                            }
+                        }
+                    case .failure(let error):
+                        DispatchQueue.main.async {
+                            completion(.failure(error))
+                        }
                     }
                 }
             case .failure(let error):
-                DispatchQueue.main.async {
-                    completion(.failure(error))
-                }
+                completion(.failure(error))
             }
         }
     }
     
     func getAllDevices(with completion: @escaping (Result<[DeviceDataFetch], Error>) -> Void ) {
         
-        let url = "https://ki-kth-project-api.herokuapp.com/onbodydevice/all"
+        let url = "\(devUrl)/user/allonbodydevices"
         
-        networkingService.dispatchRequest(urlString: url, method: .get) { result in
-         
+        AuthenticationManager().getAuthToken { result in
             switch result {
-            case .success(let data):
+            case .success(let token):
+                let addHeader = ["Authorization": "Bearer \(token)"]
                 
-                do {
-                    let device = try JSONDecoder().decode([DeviceDataFetch].self, from: data)
-                    DispatchQueue.main.async {
-                        completion(.success(device))
-                    }
-                } catch {
-                    DispatchQueue.main.async {
-                        completion(.failure(error))
+                networkingService.dispatchRequest(urlString: url, method: .get, additionalHeaders: addHeader) { result in
+                    switch result {
+                    case .success(let data):
+                        
+                        do {
+                            let device = try JSONDecoder().decode([DeviceDataFetch].self, from: data)
+                            DispatchQueue.main.async {
+                                completion(.success(device))
+                            }
+                        } catch {
+                            DispatchQueue.main.async {
+                                completion(.failure(error))
+                            }
+                        }
+                    case .failure(let error):
+                        DispatchQueue.main.async {
+                            completion(.failure(error))
+                        }
                     }
                 }
             case .failure(let error):
-                DispatchQueue.main.async {
-                    completion(.failure(error))
-                }
+                completion(.failure(error))
             }
         }
     }

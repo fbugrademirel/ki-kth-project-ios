@@ -46,6 +46,8 @@ final class DeviceReadingViewController: UIViewController {
     // MARK: - Handle
     func handleReceivedFromViewModel(action: DeviceReadingViewModel.Action) -> Void {
         switch action {
+        case .deleteRows(let path):
+            deleteRows(path: path)
         case .reloadDeviceListTableView:
             deviceListTableView.reloadData()
         case .presentCalibrationView(info: let info):
@@ -136,6 +138,14 @@ final class DeviceReadingViewController: UIViewController {
         deviceListTableView.dataSource = self
         deviceListTableView.delaysContentTouches = false;
         deviceListTableView.register(UINib(nibName: DeviceListTableViewCell.nibName, bundle: nil), forCellReuseIdentifier: DeviceListTableViewCell.nibName)
+    }
+    
+    private func deleteRows(path: IndexPath) {
+        self.deviceListTableView.beginUpdates()
+        self.viewModel.deviceListTableViewViewModels.remove(at: path.row)
+
+        self.deviceListTableView.deleteRows(at: [path], with: .fade)
+        self.deviceListTableView.endUpdates()
     }
     
     @objc func dismissKeyboard() {
@@ -281,12 +291,8 @@ final class DeviceReadingViewController: UIViewController {
             let alert = UIAlertController(title: "Warning!", message: "This operation will also delete related analytes' of this device", preferredStyle: .alert)
             
             alert.addAction(UIAlertAction(title: "Confirm", style: .destructive, handler: { _ in
-                self.viewModel.deletionByIdRequested(id: self.viewModel.deviceListTableViewViewModels[path.row].serverID)
-                self.deviceListTableView.beginUpdates()
-                self.viewModel.deviceListTableViewViewModels.remove(at: path.row)
+                self.viewModel.deletionByIdRequested(id: self.viewModel.deviceListTableViewViewModels[path.row].serverID, path: path)
 
-                self.deviceListTableView.deleteRows(at: [path], with: .fade)
-                self.deviceListTableView.endUpdates()
             }))
             
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in
