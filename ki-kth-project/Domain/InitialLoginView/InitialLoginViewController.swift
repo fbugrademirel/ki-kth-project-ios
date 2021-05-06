@@ -54,8 +54,10 @@ class InitialLoginViewController: UIViewController {
            stopActivityIndicators(with: label, with: alertType)
         case .greetUser(let label, let alertType):
             greetUser(with: label, with: alertType)
+        case .presentCreateAccountViewController:
+            let vc = CreateAccountViewController.instantiate(with: CreateAccountViewModel())
+            present(vc, animated: true, completion: nil)
         }
-        
         
     }
     
@@ -165,8 +167,7 @@ extension InitialLoginViewController: UITextViewDelegate {
         case "Forgot":
             print("Forgot")
         case "CreateAccount":
-          //  viewModel.didTapCreateAccount()
-            print("Create Account")
+            viewModel.createAccountRequested()
         default:
             break
         }

@@ -14,6 +14,7 @@ final class InitialLoginViewModel {
         case stopActivityIndicators(message: InitialLoginInfoLabel, alert: InitialLoginAlertType)
         case loginSuccessDismissAndContinueToDeviceView
         case greetUser(message: InitialLoginInfoLabel, alert: InitialLoginAlertType)
+        case presentCreateAccountViewController
     }
     
     var sendActionToViewController: ((Action) -> Void)?
@@ -25,15 +26,20 @@ final class InitialLoginViewModel {
     
     func loginRequested(email: String, password: String) {
         sendActionToViewController?(.startActivityIndicators(message: .logginIn, alert: .neutralAppColor))
-        AccountManager.login(email: email, password: password) { error in
+        AccountManager.login(email: email, password: password) { [weak self] error in
             if let error = error {
                 Log.e(error)
-                self.sendActionToViewController?(.stopActivityIndicators(message: .loginFail, alert: .redWarning))
+                self?.sendActionToViewController?(.stopActivityIndicators(message: .loginFail, alert: .redWarning))
             } else {
-                self.sendActionToViewController?(.stopActivityIndicators(message: .loggedInWithSuccess, alert: .greenInfo))
-                self.sendActionToViewController?(.loginSuccessDismissAndContinueToDeviceView)
+                Log.s("Logged in!")
+                self?.sendActionToViewController?(.stopActivityIndicators(message: .loggedInWithSuccess, alert: .greenInfo))
+                self?.sendActionToViewController?(.loginSuccessDismissAndContinueToDeviceView)
             }
         }
+    }
+    
+    func createAccountRequested() {
+        sendActionToViewController?(.presentCreateAccountViewController)
     }
 }
 

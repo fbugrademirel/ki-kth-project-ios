@@ -50,7 +50,7 @@ struct DeviceDataAPI {
     
     func createAccount(name: String, email: String, password: String, with completion: @escaping (Result<CreateUserDataFetch, Error>) -> Void) {
         
-        let url = "https://ki-kth-project-api.herokuapp.com/user"
+        let url = "http://localhost:3000/user"
         let createUser = CreateUserPost(name: name, email: email, password: password)
         let addHeader = ["Content-Type": "application/json"]
 
@@ -70,6 +70,7 @@ struct DeviceDataAPI {
             case .failure(let error):
                 DispatchQueue.main.async {
                     completion(.failure(error))
+                    print(error)
                 }
             }
         }

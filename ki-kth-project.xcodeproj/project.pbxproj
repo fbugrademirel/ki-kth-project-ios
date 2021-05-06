@@ -27,6 +27,9 @@
 		7C22FEF226433795005861E9 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C22FEF126433795005861E9 /* Log.swift */; };
 		7C22FEF426433889005861E9 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C22FEF326433889005861E9 /* UserDefaults.swift */; };
 		7C22FEF626435A43005861E9 /* AccountManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C22FEF526435A43005861E9 /* AccountManager.swift */; };
+		7C22FEFB26440775005861E9 /* CreateAccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C22FEFA26440775005861E9 /* CreateAccountViewController.swift */; };
+		7C22FEFD26440780005861E9 /* CreateAccountViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C22FEFC26440780005861E9 /* CreateAccountViewModel.swift */; };
+		7C22FEFF2644079A005861E9 /* CreateAccountView.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7C22FEFE2644079A005861E9 /* CreateAccountView.storyboard */; };
 		7C3C27DF26258FBD00F83DAA /* AnalyteListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C3C27DD26258FBD00F83DAA /* AnalyteListTableViewCell.swift */; };
 		7C3C27E026258FBD00F83DAA /* AnalyteListTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7C3C27DE26258FBD00F83DAA /* AnalyteListTableViewCell.xib */; };
 		7C3C27E92625C1EB00F83DAA /* ActivityIndicatorButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C3C27E82625C1EB00F83DAA /* ActivityIndicatorButton.swift */; };
@@ -79,6 +82,9 @@
 		7C22FEF126433795005861E9 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		7C22FEF326433889005861E9 /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 		7C22FEF526435A43005861E9 /* AccountManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountManager.swift; sourceTree = "<group>"; };
+		7C22FEFA26440775005861E9 /* CreateAccountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateAccountViewController.swift; sourceTree = "<group>"; };
+		7C22FEFC26440780005861E9 /* CreateAccountViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateAccountViewModel.swift; sourceTree = "<group>"; };
+		7C22FEFE2644079A005861E9 /* CreateAccountView.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = CreateAccountView.storyboard; sourceTree = "<group>"; };
 		7C3C27DD26258FBD00F83DAA /* AnalyteListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyteListTableViewCell.swift; sourceTree = "<group>"; };
 		7C3C27DE26258FBD00F83DAA /* AnalyteListTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AnalyteListTableViewCell.xib; sourceTree = "<group>"; };
 		7C3C27E82625C1EB00F83DAA /* ActivityIndicatorButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicatorButton.swift; sourceTree = "<group>"; };
@@ -169,6 +175,16 @@
 			path = Log;
 			sourceTree = "<group>";
 		};
+		7C22FEF92644074C005861E9 /* CreateAccountView */ = {
+			isa = PBXGroup;
+			children = (
+				7C22FEFA26440775005861E9 /* CreateAccountViewController.swift */,
+				7C22FEFC26440780005861E9 /* CreateAccountViewModel.swift */,
+				7C22FEFE2644079A005861E9 /* CreateAccountView.storyboard */,
+			);
+			path = CreateAccountView;
+			sourceTree = "<group>";
+		};
 		7C3C27D526258F2D00F83DAA /* ConcentrationTableViewCell */ = {
 			isa = PBXGroup;
 			children = (
@@ -248,6 +264,7 @@
 			isa = PBXGroup;
 			children = (
 				7CF344B02642F76A00968E7F /* InitialLoginView */,
+				7C22FEF92644074C005861E9 /* CreateAccountView */,
 				7CE223762639903A00BD8C5B /* DeviceReadingView */,
 				7CDC8E362623AE9000430BD7 /* CalibrationView */,
 			);
@@ -406,6 +423,7 @@
 				7C066DBA2634BF450030B103 /* SourceSansPro-Italic.ttf in Resources */,
 				7C066DAF2634BF450030B103 /* SourceSansPro-BlackItalic.ttf in Resources */,
 				7C066DB42634BF450030B103 /* SourceSansPro-Light.ttf in Resources */,
+				7C22FEFF2644079A005861E9 /* CreateAccountView.storyboard in Resources */,
 				7CF344B62642F7C100968E7F /* InitialLoginView.storyboard in Resources */,
 				7C066DB22634BF450030B103 /* SourceSansPro-Bold.ttf in Resources */,
 				7C066DB92634BF450030B103 /* SourceSansPro-ExtraLightItalic.ttf in Resources */,
@@ -474,6 +492,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7C22FEFB26440775005861E9 /* CreateAccountViewController.swift in Sources */,
 				7CDC8E3B2623AF8F00430BD7 /* NetworkingService.swift in Sources */,
 				7CDC8E222623AE6B00430BD7 /* CalibrationViewController.swift in Sources */,
 				7CF344B22642F79C00968E7F /* InitialLoginViewController.swift in Sources */,
@@ -495,6 +514,7 @@
 				7CE2238026399BA100BD8C5B /* DeviceListTableViewCell.swift in Sources */,
 				7CDC8E202623AE6B00430BD7 /* SceneDelegate.swift in Sources */,
 				7C3C27DF26258FBD00F83DAA /* AnalyteListTableViewCell.swift in Sources */,
+				7C22FEFD26440780005861E9 /* CreateAccountViewModel.swift in Sources */,
 				7C066D87262B31FE0030B103 /* AnalyteTableViewCellModel.swift in Sources */,
 				7C066DAE2634BF450030B103 /* UIFont+Extension.swift in Sources */,
 				7C22FEF626435A43005861E9 /* AccountManager.swift in Sources */,
