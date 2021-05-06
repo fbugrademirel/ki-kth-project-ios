@@ -60,6 +60,8 @@ public final class AccountManager {
             } else {
                 //This means successgully logged out. Handle logout logic
                 //Now the token on the keychain is a useless old token
+                AuthenticationManager().removeKeyChainTokens()
+                Log.i("LOGGED OUT")
                 completion(nil)
             }
         }

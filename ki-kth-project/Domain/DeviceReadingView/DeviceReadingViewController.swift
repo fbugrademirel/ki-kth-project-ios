@@ -34,6 +34,7 @@ final class DeviceReadingViewController: UIViewController {
         }
         setUI()
         viewModel.viewDidLoad()
+        
     }
     
     // MARK: -TODO: Move expensive operations to the viewDidAppear if you need a smoother first login!
@@ -89,7 +90,12 @@ final class DeviceReadingViewController: UIViewController {
     
     @objc func logOutPressed(_ sender: UIBarButtonItem ) {
         
-        viewModel.logoutRequested()
+        let alert = UIAlertController(title: "Signing out...", message: "Are you sure to sign out?", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Logout", style: .destructive) { [weak self] _ in
+            self?.viewModel.logoutRequested()
+        })
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        present(alert, animated: true, completion: nil)
     }
     
     // MARK: - UI

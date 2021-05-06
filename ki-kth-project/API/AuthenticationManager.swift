@@ -39,6 +39,14 @@ public final class AuthenticationManager {
     }
 
     // MARK: - Public operations
+    
+    public func removeKeyChainTokens() {
+        do {
+            try Keychain(service: "com.ki-kth-project.DeviceDataAPI").remove("authToken")
+        } catch {
+            Log.e("Could not set auth_token")
+        }
+    }
 
     public func setKeyChainTokens(auth: String) {
         if auth != "" {

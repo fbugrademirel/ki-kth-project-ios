@@ -55,7 +55,8 @@ final class DeviceReadingViewModel {
     
     
     func logoutRequested() {
-        DeviceDataAPI().logout { error in
+        
+        AccountManager.logout { error in
             if let error = error {
                 //This means logout is not successfull
                 Log.e(error.localizedDescription)
@@ -66,7 +67,6 @@ final class DeviceReadingViewModel {
             }
         }
     }
-    
     
     func createDeviceRequired(name: String, personalID: Int) {
         

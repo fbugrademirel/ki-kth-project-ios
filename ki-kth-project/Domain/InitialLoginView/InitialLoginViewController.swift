@@ -27,18 +27,6 @@ class InitialLoginViewController: UIViewController {
         }
         setUI()
         viewModel.viewDidLoad()
-        
-        
-        AuthenticationManager().setKeyChainTokens(auth: "")
-        
-        AuthenticationManager().getAuthToken { res in
-            switch res {
-                case.success(let token):
-                    print("Initial login view load: Token is \(token)")
-                case .failure(let error):
-                    print("Initial login view load: Error for getting auth token \(error.localizedDescription)")
-            }
-        }
     }
     
     @IBAction func loginButtonPressed(_ sender: Any) {
@@ -154,6 +142,7 @@ class InitialLoginViewController: UIViewController {
         createAccountTextView.textContainerInset = .zero
         createAccountTextView.textContainer.lineFragmentPadding = .zero
         createAccountTextView.delegate = self
+        createAccountTextView.textAlignment = .center
         createAccountTextView.isEditable = false
 
         let forgotPasswordMutableAttributedString = NSMutableAttributedString(string: "Forgot password? Get a new one!", attributes: [.font: UIFont.appFont(placement: .passiveText), .foregroundColor: UIColor(named: "passiveText")!])
@@ -166,6 +155,7 @@ class InitialLoginViewController: UIViewController {
         forgotPasswordTextView.attributedText = forgotPasswordMutableAttributedString
         forgotPasswordTextView.textContainerInset = .zero
         forgotPasswordTextView.textContainer.lineFragmentPadding = .zero
+        forgotPasswordTextView.textAlignment = .center
         forgotPasswordTextView.delegate = self
         forgotPasswordTextView.isEditable = false
         
