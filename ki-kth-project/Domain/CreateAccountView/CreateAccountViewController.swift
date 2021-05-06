@@ -31,8 +31,8 @@ class CreateAccountViewController: UIViewController {
     
     func handleReceivedFromViewModel(action: CreateAccountViewModel.Action) -> Void {
         switch action {
-        case .createAccountSuccessDismissAndContinueToDeviceView:
-           dissmissAndSetNewRootViewController()
+        case .createAccountSuccessDismissAndContinueToDeviceView(let username):
+           dissmissAndSetNewRootViewController(userName: username)
         }
     }
     
@@ -63,8 +63,9 @@ class CreateAccountViewController: UIViewController {
         
     }
     
-    private func dissmissAndSetNewRootViewController() {
+    private func dissmissAndSetNewRootViewController(userName: String) {
         let vc = DeviceReadingViewController.instantiate(with: DeviceReadingViewModel())
+        vc.title = "\(userName)'s Devices"
         weak var navCon = presentingViewController as? UINavigationController
         dismiss(animated: true, completion: nil)
         navCon?.setViewControllers([vc], animated: true)

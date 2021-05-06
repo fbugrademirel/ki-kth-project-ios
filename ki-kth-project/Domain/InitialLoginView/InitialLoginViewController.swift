@@ -27,6 +27,18 @@ class InitialLoginViewController: UIViewController {
         }
         setUI()
         viewModel.viewDidLoad()
+        
+        
+        AuthenticationManager().setKeyChainTokens(auth: "")
+        
+        AuthenticationManager().getAuthToken { res in
+            switch res {
+                case.success(let token):
+                    print("Initial login view load: Token is \(token)")
+                case .failure(let error):
+                    print("Initial login view load: Error for getting auth token \(error.localizedDescription)")
+            }
+        }
     }
     
     @IBAction func loginButtonPressed(_ sender: Any) {
@@ -45,8 +57,9 @@ class InitialLoginViewController: UIViewController {
     
     func handleReceivedFromViewModel(action: InitialLoginViewModel.Action) -> Void {
         switch action {
-        case .loginSuccessDismissAndContinueToDeviceView:
+        case .loginSuccessDismissAndContinueToDeviceView(let username):
             let vc = DeviceReadingViewController.instantiate(with: DeviceReadingViewModel())
+            vc.title = "\(username)'s Devices"
             navigationController?.setViewControllers([vc], animated: true)
         case .startActivityIndicators(message: let label, alert: let alertType):
             startActivityIndicators(with: label, with: alertType)

@@ -15,7 +15,7 @@ public final class AccountManager {
         case invalidFields
     }
 
-    public static func login(email: String, password: String, completion: @escaping (AccountError?)->Void) {
+    public static func login(email: String, password: String, completion: @escaping (Result<UserAccountInfo, AccountError>)->Void) {
         DeviceDataAPI().login(email: email, password: password) { result in
             switch result {
             case .success(let response):
@@ -23,28 +23,50 @@ public final class AccountManager {
                 // MARK: TODO: Should this really be here?
                 AuthenticationManager().setKeyChainTokens(auth: response.token)
                 UserDefaults.userEmail = email
-                completion(nil)
+                let user = UserAccountInfo(name: response.user.name, email: response.user.email)
+                completion(.success(user))
             case .failure(let error):
                 Log.e(error)
                 // MARK: TODO: Do proper error check!
-                completion(.invalidFields)
+                completion(.failure(.invalidFields))
             }
         }
     }
-
-    public static func createAccount(name: String, email: String, password: String, completion: @escaping (AccountError?)->Void) {
+        
+    public static func createAccount(name: String, email: String, password: String, completion: @escaping (Result<UserAccountInfo, AccountError>)->Void) {
         DeviceDataAPI().createAccount(name: name, email: email, password: password) { result in
             switch result {
             case .success(let response):
                 Log.s("Account created with the email: \(response.user.email)")
                 AuthenticationManager().setKeyChainTokens(auth: response.token)
-                completion(nil)
+                let user = UserAccountInfo(name: response.user.name, email: response.user.email)
+                completion(.success(user))
             case .failure(let error):
                 Log.e(error)
                 // MARK: - TODO: Do proper error check!
                 Log.e(error)
-                completion(.invalidFields)
+                completion(.failure(.invalidFields))
             }
         }
     }
+    
+    
+    public static func logout(completion: @escaping (Error?) -> Void) {
+        DeviceDataAPI().logout { error in
+            if let error = error {
+                Log.e(error)
+                //Handle Error Logic
+                completion(error)
+            } else {
+                //This means successgully logged out. Handle logout logic
+                //Now the token on the keychain is a useless old token
+                completion(nil)
+            }
+        }
+    }
+}
+
+public struct UserAccountInfo {
+    let name: String
+    let email: String
 }

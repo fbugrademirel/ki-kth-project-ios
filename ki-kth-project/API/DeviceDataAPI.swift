@@ -21,7 +21,6 @@ struct DeviceDataAPI {
     // MARK: - Operations
     
     
-    
     func login(email: String, password: String, with completion: @escaping (Result<LoginUserDataFetch, Error>) -> Void) {
         
         let url = "http://localhost:3000/user/login"
@@ -72,6 +71,28 @@ struct DeviceDataAPI {
                     completion(.failure(error))
                     print(error)
                 }
+            }
+        }
+    }
+    
+    
+    func logout(completion: @escaping (Error?) -> Void) {
+        
+        let url = "http://localhost:3000/user/logout"
+        AuthenticationManager().getAuthToken { result in
+            switch result {
+            case .success(let token):
+                let addHeader = ["Authorization": "Bearer \(token)"]
+                networkingService.dispatchRequest(urlString: url, method: .post, additionalHeaders: addHeader, body: nil) { result in
+                    switch result {
+                    case .success(_):
+                        completion(nil)
+                    case .failure(let error):
+                        completion(error)
+                    }
+                }
+            case .failure(let error):
+                completion(error)
             }
         }
     }

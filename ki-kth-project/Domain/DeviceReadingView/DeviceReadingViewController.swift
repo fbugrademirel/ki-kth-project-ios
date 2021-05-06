@@ -32,7 +32,6 @@ final class DeviceReadingViewController: UIViewController {
         viewModel.sendActionToViewController = { [weak self] action in
             self?.handleReceivedFromViewModel(action: action)
         }
-        title = "Device List"
         setUI()
         viewModel.viewDidLoad()
     }
@@ -61,6 +60,9 @@ final class DeviceReadingViewController: UIViewController {
             stopActivityIndicators(with: message, with: alert)
         case .presentView(with: let view):
             present(view, animated: true, completion: nil)
+        case .resetToInitialLoginView:
+            let vc = InitialLoginViewController.instantiate(with: InitialLoginViewModel())
+            navigationController?.setViewControllers([vc], animated: true)
         }
     }
     
@@ -85,9 +87,17 @@ final class DeviceReadingViewController: UIViewController {
         viewModel.fetchAllDevicesRequired()
     }
     
+    @objc func logOutPressed(_ sender: UIBarButtonItem ) {
+        
+        viewModel.logoutRequested()
+    }
+    
     // MARK: - UI
     private func setUI() {
         
+        let barButton = UIBarButtonItem(image: UIImage(systemName:"square.and.arrow.up"), style: .plain, target: self, action: #selector(logOutPressed(_:)))
+        self.navigationItem.rightBarButtonItem  = barButton
+
         let gesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         blockViewForCancelling.addGestureRecognizer(gesture)
 

@@ -10,7 +10,7 @@ import Foundation
 final class CreateAccountViewModel {
 
     enum Action {
-        case createAccountSuccessDismissAndContinueToDeviceView
+        case createAccountSuccessDismissAndContinueToDeviceView(userName: String)
     }
     var sendActionToViewController: ((Action) -> Void)?
             
@@ -20,12 +20,15 @@ final class CreateAccountViewModel {
     }
     
     func createAccountRequested(name: String, email: String, password: String) {
-        AccountManager.createAccount(name: name, email: email, password: password) { [weak self] error in
-            if let error = error {
-                Log.e(error)
-            } else {
+        AccountManager.createAccount(name: name, email: email, password: password) { [weak self] result in
+            
+            switch result {
+            case .success(let userInfo):
                 Log.s("Account created!")
-                self?.sendActionToViewController?(.createAccountSuccessDismissAndContinueToDeviceView)
+                
+                self?.sendActionToViewController?(.createAccountSuccessDismissAndContinueToDeviceView(userName: userInfo.name))
+            case .failure(let error):
+                Log.e(error)
             }
         }
     }

@@ -17,6 +17,7 @@ final class DeviceReadingViewModel {
         case startActivityIndicators(message: DeviceInformationLabel, alert: DevicePageAlertType)
         case stopActivityIndicators(message: DeviceInformationLabel, alert: DevicePageAlertType)
         case presentView(with: UIAlertController)
+        case resetToInitialLoginView
     }
     
     var yValuesForMain: [ChartData] = [] {
@@ -50,6 +51,20 @@ final class DeviceReadingViewModel {
     
     func reloadTableViewsRequired() {
         sendActionToViewController?(.reloadDeviceListTableView)
+    }
+    
+    
+    func logoutRequested() {
+        DeviceDataAPI().logout { error in
+            if let error = error {
+                //This means logout is not successfull
+                Log.e(error.localizedDescription)
+            } else {
+                //This means logout is successfull
+                Log.s("Logout successfull")
+                self.sendActionToViewController?(.resetToInitialLoginView)
+            }
+        }
     }
     
     
