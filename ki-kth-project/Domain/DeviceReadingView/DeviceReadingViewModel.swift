@@ -63,7 +63,7 @@ final class DeviceReadingViewModel {
                 Log.e(error.localizedDescription)
             } else {
                 //This means logout is successfull
-                Log.s("Logout successfull")
+                Log.s("Logout successful")
                 self.sendActionToViewController?(.resetToInitialLoginView)
             }
         }
