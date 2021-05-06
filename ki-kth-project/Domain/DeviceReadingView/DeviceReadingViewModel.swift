@@ -216,6 +216,7 @@ final class DeviceReadingViewModel {
                 set1.setColor(.systemBlue)
                 set1.setCircleColor(.systemBlue)
                 set1.drawValuesEnabled = true
+                set1.drawCirclesEnabled = false
 
                 //set1.fill = Fill(color: .white)
                 //set1.fillAlpha = 0.8
