@@ -78,7 +78,7 @@ final class NetworkingService {
 
                     DispatchQueue.main.async {
                         completion(.success(data))
-                        Log.i("RESPONSE SUCCESS")
+                        Log.s("RESPONSE SUCCESS!")
                     }
                 case 400...499:
                     completion(.failure(.unauthorized))

@@ -27,7 +27,7 @@ public final class AccountManager {
             case .failure(let error):
                 Log.e(error)
                 // MARK: TODO: Do proper error check!
-                completion(.invalidPassword)
+                completion(.invalidFields)
             }
         }
     }

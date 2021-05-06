@@ -47,9 +47,46 @@
                                                     </button>
                                                 </subviews>
                                             </stackView>
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillProportionally" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="1KZ-RH-xZV">
+                                                <rect key="frame" x="392" y="288" width="240" height="66"/>
+                                                <subviews>
+                                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="New? Create Account!" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="1sI-gC-cGj">
+                                                        <rect key="frame" x="0.0" y="0.0" width="240" height="30"/>
+                                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="30" id="Q1V-21-KPs"/>
+                                                        </constraints>
+                                                        <color key="textColor" systemColor="labelColor"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                                    </textView>
+                                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Forgot Password? Get a new one." textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="yNV-3G-bbm">
+                                                        <rect key="frame" x="0.0" y="36" width="240" height="30"/>
+                                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="30" id="gRf-IM-cRH"/>
+                                                        </constraints>
+                                                        <color key="textColor" systemColor="labelColor"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                                    </textView>
+                                                </subviews>
+                                            </stackView>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Information Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AuN-W5-HIC" userLabel="InformationLabel">
+                                                <rect key="frame" x="256" y="123.5" width="512" height="20.5"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
                                         </subviews>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <constraints>
+                                            <constraint firstItem="AuN-W5-HIC" firstAttribute="width" secondItem="tWg-nm-vcH" secondAttribute="width" id="0Nm-DX-zWE"/>
+                                            <constraint firstItem="AuN-W5-HIC" firstAttribute="centerX" secondItem="tWg-nm-vcH" secondAttribute="centerX" id="Ch0-7V-LB8"/>
+                                            <constraint firstItem="1KZ-RH-xZV" firstAttribute="top" secondItem="tWg-nm-vcH" secondAttribute="bottom" constant="24" id="Eei-MS-3li"/>
+                                            <constraint firstItem="AuN-W5-HIC" firstAttribute="bottom" secondItem="tWg-nm-vcH" secondAttribute="top" constant="-6" id="L8c-jz-xav"/>
+                                            <constraint firstItem="1KZ-RH-xZV" firstAttribute="width" secondItem="tWg-nm-vcH" secondAttribute="width" multiplier="0.46875" id="Sg1-rn-Uyr"/>
+                                            <constraint firstItem="1KZ-RH-xZV" firstAttribute="centerX" secondItem="tWg-nm-vcH" secondAttribute="centerX" id="XQJ-Si-cPF"/>
                                             <constraint firstItem="tWg-nm-vcH" firstAttribute="width" secondItem="bFx-bX-2oI" secondAttribute="width" multiplier="0.5" id="Y22-G2-e3T"/>
                                             <constraint firstItem="tWg-nm-vcH" firstAttribute="centerX" secondItem="bFx-bX-2oI" secondAttribute="centerX" id="dMT-gv-ujF"/>
                                             <constraint firstItem="tWg-nm-vcH" firstAttribute="top" secondItem="bFx-bX-2oI" secondAttribute="top" constant="150" id="qe4-4M-1vS"/>
@@ -80,7 +117,10 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="createAccountTextView" destination="1sI-gC-cGj" id="d5q-I4-Iqa"/>
                         <outlet property="emailTextField" destination="DaY-4J-Jli" id="ozA-7c-ccE"/>
+                        <outlet property="forgotPasswordTextView" destination="yNV-3G-bbm" id="9Mr-3z-dlx"/>
+                        <outlet property="informationLabel" destination="AuN-W5-HIC" id="eYq-DA-ySN"/>
                         <outlet property="loginButton" destination="Rld-ks-mV1" id="CsY-7R-NDo"/>
                         <outlet property="passwordTextField" destination="mJC-g5-NVY" id="EN8-WG-RLC"/>
                         <outlet property="scrollView" destination="5UA-dP-7a8" id="eOD-12-MH8"/>
@@ -95,6 +135,9 @@
         <namedColor name="primary">
             <color red="0.4309999942779541" green="0.046999998390674591" blue="0.25499999523162842" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
+        <systemColor name="labelColor">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

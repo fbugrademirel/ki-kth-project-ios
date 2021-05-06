@@ -15,6 +15,9 @@ class InitialLoginViewController: UIViewController {
     @IBOutlet weak var loginButton: ActivityIndicatorButton!
     @IBOutlet weak var emailTextField: IndicatorTextField!
     @IBOutlet weak var passwordTextField: IndicatorTextField!
+    @IBOutlet weak var createAccountTextView: UITextView!
+    @IBOutlet weak var forgotPasswordTextView: UITextView!
+    @IBOutlet weak var informationLabel: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,19 +48,129 @@ class InitialLoginViewController: UIViewController {
         case .loginSuccessDismissAndContinueToDeviceView:
             let vc = DeviceReadingViewController.instantiate(with: DeviceReadingViewModel())
             navigationController?.setViewControllers([vc], animated: true)
-            navigationController?.popToRootViewController(animated: true)
         case .startActivityIndicators(message: let label, alert: let alertType):
-            print("Start")
+            startActivityIndicators(with: label, with: alertType)
         case .stopActivityIndicators(message: let label, alert: let alertType):
-            print("Stop")
+           stopActivityIndicators(with: label, with: alertType)
+        case .greetUser(let label, let alertType):
+            greetUser(with: label, with: alertType)
+        }
+        
+        
+    }
+    
+    private func greetUser(with info: InitialLoginInfoLabel, with alert: InitialLoginAlertType) {
+        DispatchQueue.main.async {
+
+            switch alert {
+            case .greenInfo:
+                self.informationLabel.textColor = .systemGreen
+            case .redWarning:
+                self.informationLabel.textColor = .systemRed
+            case .neutralAppColor:
+                self.informationLabel.textColor = AppColor.primary
+            }
+            
+            self.informationLabel.text = info.rawValue
+            self.informationLabel.alpha = 1
         }
     }
     
+    private func startActivityIndicators(with info: InitialLoginInfoLabel,with alert: InitialLoginAlertType) {
+        DispatchQueue.main.async {
+
+            switch alert {
+            case .greenInfo:
+                self.informationLabel.textColor = .systemGreen
+            case .redWarning:
+                self.informationLabel.textColor = .systemRed
+            case .neutralAppColor:
+                self.informationLabel.textColor = AppColor.primary
+            }
+            
+            self.informationLabel.text = info.rawValue
+            self.informationLabel.alpha = 1
+            self.loginButton.startActivity()
+        }
+    }
+    
+    private func stopActivityIndicators(with info: InitialLoginInfoLabel, with alert: InitialLoginAlertType) {
+        DispatchQueue.main.async {
+            self.loginButton.stopActivity()
+            switch alert {
+            case .greenInfo:
+                self.informationLabel.textColor = .systemGreen
+            case .redWarning:
+                self.informationLabel.textColor = .systemRed
+            case .neutralAppColor:
+                self.informationLabel.textColor = AppColor.primary
+            }
+
+            UIView.animate(withDuration: 2, animations: {
+                self.informationLabel.alpha = 0
+            })
+            self.informationLabel.text = info.rawValue
+        }
+    }
+
+    
     private func setUI() {
+        
         title = "Login"
         scrollView.delaysContentTouches = false
         
         loginButton.titleLabel?.font = UIFont.appFont(placement: .buttonTitle)
+        
+        // Information label
+        informationLabel.font = UIFont.appFont(placement: .title)
+        informationLabel.alpha = 0
+        informationLabel.text = ""
+        informationLabel.textColor = AppColor.primary
+        
+        
+        let createAccountMutableAttributedString = NSMutableAttributedString(string: "New? Create new account!", attributes: [.font: UIFont.appFont(placement: .passiveText), .foregroundColor: UIColor(named: "passiveText")!])
+        
+        if let createAccountButtonRange = "New? Create new account!".range(of: "Create new account!") {
+            createAccountMutableAttributedString.addAttributes([.font: UIFont.appFont(placement: .boldText), .link: "CreateAccount"], range: NSRange(createAccountButtonRange, in: "New? Create new account!"))
+        }
+
+        createAccountTextView.linkTextAttributes = [.foregroundColor: UIColor(named: "text")!]
+        createAccountTextView.attributedText = createAccountMutableAttributedString
+        createAccountTextView.textContainerInset = .zero
+        createAccountTextView.textContainer.lineFragmentPadding = .zero
+        createAccountTextView.delegate = self
+        createAccountTextView.isEditable = false
+
+        let forgotPasswordMutableAttributedString = NSMutableAttributedString(string: "Forgot password? Get a new one!", attributes: [.font: UIFont.appFont(placement: .passiveText), .foregroundColor: UIColor(named: "passiveText")!])
+        
+        if let forgotPasswordButtonRange = "Forgot password? Get a new one!".range(of: "Get a new one!") {
+            forgotPasswordMutableAttributedString.addAttributes([.font: UIFont.appFont(placement: .boldText), .link: "Forgot"], range: NSRange(forgotPasswordButtonRange, in: "Forgot password? Get a new one!"))
+        }
+        
+        forgotPasswordTextView.linkTextAttributes = [.foregroundColor: UIColor(named: "text")!]
+        forgotPasswordTextView.attributedText = forgotPasswordMutableAttributedString
+        forgotPasswordTextView.textContainerInset = .zero
+        forgotPasswordTextView.textContainer.lineFragmentPadding = .zero
+        forgotPasswordTextView.delegate = self
+        forgotPasswordTextView.isEditable = false
+        
+    }
+}
+
+// MARK: - TextViewDelegate
+extension InitialLoginViewController: UITextViewDelegate {
+    public func textView(_ textView: UITextView, shouldInteractWith url: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+
+        switch url.absoluteString {
+        case "Forgot":
+            print("Forgot")
+        case "CreateAccount":
+          //  viewModel.didTapCreateAccount()
+            print("Create Account")
+        default:
+            break
+        }
+        return false
     }
 }
 
@@ -73,3 +186,5 @@ extension InitialLoginViewController: StoryboardInstantiable {
         return viewController
     }
 }
+
+

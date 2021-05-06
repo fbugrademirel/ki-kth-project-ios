@@ -35,7 +35,6 @@ final class DeviceReadingViewController: UIViewController {
         title = "Device List"
         setUI()
         viewModel.viewDidLoad()
-        
     }
     
     // MARK: -TODO: Move expensive operations to the viewDidAppear if you need a smoother first login!
