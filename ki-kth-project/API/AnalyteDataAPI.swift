@@ -20,7 +20,7 @@ struct AnalyteDataAPI {
     // MARK: - Properties
     
     let prodUrl = "https://ki-kth-project-api.herokuapp.com"
-    let devUrl = "http://localhost:3000"
+   // let devUrl = "http://localhost:3000"
     
     private let networkingService = NetworkingService()
     
