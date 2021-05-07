@@ -12,11 +12,13 @@ final class DeviceReadingViewModel {
     
     enum Action {
         case reloadDeviceListTableView
+        case deleteRows(path: IndexPath)
         case presentCalibrationView(info: ViewInfo)
         case updateChartUI(with: [LineChartData])
         case startActivityIndicators(message: DeviceInformationLabel, alert: DevicePageAlertType)
         case stopActivityIndicators(message: DeviceInformationLabel, alert: DevicePageAlertType)
         case presentView(with: UIAlertController)
+        case resetToInitialLoginView
     }
     
     var yValuesForMain: [ChartData] = [] {
@@ -52,6 +54,20 @@ final class DeviceReadingViewModel {
         sendActionToViewController?(.reloadDeviceListTableView)
     }
     
+    
+    func logoutRequested() {
+        
+        AccountManager.logout { error in
+            if let error = error {
+                //This means logout is not successfull
+                Log.e(error.localizedDescription)
+            } else {
+                //This means logout is successfull
+                Log.s("Logout successful")
+                self.sendActionToViewController?(.resetToInitialLoginView)
+            }
+        }
+    }
     
     func createDeviceRequired(name: String, personalID: Int) {
         
@@ -126,13 +142,14 @@ final class DeviceReadingViewModel {
         }
     }
     
-    func deletionByIdRequested(id: String) {
+    func deletionByIdRequested(id: String, path: IndexPath) {
         
         self.sendActionToViewController?(.startActivityIndicators(message: .deletingFromDatabase, alert: .neutralAppColor))
         
           DeviceDataAPI().deleteDeviceByID(id: id) { (result) in
               switch result {
               case .success(_):
+                self.sendActionToViewController?(.deleteRows(path: path))
                 self.sendActionToViewController?(.stopActivityIndicators(message: .deletedWithSuccess, alert: .greenInfo))
                 let alert = UIAlertController(title: "Deleted from database", message: "Server message", preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "I understand", style: .default, handler: nil))
@@ -199,6 +216,7 @@ final class DeviceReadingViewModel {
                 set1.setColor(.systemBlue)
                 set1.setCircleColor(.systemBlue)
                 set1.drawValuesEnabled = true
+                set1.drawCirclesEnabled = false
 
                 //set1.fill = Fill(color: .white)
                 //set1.fillAlpha = 0.8

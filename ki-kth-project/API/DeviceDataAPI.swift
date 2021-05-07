@@ -18,21 +18,23 @@ struct DeviceDataAPI {
     // MARK: - Properties
     private let networkingService = NetworkingService()
     
+    let prodUrl = "https://ki-kth-project-api.herokuapp.com"
+    let devUrl = "http://localhost:3000"
+    
     // MARK: - Operations
-    func createDevice(name: String, personalID: Int, with completion: @escaping (Result<DeviceDataFetch,Error>) -> Void) {
+    
+    func login(email: String, password: String, with completion: @escaping (Result<LoginUserDataFetch, Error>) -> Void) {
         
-        let uniqueIdentifier = UUID()
-        let device = DeviceCreationPatch (name: name, deviceID: uniqueIdentifier.uuidString, personalID: personalID)
-        let url = "https://ki-kth-project-api.herokuapp.com/onbodydevice"
+        let url = "\(prodUrl)/user/login"
+        let login = LoginUserPost(email: email, password: password)
         let addHeader = ["Content-Type": "application/json"]
-        
-        networkingService.dispatchRequest(urlString: url, method: .post, additionalHeaders: addHeader, body: device) { result in
+        networkingService.dispatchRequest(urlString: url, method: .post, additionalHeaders: addHeader, body: login) { result in
             switch result {
             case .success(let data):
                 do {
-                    let deviceData = try JSONDecoder().decode(DeviceDataFetch.self, from: data)
+                    let loginData = try JSONDecoder().decode(LoginUserDataFetch.self, from: data)
                     DispatchQueue.main.async {
-                        completion(.success(deviceData))
+                        completion(.success(loginData))
                     }
                 } catch {
                     DispatchQueue.main.async {
@@ -43,6 +45,91 @@ struct DeviceDataAPI {
                 DispatchQueue.main.async {
                     completion(.failure(error))
                 }
+            }
+        }
+    }
+    
+    func createAccount(name: String, email: String, password: String, with completion: @escaping (Result<CreateUserDataFetch, Error>) -> Void) {
+        
+        let url = "\(prodUrl)/user"
+        let createUser = CreateUserPost(name: name, email: email, password: password)
+        let addHeader = ["Content-Type": "application/json"]
+
+        networkingService.dispatchRequest(urlString: url, method: .post, additionalHeaders: addHeader, body: createUser) { result in
+            switch result {
+            case .success(let data):
+                do {
+                    let createUserData = try JSONDecoder().decode(CreateUserDataFetch.self, from: data)
+                    DispatchQueue.main.async {
+                        completion(.success(createUserData))
+                    }
+                } catch {
+                    DispatchQueue.main.async {
+                        completion(.failure(error))
+                    }
+                }
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    completion(.failure(error))
+                    print(error)
+                }
+            }
+        }
+    }
+    
+    
+    func logout(completion: @escaping (Error?) -> Void) {
+        
+        let url = "\(prodUrl)/user/logout"
+        AuthenticationManager().getAuthToken { result in
+            switch result {
+            case .success(let token):
+                let addHeader = ["Authorization": "Bearer \(token)"]
+                networkingService.dispatchRequest(urlString: url, method: .post, additionalHeaders: addHeader, body: nil) { result in
+                    switch result {
+                    case .success(_):
+                        completion(nil)
+                    case .failure(let error):
+                        completion(error)
+                    }
+                }
+            case .failure(let error):
+                completion(error)
+            }
+        }
+    }
+    
+    func createDevice(name: String, personalID: Int, with completion: @escaping (Result<DeviceDataFetch,Error>) -> Void) {
+        
+        let uniqueIdentifier = UUID()
+        let device = DeviceCreationPost (name: name, deviceID: uniqueIdentifier.uuidString, personalID: personalID)
+        let url = "\(prodUrl)/onbodydevice"
+                
+        AuthenticationManager().getAuthToken { result in
+            switch result {
+            case .success(let token):
+                let addHeaderToken = ["Content-Type": "application/json", "Authorization": "Bearer \(token)"]
+                self.networkingService.dispatchRequest(urlString: url, method: .post, additionalHeaders: addHeaderToken, body: device) { result in
+                    switch result {
+                    case .success(let data):
+                        do {
+                            let deviceData = try JSONDecoder().decode(DeviceDataFetch.self, from: data)
+                            DispatchQueue.main.async {
+                                completion(.success(deviceData))
+                            }
+                        } catch {
+                            DispatchQueue.main.async {
+                                completion(.failure(error))
+                            }
+                        }
+                    case .failure(let error):
+                        DispatchQueue.main.async {
+                            completion(.failure(error))
+                        }
+                    }
+                }
+            case .failure(let error):
+                completion(.failure(error))
             }
         }
     }
@@ -50,83 +137,135 @@ struct DeviceDataAPI {
     
     func deleteDeviceByID(id: String, completion: @escaping (Result<DeviceDataFetch, Error>) -> Void ) {
         
-        let url =  "https://ki-kth-project-api.herokuapp.com/onbodydevice/\(id)"
+        let url =  "\(prodUrl)/onbodydevice/\(id)"
         
-        networkingService.dispatchRequest(urlString: url, method: .delete, additionalHeaders: nil, body: nil) { result in
+        AuthenticationManager().getAuthToken { result in
             switch result {
-            case .success(let data):
-                do {
-                    let analyte = try JSONDecoder().decode(DeviceDataFetch.self, from: data)
-                    DispatchQueue.main.async {
-                        completion(.success(analyte))
-                    }
-                } catch {
-                    DispatchQueue.main.async {
-                        completion(.failure(error))
+            case .success(let token):
+                let addHeader = ["Authorization": "Bearer \(token)"]
+                networkingService.dispatchRequest(urlString: url, method: .delete, additionalHeaders: addHeader, body: nil) { result in
+                    switch result {
+                    case .success(let data):
+                        do {
+                            let analyte = try JSONDecoder().decode(DeviceDataFetch.self, from: data)
+                            DispatchQueue.main.async {
+                                completion(.success(analyte))
+                            }
+                        } catch {
+                            DispatchQueue.main.async {
+                                completion(.failure(error))
+                            }
+                        }
+                    case .failure(let error):
+                        DispatchQueue.main.async {
+                            completion(.failure(error))
+                        }
                     }
                 }
             case .failure(let error):
-                DispatchQueue.main.async {
-                    completion(.failure(error))
-                }
+                completion(.failure(error))
             }
         }
     }
     
     func getAllAnalytesForDevice(_ id: String, completion: @escaping (Result<[AnalyteDataFetch], Error>) -> Void ) {
         
-        let url = "https://ki-kth-project-api.herokuapp.com/onbodydevice/allanalytes/\(id)"
+        let url = "\(prodUrl)/onbodydevice/allanalytes/\(id)"
         
-        networkingService.dispatchRequest(urlString: url, method: .get) { result in
+        AuthenticationManager().getAuthToken { result in
             switch result {
-            case .success(let data):
-                do {
-                    let analytes = try JSONDecoder().decode([AnalyteDataFetch].self, from: data)
-                    DispatchQueue.main.async {
-                        completion(.success(analytes))
-                    }
-                } catch {
-                    DispatchQueue.main.async {
-                        completion(.failure(error))
+            case .success(let token):
+                let addHeader = ["Authorization": "Bearer \(token)"]
+                networkingService.dispatchRequest(urlString: url, method: .get, additionalHeaders: addHeader) { result in
+                    switch result {
+                    case .success(let data):
+                        
+                        do {
+                            let device = try JSONDecoder().decode([AnalyteDataFetch].self, from: data)
+                            DispatchQueue.main.async {
+                                completion(.success(device))
+                            }
+                        } catch {
+                            DispatchQueue.main.async {
+                                completion(.failure(error))
+                            }
+                        }
+                    case .failure(let error):
+                        DispatchQueue.main.async {
+                            completion(.failure(error))
+                        }
                     }
                 }
             case .failure(let error):
-                DispatchQueue.main.async {
-                    completion(.failure(error))
-                }
+                completion(.failure(error))
             }
         }
     }
     
     func getAllDevices(with completion: @escaping (Result<[DeviceDataFetch], Error>) -> Void ) {
         
-        let url = "https://ki-kth-project-api.herokuapp.com/onbodydevice/all"
+        let url = "\(prodUrl)/user/allonbodydevices"
         
-        networkingService.dispatchRequest(urlString: url, method: .get) { result in
-         
+        AuthenticationManager().getAuthToken { result in
             switch result {
-            case .success(let data):
+            case .success(let token):
+                let addHeader = ["Authorization": "Bearer \(token)"]
                 
-                do {
-                    let device = try JSONDecoder().decode([DeviceDataFetch].self, from: data)
-                    DispatchQueue.main.async {
-                        completion(.success(device))
-                    }
-                } catch {
-                    DispatchQueue.main.async {
-                        completion(.failure(error))
+                networkingService.dispatchRequest(urlString: url, method: .get, additionalHeaders: addHeader) { result in
+                    switch result {
+                    case .success(let data):
+                        
+                        do {
+                            let device = try JSONDecoder().decode([DeviceDataFetch].self, from: data)
+                            DispatchQueue.main.async {
+                                completion(.success(device))
+                            }
+                        } catch {
+                            DispatchQueue.main.async {
+                                completion(.failure(error))
+                            }
+                        }
+                    case .failure(let error):
+                        DispatchQueue.main.async {
+                            completion(.failure(error))
+                        }
                     }
                 }
             case .failure(let error):
-                DispatchQueue.main.async {
-                    completion(.failure(error))
-                }
+                completion(.failure(error))
             }
         }
     }
 }
 
 // MARK: - Device Data Codable
+
+struct LoginUserPost: Codable {
+    let email: String
+    let password: String
+}
+
+struct LoginUserDataFetch: Codable {
+    let user: User
+    let token: String
+}
+
+struct CreateUserPost: Codable {
+    let name: String
+    let email: String
+    let password: String
+}
+
+struct CreateUserDataFetch: Codable {
+    let user: User
+    let token: String
+}
+
+struct User: Codable {
+    let name: String
+    let email: String
+    let _id: String
+}
 
 struct DeviceDataFetch: Codable {
     let _id: String
@@ -137,7 +276,7 @@ struct DeviceDataFetch: Codable {
     let updatedAt: String
 }
 
-struct DeviceCreationPatch: Codable {
+struct DeviceCreationPost: Codable {
     let name: String
     let deviceID: String
     let personalID: Int

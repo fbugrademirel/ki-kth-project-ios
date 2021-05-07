@@ -15,13 +15,11 @@ class ActivityIndicatorButton: UIButton {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setActivityIndicator()
-        self.backgroundColor = AppColor.secondary
     }
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setActivityIndicator()
-        self.backgroundColor = AppColor.secondary
     }
     
     override open var isHighlighted: Bool {
@@ -31,6 +29,10 @@ class ActivityIndicatorButton: UIButton {
     }
 
     private func setActivityIndicator() {
+        
+        self.backgroundColor = AppColor.secondary
+        self.layer.cornerRadius = 10
+        
         ai.isHidden = true
         ai.alpha = 0
         ai.color = AppColor.primary

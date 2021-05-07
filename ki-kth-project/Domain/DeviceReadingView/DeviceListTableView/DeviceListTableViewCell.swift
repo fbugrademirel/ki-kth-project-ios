@@ -83,6 +83,13 @@ final class DeviceListTableViewCell: UITableViewCell {
     
     // MARK: - Overrides
     
+    override func prepareForReuse() {
+        calibrationInfoStackView.arrangedSubviews.forEach { view in
+            calibrationInfoStackView.removeArrangedSubview(view)
+            view.removeFromSuperview()
+        }
+    }
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code

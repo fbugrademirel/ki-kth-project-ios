@@ -32,12 +32,12 @@ final class DeviceReadingViewController: UIViewController {
         viewModel.sendActionToViewController = { [weak self] action in
             self?.handleReceivedFromViewModel(action: action)
         }
-        title = "Device List"
         setUI()
         viewModel.viewDidLoad()
         
     }
     
+    // MARK: -TODO: Move expensive operations to the viewDidAppear if you need a smoother first login!
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         viewModel.reloadTableViewsRequired()
@@ -46,6 +46,8 @@ final class DeviceReadingViewController: UIViewController {
     // MARK: - Handle
     func handleReceivedFromViewModel(action: DeviceReadingViewModel.Action) -> Void {
         switch action {
+        case .deleteRows(let path):
+            deleteRows(path: path)
         case .reloadDeviceListTableView:
             deviceListTableView.reloadData()
         case .presentCalibrationView(info: let info):
@@ -61,6 +63,9 @@ final class DeviceReadingViewController: UIViewController {
             stopActivityIndicators(with: message, with: alert)
         case .presentView(with: let view):
             present(view, animated: true, completion: nil)
+        case .resetToInitialLoginView:
+            let vc = InitialLoginViewController.instantiate(with: InitialLoginViewModel())
+            navigationController?.setViewControllers([vc], animated: true)
         }
     }
     
@@ -85,9 +90,22 @@ final class DeviceReadingViewController: UIViewController {
         viewModel.fetchAllDevicesRequired()
     }
     
+    @objc func logOutPressed(_ sender: UIBarButtonItem ) {
+        
+        let alert = UIAlertController(title: "Signing out...", message: "Are you sure to sign out?", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Logout", style: .destructive) { [weak self] _ in
+            self?.viewModel.logoutRequested()
+        })
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        present(alert, animated: true, completion: nil)
+    }
+    
     // MARK: - UI
     private func setUI() {
         
+        let barButton = UIBarButtonItem(image: UIImage(systemName:"square.and.arrow.up"), style: .plain, target: self, action: #selector(logOutPressed(_:)))
+        self.navigationItem.rightBarButtonItem  = barButton
+
         let gesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         blockViewForCancelling.addGestureRecognizer(gesture)
 
@@ -120,6 +138,14 @@ final class DeviceReadingViewController: UIViewController {
         deviceListTableView.dataSource = self
         deviceListTableView.delaysContentTouches = false;
         deviceListTableView.register(UINib(nibName: DeviceListTableViewCell.nibName, bundle: nil), forCellReuseIdentifier: DeviceListTableViewCell.nibName)
+    }
+    
+    private func deleteRows(path: IndexPath) {
+        self.deviceListTableView.beginUpdates()
+        self.viewModel.deviceListTableViewViewModels.remove(at: path.row)
+
+        self.deviceListTableView.deleteRows(at: [path], with: .fade)
+        self.deviceListTableView.endUpdates()
     }
     
     @objc func dismissKeyboard() {
@@ -265,12 +291,8 @@ final class DeviceReadingViewController: UIViewController {
             let alert = UIAlertController(title: "Warning!", message: "This operation will also delete related analytes' of this device", preferredStyle: .alert)
             
             alert.addAction(UIAlertAction(title: "Confirm", style: .destructive, handler: { _ in
-                self.viewModel.deletionByIdRequested(id: self.viewModel.deviceListTableViewViewModels[path.row].serverID)
-                self.deviceListTableView.beginUpdates()
-                self.viewModel.deviceListTableViewViewModels.remove(at: path.row)
+                self.viewModel.deletionByIdRequested(id: self.viewModel.deviceListTableViewViewModels[path.row].serverID, path: path)
 
-                self.deviceListTableView.deleteRows(at: [path], with: .fade)
-                self.deviceListTableView.endUpdates()
             }))
             
             alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in

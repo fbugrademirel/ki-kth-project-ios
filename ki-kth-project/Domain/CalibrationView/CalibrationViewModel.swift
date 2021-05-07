@@ -11,6 +11,7 @@ import Charts
 final class CalibrationViewModel {
     
     enum Action {
+        case deleteRows(path: IndexPath)
         case presentView(view: UIAlertController)
         case makeCorrLabelVisible(parameters: CorrealetionParameters)
         case clearChart(for: ChartViews)
@@ -229,11 +230,12 @@ final class CalibrationViewModel {
         }
     }
     
-    func deletionByIdRequested(id: String) {
+    func deletionByIdRequested(id: String, path: IndexPath) {
         self.sendActionToViewController?(.startActivityIndicators(message: .deletingFromDatabase, alertType: .neutralAppColor))
           AnalyteDataAPI().deleteAnalyte(id) { (result) in
               switch result {
               case .success(_):
+                self.sendActionToViewController?(.deleteRows(path: path))
                 self.sendActionToViewController?(.stopActivityIndicators(message: .deletedWithSuccess, alertType: .greenInfo))
                 let alert = UIAlertController(title: "Deleted from database", message: "Server message", preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "I understand", style: .default, handler: nil))

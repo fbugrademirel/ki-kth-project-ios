@@ -165,6 +165,8 @@ final class CalibrationViewController: UIViewController {
 // MARK: - Handle from view model
     func handleReceivedFromViewModel(action :CalibrationViewModel.Action) {
         switch action {
+        case .deleteRows(let path):
+            deleteRows(path: path)
         case .presentView (let view):
             present(view, animated: true, completion: nil)
         case .makeCorrLabelVisible(let parameters):
@@ -187,6 +189,13 @@ final class CalibrationViewController: UIViewController {
     }
     
 // MARK: - Operations
+    
+    private func deleteRows(path: IndexPath) {
+        self.analyteListTableView.beginUpdates()
+        self.viewModel.analyteListTableViewCellModels.remove(at: path.row)
+        self.analyteListTableView.deleteRows(at: [path], with: .fade)
+        self.analyteListTableView.endUpdates()
+    }
     
     private func resetAllTablesAndChartData() {
         
@@ -441,13 +450,8 @@ final class CalibrationViewController: UIViewController {
         
         alert.addAction(UIAlertAction(title: "Delete also from cloud", style: .destructive, handler: { _ in
             
-            self.viewModel.deletionByIdRequested(id: self.viewModel.analyteListTableViewCellModels[path.row].serverID)
+            self.viewModel.deletionByIdRequested(id: self.viewModel.analyteListTableViewCellModels[path.row].serverID, path: path)
 
-            self.analyteListTableView.beginUpdates()
-            self.viewModel.analyteListTableViewCellModels.remove(at: path.row)
-
-            self.analyteListTableView.deleteRows(at: [path], with: .fade)
-            self.analyteListTableView.endUpdates()
         }))
         
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in
