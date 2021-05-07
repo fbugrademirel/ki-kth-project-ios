@@ -159,13 +159,13 @@ final class CalibrationViewModel {
         }
     }
     
-    func createAndPatchAnalyteRequested(by description: String) {
+    func createAndPatchAnalyteRequested(description: String, associatedAnalyte: String) {
         
         guard let id = deviceID else { return }
         
         sendActionToViewController?(.startActivityIndicators(message: .creating, alertType: .neutralAppColor))
 
-        AnalyteDataAPI().createAnalyte(description: description, owner: id) { [weak self] result in
+        AnalyteDataAPI().createAnalyte(description: description, owner: id, associatedAnalyte: associatedAnalyte) { [weak self] result in
             switch result {
             case .success(let data):
 
@@ -177,7 +177,7 @@ final class CalibrationViewModel {
                                                                          slope: data.calibrationParameters.correlationEquationParameters?.slope ?? 0,
                                                                          constant: data.calibrationParameters.correlationEquationParameters?.constant ?? 0))
                 
-                let model = AnalyteTableViewCellModel(description: analyte.description,
+                let model = AnalyteTableViewCellModel(description: "\(analyte.description) - \(data.associatedAnalyte)",
                                                       identifier: analyte.identifier,
                                                       serverID: analyte.serverID,
                                                       isCalibrated: analyte.calibrationParam.isCalibrated)
@@ -202,6 +202,7 @@ final class CalibrationViewModel {
                 let data = AnalyteDataFetch(calibrationParameters: data.calibrationParameters, _id: data._id,
                                             description: data.description,
                                             uniqueIdentifier: data.uniqueIdentifier,
+                                            associatedAnalyte: data.associatedAnalyte,
                                             measurements: data.measurements,
                                             createdAt: data.createdAt,
                                             updatedAt: data.updatedAt)

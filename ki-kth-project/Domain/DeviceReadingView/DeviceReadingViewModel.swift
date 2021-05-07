@@ -116,6 +116,7 @@ final class DeviceReadingViewModel {
                                                    _id: data._id,
                                                    description: data.description,
                                                    uniqueIdentifier: data.uniqueIdentifier,
+                                                   associatedAnalyte: data.associatedAnalyte,
                                                    measurements: data.measurements,
                                                    createdAt: data.createdAt,
                                                    updatedAt: data.updatedAt)

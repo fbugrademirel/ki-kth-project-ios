@@ -25,7 +25,6 @@ final class CalibrationViewController: UIViewController {
     @IBOutlet weak var analyteListTableView: UITableView!
     @IBOutlet weak var potential: UILabel!
     @IBOutlet weak var concTextField: IndicatorTextField!
-    @IBOutlet weak var analyteDescriptionTextField: IndicatorTextField!
     @IBOutlet weak var addAnalyteButton: ActivityIndicatorButton!
     @IBOutlet weak var analytesStackView: UIStackView!
     @IBOutlet weak var calibrationStackView: UIStackView!
@@ -36,6 +35,11 @@ final class CalibrationViewController: UIViewController {
     @IBOutlet weak var blockViewForCancelling: UIView!
     @IBOutlet weak var concentrationElementsStackView: UIStackView!
     
+    @IBOutlet weak var pickerView: UIPickerView!
+    
+    let pickerData: [[String]] = [["MN#1", "MN#2", "MN#3","MN#4", "MN#5", "MN#6", "MN#7"],
+                                   ["sodium", "potassium", "pH", "chloride"]]
+    
     
 // MARK: - Lifecyle
     override func viewDidLoad() {
@@ -45,10 +49,19 @@ final class CalibrationViewController: UIViewController {
             self?.handleReceivedFromViewModel(action: action)
         }
 
+        
+        pickerView.dataSource = self
+        pickerView.delegate = self
+        pickerView.setValue(AppColor.primary, forKey: "textColor")
+        
         setUI()
         if let id = viewModel.deviceID {
             viewModel.viewDidLoad(for: id)
         }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
     }
     
 // MARK: - IBAction
@@ -70,18 +83,10 @@ final class CalibrationViewController: UIViewController {
     
     
     @IBAction func createAndRegisterAnalyte(_ sender: Any) {
-        
-        guard let desc = analyteDescriptionTextField.text else { return }
-        
-        if analyteDescriptionTextField.text == "" {
-            analyteDescriptionTextField.indicatesError = true
-            return
-        }
-        
-        analyteDescriptionTextField.text = ""
-        dismissKeyboard()
-        viewModel.createAndPatchAnalyteRequested(by: desc)
-        
+        let microneedleSelected = pickerView.selectedRow(inComponent: 0)
+        let associatedAnalyte = pickerView.selectedRow(inComponent: 1)
+        viewModel.createAndPatchAnalyteRequested(description: pickerData[0][microneedleSelected],
+                                                 associatedAnalyte: pickerData[1][associatedAnalyte])
     }
     
     
@@ -158,7 +163,6 @@ final class CalibrationViewController: UIViewController {
             self.analytesStackView.isUserInteractionEnabled = true
             self.concentrationElementsStackView.isUserInteractionEnabled = true
         }
-        analyteDescriptionTextField.resignFirstResponder()
         concTextField.resignFirstResponder()
     }
     
@@ -276,7 +280,6 @@ final class CalibrationViewController: UIViewController {
         
         //Text Field Delegates
         concTextField.delegate = self
-        analyteDescriptionTextField.delegate = self
                 
         // Information label
         informationLabel.font = UIFont.appFont(placement: .title)
@@ -461,7 +464,6 @@ final class CalibrationViewController: UIViewController {
     }
     
     private func clearErrorIndication() {
-        analyteDescriptionTextField.indicatesError = false
         concTextField.indicatesError = false
     }
 }
@@ -485,14 +487,7 @@ extension CalibrationViewController: UITextFieldDelegate {
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
         
-        if textField.isEqual(analyteDescriptionTextField) {
-            analyteDescriptionTextField.indicatesError = false
-            self.view.bringSubviewToFront(analytesStackView)
-            blockViewForCancelling.isUserInteractionEnabled = true
-            UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseIn) {
-                self.blockViewForCancelling.alpha = 0.9
-            }
-        } else if textField .isEqual(concTextField){
+        if textField .isEqual(concTextField){
             concTextField.indicatesError = false
             self.view.bringSubviewToFront(concentrationElementsStackView)
             blockViewForCancelling.isUserInteractionEnabled = true
@@ -594,3 +589,45 @@ extension CalibrationViewController: StoryboardInstantiable {
     }
 }
 
+extension CalibrationViewController: UIPickerViewDelegate {
+    
+    func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
+        return 75
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
+        var pickerLabel: UILabel? = (view as? UILabel)
+        if pickerLabel == nil {
+            pickerLabel = UILabel()
+            pickerLabel?.font = UIFont.appFont(placement: .boldText)
+            pickerLabel?.textAlignment = .center
+        }
+        pickerLabel?.text = pickerData[component][row]
+        pickerLabel?.textColor = AppColor.primary
+
+        return pickerLabel!
+    }
+        
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        pickerData[component][row]
+    }
+}
+
+extension CalibrationViewController: UIPickerViewDataSource {
+    
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return pickerData.count
+    }
+    
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        switch(component) {
+        case 0:
+            return pickerData[0].count;
+        case 1:
+            return pickerData[1].count;
+        default:
+            return 0
+        }
+    }
+}

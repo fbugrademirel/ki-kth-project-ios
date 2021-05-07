@@ -46,15 +46,16 @@
                                 </constraints>
                             </stackView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="rcL-2p-Mf6" userLabel="AnalytesStackView">
-                                <rect key="frame" x="7" y="156" width="246" height="52.5"/>
+                                <rect key="frame" x="7" y="156" width="246" height="109"/>
                                 <subviews>
-                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Enter Analyte Description..." textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="rKL-xW-bBk" customClass="IndicatorTextField" customModule="ki_kth_project" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="0.0" width="246" height="18.5"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                        <textInputTraits key="textInputTraits" autocorrectionType="no" keyboardType="numberPad"/>
-                                    </textField>
+                                    <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dYG-xs-fDg">
+                                        <rect key="frame" x="0.0" y="0.0" width="246" height="75"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="75" id="bfC-dg-45A"/>
+                                        </constraints>
+                                    </pickerView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tI0-UI-iTA" customClass="ActivityIndicatorButton" customModule="ki_kth_project" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="24.5" width="246" height="28"/>
+                                        <rect key="frame" x="0.0" y="81" width="246" height="28"/>
                                         <inset key="contentEdgeInsets" minX="6" minY="3" maxX="6" maxY="3"/>
                                         <state key="normal" title="Register">
                                             <color key="titleColor" name="primary"/>
@@ -66,7 +67,7 @@
                                 </subviews>
                             </stackView>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="tZ2-yM-rbM">
-                                <rect key="frame" x="7" y="214.5" width="246" height="517"/>
+                                <rect key="frame" x="7" y="271" width="246" height="517"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </tableView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="ujh-HR-eCL" userLabel="ConcentationStackView">
@@ -203,7 +204,7 @@
                                     <action selector="calibrateButtonPressed:" destination="uSr-49-Bbt" eventType="touchUpInside" id="TAm-S4-mOs"/>
                                 </connections>
                             </button>
-                            <view userInteractionEnabled="NO" alpha="0.0" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iy6-Iy-SIc" userLabel="BlockViewForCancelling">
+                            <view userInteractionEnabled="NO" alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iy6-Iy-SIc" userLabel="BlockViewForCancelling">
                                 <rect key="frame" x="0.0" y="0.0" width="1024" height="1366"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" systemColor="systemGray4Color"/>
@@ -247,10 +248,14 @@
                             <constraint firstItem="fJc-L6-Kdd" firstAttribute="width" secondItem="itM-KU-kqu" secondAttribute="width" multiplier="0.24" id="yXw-W0-bp6"/>
                             <constraint firstItem="rcL-2p-Mf6" firstAttribute="top" secondItem="YZs-qh-20f" secondAttribute="top" id="zNc-kH-su5"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="subviews">
+                                <exclude reference="iy6-Iy-SIc"/>
+                            </mask>
+                        </variation>
                     </view>
                     <connections>
                         <outlet property="addAnalyteButton" destination="tI0-UI-iTA" id="3nE-Qq-tKd"/>
-                        <outlet property="analyteDescriptionTextField" destination="rKL-xW-bBk" id="RCW-m1-ZSu"/>
                         <outlet property="analyteListTableView" destination="tZ2-yM-rbM" id="xsW-mX-e1g"/>
                         <outlet property="analytesStackView" destination="rcL-2p-Mf6" id="9S5-pl-tqD"/>
                         <outlet property="blockViewForCancelling" destination="iy6-Iy-SIc" id="Lom-YN-Hv5"/>
@@ -267,6 +272,7 @@
                         <outlet property="corEquationLabel" destination="Mzr-cR-Dg1" id="cBb-36-7xg"/>
                         <outlet property="informationLabel" destination="98u-zR-Seg" id="kWb-E7-e7N"/>
                         <outlet property="mainChartView" destination="szc-r6-D3d" id="ddI-Pb-oLJ"/>
+                        <outlet property="pickerView" destination="dYG-xs-fDg" id="2Pr-bM-o5E"/>
                         <outlet property="potential" destination="Tq8-Td-vE1" id="MHD-eV-7Is"/>
                     </connections>
                 </viewController>
