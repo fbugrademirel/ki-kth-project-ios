@@ -54,7 +54,7 @@ final class DeviceListTableViewCell: UITableViewCell {
         calibrateButton.titleLabel?.font = UIFont.appFont(placement: .buttonTitle)
     }
     
-    private func setAnalyteInfo(analytes: [Analyte]) {
+    private func setAnalyteInfo(analytes: [MicroNeedle]) {
         
         calibrationInfoStackView.arrangedSubviews.forEach { view in
             calibrationInfoStackView.removeArrangedSubview(view)
@@ -65,7 +65,7 @@ final class DeviceListTableViewCell: UITableViewCell {
             let label = UILabel()
             label.alpha = 0
             label.font = UIFont.appFont(placement: .text)
-            label.text = analyte.description
+            label.text = "\(analyte.description) - \(analyte.associatedAnalyte)"
             label.translatesAutoresizingMaskIntoConstraints = false
             if analyte.calibrationParam.isCalibrated {
                 label.textColor = .systemGreen

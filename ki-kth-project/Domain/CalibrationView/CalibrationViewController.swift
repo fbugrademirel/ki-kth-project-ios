@@ -34,11 +34,9 @@ final class CalibrationViewController: UIViewController {
     @IBOutlet weak var calibrateButton: ActivityIndicatorButton!
     @IBOutlet weak var blockViewForCancelling: UIView!
     @IBOutlet weak var concentrationElementsStackView: UIStackView!
+    @IBOutlet weak var microNeedleHeadersStackView: UIStackView!
     
     @IBOutlet weak var pickerView: UIPickerView!
-    
-    let pickerData: [[String]] = [["MN#1", "MN#2", "MN#3","MN#4", "MN#5", "MN#6", "MN#7"],
-                                   ["sodium", "potassium", "pH", "chloride"]]
     
     
 // MARK: - Lifecyle
@@ -48,7 +46,6 @@ final class CalibrationViewController: UIViewController {
         viewModel.sendActionToViewController = { [weak self] action in
             self?.handleReceivedFromViewModel(action: action)
         }
-
         
         pickerView.dataSource = self
         pickerView.delegate = self
@@ -83,10 +80,15 @@ final class CalibrationViewController: UIViewController {
     
     
     @IBAction func createAndRegisterAnalyte(_ sender: Any) {
+        
+        if (viewModel.pickerData[0].isEmpty || viewModel.pickerData[1].isEmpty) {
+            return
+        }
+        
         let microneedleSelected = pickerView.selectedRow(inComponent: 0)
         let associatedAnalyte = pickerView.selectedRow(inComponent: 1)
-        viewModel.createAndPatchAnalyteRequested(description: pickerData[0][microneedleSelected],
-                                                 associatedAnalyte: pickerData[1][associatedAnalyte])
+        viewModel.createAndPatchAnalyteRequested(description: viewModel.pickerData[0][microneedleSelected],
+                                                 associatedAnalyte: viewModel.pickerData[1][associatedAnalyte])
     }
     
     
@@ -169,6 +171,8 @@ final class CalibrationViewController: UIViewController {
 // MARK: - Handle from view model
     func handleReceivedFromViewModel(action :CalibrationViewModel.Action) {
         switch action {
+        case .reloadPickerView:
+            pickerView.reloadAllComponents()
         case .deleteRows(let path):
             deleteRows(path: path)
         case .presentView (let view):
@@ -296,6 +300,13 @@ final class CalibrationViewController: UIViewController {
         corEquationLabel.alpha = 0
         corEquationLabel.textColor = AppColor.primary
         corEquationLabel.font = UIFont.appFont(placement: .boldText)
+        
+        microNeedleHeadersStackView.subviews.forEach {
+            if let label = $0 as? UILabel {
+                label.font = UIFont.appFont(placement: .boldText)
+            }
+        }
+        
         
         calLabelsStackView.subviews.forEach {
             if let label = $0 as? UILabel {
@@ -576,19 +587,6 @@ extension CalibrationViewController: UITableViewDataSource {
     }
 }
 
-// MARK: - Storyboard Instantiable
-extension CalibrationViewController: StoryboardInstantiable {
-    static var storyboardName: String {
-        return "CalibrationView"
-    }
-
-    public static func instantiate(with viewModel: CalibrationViewModel) -> CalibrationViewController {
-        let viewController = instantiate()
-        viewController.viewModel = viewModel
-        return viewController
-    }
-}
-
 extension CalibrationViewController: UIPickerViewDelegate {
     
     func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
@@ -599,35 +597,48 @@ extension CalibrationViewController: UIPickerViewDelegate {
         var pickerLabel: UILabel? = (view as? UILabel)
         if pickerLabel == nil {
             pickerLabel = UILabel()
-            pickerLabel?.font = UIFont.appFont(placement: .boldText)
+            pickerLabel?.font = UIFont.appFont(placement: .passiveText)
             pickerLabel?.textAlignment = .center
         }
-        pickerLabel?.text = pickerData[component][row]
+        pickerLabel?.text = viewModel.pickerData[component][row]
         pickerLabel?.textColor = AppColor.primary
 
         return pickerLabel!
     }
         
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        pickerData[component][row]
+        viewModel.pickerData[component][row]
     }
 }
 
 extension CalibrationViewController: UIPickerViewDataSource {
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        return pickerData.count
+        return viewModel.pickerData.count
     }
     
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         switch(component) {
         case 0:
-            return pickerData[0].count;
+            return viewModel.pickerData[0].count;
         case 1:
-            return pickerData[1].count;
+            return viewModel.pickerData[1].count;
         default:
             return 0
         }
+    }
+}
+
+// MARK: - Storyboard Instantiable
+extension CalibrationViewController: StoryboardInstantiable {
+    static var storyboardName: String {
+        return "CalibrationView"
+    }
+
+    public static func instantiate(with viewModel: CalibrationViewModel) -> CalibrationViewController {
+        let viewController = instantiate()
+        viewController.viewModel = viewModel
+        return viewController
     }
 }

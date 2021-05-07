@@ -14,7 +14,7 @@ final class DeviceListTableViewCellViewModel {
     }
     
     enum ActionToOwnView{
-        case showCalibratedAnalytes(analytes: [Analyte])
+        case showCalibratedAnalytes(analytes: [MicroNeedle])
     }
     
     let patientName: String
@@ -42,10 +42,11 @@ final class DeviceListTableViewCellViewModel {
                 let sorted = data.sorted {
                     $0.updatedAt > $1.updatedAt
                 }
-                let fetched = sorted.map { (data) -> Analyte in
-                    let analyte = Analyte(description: data.description,
+                let fetched = sorted.map { (data) -> MicroNeedle in
+                    let analyte = MicroNeedle(description: data.description,
                                           identifier: data.uniqueIdentifier,
                                           serverID: data._id,
+                                          associatedAnalyte: data.associatedAnalyte,
                                           calibrationParam: CalibrationParam(calibrationTime: data.calibrationParameters.calibrationTime ?? 0,
                                                                              isCalibrated: data.calibrationParameters.isCalibrated, slope: data.calibrationParameters.correlationEquationParameters?.slope ?? 0, constant: data.calibrationParameters.correlationEquationParameters?.constant ?? 0))
                         
