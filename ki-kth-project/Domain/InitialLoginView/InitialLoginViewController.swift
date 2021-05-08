@@ -36,6 +36,8 @@ class InitialLoginViewController: UIViewController {
         }
         
         if emailTextField.text == "" || passwordTextField.text == "" {
+            emailTextField.indicatesError = true
+            passwordTextField.indicatesError = true
             return
         }
         
@@ -115,6 +117,11 @@ class InitialLoginViewController: UIViewController {
             self.informationLabel.text = info.rawValue
         }
     }
+    
+    private func clearErrorIndication() {
+        emailTextField.indicatesError = false
+        passwordTextField.indicatesError = false
+    }
 
     
     private func setUI() {
@@ -130,6 +137,8 @@ class InitialLoginViewController: UIViewController {
         informationLabel.text = ""
         informationLabel.textColor = AppColor.primary
         
+        emailTextField.delegate = self
+        passwordTextField.delegate = self
         
         let createAccountMutableAttributedString = NSMutableAttributedString(string: "New? Create new account!", attributes: [.font: UIFont.appFont(placement: .passiveText), .foregroundColor: UIColor(named: "passiveText")!])
         
@@ -162,8 +171,31 @@ class InitialLoginViewController: UIViewController {
     }
 }
 
+
+// MARK: - TextField Delegate
+
+extension InitialLoginViewController: UITextFieldDelegate {
+    func textFieldDidEndEditing(_ textField: UITextField) {
+       clearErrorIndication()
+    }
+    
+    func textFieldDidChangeSelection(_ textField: UITextField) {
+        clearErrorIndication()
+    }
+    
+    func textFieldShouldClear(_ textField: UITextField) -> Bool {
+        clearErrorIndication()
+        return true
+    }
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        clearErrorIndication()
+    }
+}
+
 // MARK: - TextViewDelegate
 extension InitialLoginViewController: UITextViewDelegate {
+    
     public func textView(_ textView: UITextView, shouldInteractWith url: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
 
         switch url.absoluteString {

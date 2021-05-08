@@ -176,11 +176,9 @@ final class DeviceReadingViewModel {
                 }
                 
                 let fetchedDevices = sorted.map { data -> DeviceListTableViewCellViewModel in
-                    
                     let device = Device(name: data.name, id: data.personalID)
                     
                     let viewModel = DeviceListTableViewCellViewModel(name: device.name, id: device.id, serverID: data._id)
-                    
                     viewModel.sendActionToParentModel = { [weak self] action in
                         self?.handleReceivedFromDeviceTableViewCell(action: action)
                     }
@@ -210,7 +208,7 @@ final class DeviceReadingViewModel {
         yValuesForMain.forEach { chartData in
             
             if !chartData.entries.isEmpty {
-                let set1 = LineChartDataSet(entries: chartData.entries, label: "Calibrated Data for \(chartData.description)")
+                let set1 = LineChartDataSet(entries: chartData.entries, label: "Calibrated Data for \(chartData.description) - \(chartData.analyte)")
                 set1.mode = .cubicBezier
                // set1.drawCirclesEnabled = true
                 set1.lineWidth = 5
@@ -255,7 +253,7 @@ final class DeviceReadingViewModel {
                         chartPoints.append(entry)
                     }
                 }
-                yValues.append(ChartData(entries: chartPoints, description: analyte.description))
+                yValues.append(ChartData(entries: chartPoints, description: analyte.description, analyte: analyte.associatedAnalyte))
             }
         }
         yValuesForMain = yValues
@@ -270,6 +268,7 @@ struct ViewInfo {
 struct ChartData {
     let entries: [ChartDataEntry]
     let description: String
+    let analyte: String
 }
 
 struct Device {

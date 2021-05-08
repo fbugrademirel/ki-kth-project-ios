@@ -107,7 +107,7 @@ final class CalibrationViewModel {
                                                                          slope: data.calibrationParameters.correlationEquationParameters?.slope ?? 0,
                                                                          constant: data.calibrationParameters.correlationEquationParameters?.constant ?? 0))
                 
-                let model = AnalyteTableViewCellModel(description: analyte.description,
+                let model = AnalyteTableViewCellModel(description: "\(analyte.description) - \(analyte.associatedAnalyte)",
                                                       identifier: analyte.identifier,
                                                       serverID: analyte.serverID,
                                                       isCalibrated: analyte.calibrationParam.isCalibrated)

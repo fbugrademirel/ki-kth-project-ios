@@ -19,7 +19,7 @@ struct AnalyteDataAPI {
     
     // MARK: - Properties
     
-   // let prodUrl = "https://ki-kth-project-api.herokuapp.com"
+    let prodUrl = "https://ki-kth-project-api.herokuapp.com"
     let devUrl = "http://localhost:3000"
     
     private let networkingService = NetworkingService()
@@ -28,7 +28,7 @@ struct AnalyteDataAPI {
     
     func calibrateAnalyte(slope: Double, constant: Double, id: String, completion: @escaping (Result<AnalyteDataFetch,Error>) -> Void ) {
     
-        let url =  "\(devUrl)/microneedle/\(id)"
+        let url =  "\(prodUrl)/microneedle/\(id)"
         let addHeader = ["Content-Type": "application/json"]
         
         let body = AnalyteCalibrationPatch(calibrationParameters: CalibrationParameter(isCalibrated: true,
@@ -62,7 +62,7 @@ struct AnalyteDataAPI {
     
     func deleteAnalyte(_ id: String, completion: @escaping (Result<AnalyteDataFetch, Error>) -> Void) {
         
-        let url =  "\(devUrl)/microneedle/\(id)"
+        let url =  "\(prodUrl)/microneedle/\(id)"
         
         networkingService.dispatchRequest(urlString: url, method: .delete, additionalHeaders: nil, body: nil) { result in
             switch result {
@@ -87,7 +87,7 @@ struct AnalyteDataAPI {
     
     func getAllAnalytes(with completion: @escaping (Result<[AnalyteDataFetch], Error>) -> Void) {
         
-        let url = "\(devUrl)/microneedle/all"
+        let url = "\(prodUrl)/microneedle/all"
         
         networkingService.dispatchRequest(urlString: url, method: .get, additionalHeaders: nil, body: nil) { result in
             
@@ -113,7 +113,7 @@ struct AnalyteDataAPI {
     
     func getAnalyteData(_ id: String, with completion: @escaping (Result<AnalyteDataFetch,Error>) -> Void) {
         
-        let url =  "\(devUrl)/microneedle/\(id)"
+        let url =  "\(prodUrl)/microneedle/\(id)"
         
         networkingService.dispatchRequest(urlString: url, method: .get) { result in
             switch result {
@@ -144,7 +144,7 @@ struct AnalyteDataAPI {
                                       owner: owner,
                                       associatedAnalyte: associatedAnalyte)
         
-        let url = "\(devUrl)/microneedle"
+        let url = "\(prodUrl)/microneedle"
         let addHeader = ["Content-Type": "application/json"]
         
         networkingService.dispatchRequest(urlString: url, method: .post, additionalHeaders: addHeader, body: analyte) { result in
