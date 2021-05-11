@@ -31,9 +31,16 @@ final class AnalyteListTableViewCell: UITableViewCell {
     }
     
     private func configure() {
+        
+        self.analyteDescription.font = UIFont.appFont(placement: .text)
         self.analyteDescription.text = viewModel.description
+        
+        self.analyteUniqueUUID.font = UIFont.appFont(placement: .passiveText)
         self.analyteUniqueUUID.text = viewModel.identifier.uuidString
+        
+        self.analyteID.font = UIFont.appFont(placement: .passiveText)
         self.analyteID.text = viewModel.serverID
+        
         calibrationMark.image = viewModel.isCalibrated ?
             UIImage(systemName: "checkmark")?.withTintColor(.systemGreen, renderingMode: .alwaysOriginal) :
             UIImage(systemName: "xmark")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal)

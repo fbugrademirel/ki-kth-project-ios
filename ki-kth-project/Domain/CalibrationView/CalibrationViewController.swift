@@ -25,7 +25,6 @@ final class CalibrationViewController: UIViewController {
     @IBOutlet weak var analyteListTableView: UITableView!
     @IBOutlet weak var potential: UILabel!
     @IBOutlet weak var concTextField: IndicatorTextField!
-    @IBOutlet weak var analyteDescriptionTextField: IndicatorTextField!
     @IBOutlet weak var addAnalyteButton: ActivityIndicatorButton!
     @IBOutlet weak var analytesStackView: UIStackView!
     @IBOutlet weak var calibrationStackView: UIStackView!
@@ -35,6 +34,9 @@ final class CalibrationViewController: UIViewController {
     @IBOutlet weak var calibrateButton: ActivityIndicatorButton!
     @IBOutlet weak var blockViewForCancelling: UIView!
     @IBOutlet weak var concentrationElementsStackView: UIStackView!
+    @IBOutlet weak var microNeedleHeadersStackView: UIStackView!
+    
+    @IBOutlet weak var pickerView: UIPickerView!
     
     
 // MARK: - Lifecyle
@@ -44,11 +46,19 @@ final class CalibrationViewController: UIViewController {
         viewModel.sendActionToViewController = { [weak self] action in
             self?.handleReceivedFromViewModel(action: action)
         }
-
+        
+        pickerView.dataSource = self
+        pickerView.delegate = self
+        pickerView.setValue(AppColor.primary, forKey: "textColor")
+        
         setUI()
         if let id = viewModel.deviceID {
             viewModel.viewDidLoad(for: id)
         }
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
     }
     
 // MARK: - IBAction
@@ -71,17 +81,14 @@ final class CalibrationViewController: UIViewController {
     
     @IBAction func createAndRegisterAnalyte(_ sender: Any) {
         
-        guard let desc = analyteDescriptionTextField.text else { return }
-        
-        if analyteDescriptionTextField.text == "" {
-            analyteDescriptionTextField.indicatesError = true
+        if (viewModel.pickerData[0].isEmpty || viewModel.pickerData[1].isEmpty) {
             return
         }
         
-        analyteDescriptionTextField.text = ""
-        dismissKeyboard()
-        viewModel.createAndPatchAnalyteRequested(by: desc)
-        
+        let microneedleSelected = pickerView.selectedRow(inComponent: 0)
+        let associatedAnalyte = pickerView.selectedRow(inComponent: 1)
+        viewModel.createAndPatchAnalyteRequested(description: viewModel.pickerData[0][microneedleSelected],
+                                                 associatedAnalyte: viewModel.pickerData[1][associatedAnalyte])
     }
     
     
@@ -158,13 +165,14 @@ final class CalibrationViewController: UIViewController {
             self.analytesStackView.isUserInteractionEnabled = true
             self.concentrationElementsStackView.isUserInteractionEnabled = true
         }
-        analyteDescriptionTextField.resignFirstResponder()
         concTextField.resignFirstResponder()
     }
     
 // MARK: - Handle from view model
     func handleReceivedFromViewModel(action :CalibrationViewModel.Action) {
         switch action {
+        case .reloadPickerView:
+            pickerView.reloadAllComponents()
         case .deleteRows(let path):
             deleteRows(path: path)
         case .presentView (let view):
@@ -276,7 +284,6 @@ final class CalibrationViewController: UIViewController {
         
         //Text Field Delegates
         concTextField.delegate = self
-        analyteDescriptionTextField.delegate = self
                 
         // Information label
         informationLabel.font = UIFont.appFont(placement: .title)
@@ -293,6 +300,13 @@ final class CalibrationViewController: UIViewController {
         corEquationLabel.alpha = 0
         corEquationLabel.textColor = AppColor.primary
         corEquationLabel.font = UIFont.appFont(placement: .boldText)
+        
+        microNeedleHeadersStackView.subviews.forEach {
+            if let label = $0 as? UILabel {
+                label.font = UIFont.appFont(placement: .boldText)
+            }
+        }
+        
         
         calLabelsStackView.subviews.forEach {
             if let label = $0 as? UILabel {
@@ -345,6 +359,7 @@ final class CalibrationViewController: UIViewController {
         }
         
         potential.font = UIFont.appFont(placement: .title)
+        potential.textColor = .systemRed
 
         setView(for: mainChartView)
         setView(for: calGraphView1)
@@ -461,7 +476,6 @@ final class CalibrationViewController: UIViewController {
     }
     
     private func clearErrorIndication() {
-        analyteDescriptionTextField.indicatesError = false
         concTextField.indicatesError = false
     }
 }
@@ -485,14 +499,7 @@ extension CalibrationViewController: UITextFieldDelegate {
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
         
-        if textField.isEqual(analyteDescriptionTextField) {
-            analyteDescriptionTextField.indicatesError = false
-            self.view.bringSubviewToFront(analytesStackView)
-            blockViewForCancelling.isUserInteractionEnabled = true
-            UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseIn) {
-                self.blockViewForCancelling.alpha = 0.9
-            }
-        } else if textField .isEqual(concTextField){
+        if textField .isEqual(concTextField){
             concTextField.indicatesError = false
             self.view.bringSubviewToFront(concentrationElementsStackView)
             blockViewForCancelling.isUserInteractionEnabled = true
@@ -581,6 +588,49 @@ extension CalibrationViewController: UITableViewDataSource {
     }
 }
 
+extension CalibrationViewController: UIPickerViewDelegate {
+    
+    func pickerView(_ pickerView: UIPickerView, widthForComponent component: Int) -> CGFloat {
+        return 75
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
+        var pickerLabel: UILabel? = (view as? UILabel)
+        if pickerLabel == nil {
+            pickerLabel = UILabel()
+            pickerLabel?.font = UIFont.appFont(placement: .passiveText)
+            pickerLabel?.textAlignment = .center
+        }
+        pickerLabel?.text = viewModel.pickerData[component][row]
+        pickerLabel?.textColor = AppColor.primary
+
+        return pickerLabel!
+    }
+        
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        viewModel.pickerData[component][row]
+    }
+}
+
+extension CalibrationViewController: UIPickerViewDataSource {
+    
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return viewModel.pickerData.count
+    }
+    
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        switch(component) {
+        case 0:
+            return viewModel.pickerData[0].count;
+        case 1:
+            return viewModel.pickerData[1].count;
+        default:
+            return 0
+        }
+    }
+}
+
 // MARK: - Storyboard Instantiable
 extension CalibrationViewController: StoryboardInstantiable {
     static var storyboardName: String {
@@ -593,4 +643,3 @@ extension CalibrationViewController: StoryboardInstantiable {
         return viewController
     }
 }
-

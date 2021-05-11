@@ -11,6 +11,7 @@ import Charts
 final class CalibrationViewModel {
     
     enum Action {
+        case reloadPickerView
         case deleteRows(path: IndexPath)
         case presentView(view: UIAlertController)
         case makeCorrLabelVisible(parameters: CorrealetionParameters)
@@ -20,6 +21,18 @@ final class CalibrationViewModel {
         case updateChartUI(for: ChartViews, with: LineChartData)
         case startActivityIndicators(message: InformationLabel, alertType: AnalytePageAlertType)
         case stopActivityIndicators(message: InformationLabel, alertType: AnalytePageAlertType)
+    }
+    
+    let pickerComponents: [MicroNeedleNumber] = [.MN1, .MN2, .MN3, .MN4, .MN5, .MN6, .MN7]
+    
+    var pickerData: [[String]] = [[],
+                                  [AnalyteType.chloride.rawValue,
+                                   AnalyteType.pH.rawValue,
+                                   AnalyteType.potassium.rawValue,
+                                   AnalyteType.sodium.rawValue]] {
+        didSet {
+            sendActionToViewController?(.reloadPickerView)
+        }
     }
     
     var deviceID: String?
@@ -85,15 +98,16 @@ final class CalibrationViewModel {
             switch result {
             case .success(let data):
                 
-                let analyte = Analyte(description: data.description,
+                let analyte = MicroNeedle(description: data.description,
                                       identifier: data.uniqueIdentifier,
                                       serverID: data._id,
+                                      associatedAnalyte: data.associatedAnalyte,
                                       calibrationParam: CalibrationParam(calibrationTime: data.calibrationParameters.calibrationTime ?? 0,
                                                                          isCalibrated: data.calibrationParameters.isCalibrated,
                                                                          slope: data.calibrationParameters.correlationEquationParameters?.slope ?? 0,
                                                                          constant: data.calibrationParameters.correlationEquationParameters?.constant ?? 0))
                 
-                let model = AnalyteTableViewCellModel(description: analyte.description,
+                let model = AnalyteTableViewCellModel(description: "\(analyte.description) - \(analyte.associatedAnalyte)",
                                                       identifier: analyte.identifier,
                                                       serverID: analyte.serverID,
                                                       isCalibrated: analyte.calibrationParam.isCalibrated)
@@ -126,17 +140,31 @@ final class CalibrationViewModel {
                 let sorted = data.sorted {
                     $0.updatedAt > $1.updatedAt
                 }
+                
+                //Filter picker
+                let filtered = self?.pickerComponents.filter { mn in
+                    !sorted.contains { mndata in
+                        mn.rawValue == mndata.description
+                    }
+                }.map({ mn -> String in
+                    mn.rawValue
+                })
+                
+                self?.pickerData[0] = filtered!
+                
 
                 let fetched = sorted.map { (data) -> AnalyteTableViewCellModel in
-                    let analyte = Analyte(description: data.description,
+                    let analyte = MicroNeedle(description: data.description,
                                           identifier: data.uniqueIdentifier,
                                           serverID: data._id,
+                                          associatedAnalyte: data.associatedAnalyte,
                                           calibrationParam: CalibrationParam(calibrationTime: data.calibrationParameters.calibrationTime ?? 0,
                                                                              isCalibrated: data.calibrationParameters.isCalibrated,
                                                                              slope: data.calibrationParameters.correlationEquationParameters?.slope ?? 0,
                                                                              constant: data.calibrationParameters.correlationEquationParameters?.constant ?? 0))
+                    
 
-                    let viewModel = AnalyteTableViewCellModel(description: analyte.description,
+                    let viewModel = AnalyteTableViewCellModel(description: "\(analyte.description) - \(data.associatedAnalyte)",
                                                           identifier: analyte.identifier,
                                                           serverID: analyte.serverID,
                                                           isCalibrated: analyte.calibrationParam.isCalibrated)
@@ -159,25 +187,33 @@ final class CalibrationViewModel {
         }
     }
     
-    func createAndPatchAnalyteRequested(by description: String) {
+    func createAndPatchAnalyteRequested(description: String, associatedAnalyte: String) {
         
         guard let id = deviceID else { return }
         
         sendActionToViewController?(.startActivityIndicators(message: .creating, alertType: .neutralAppColor))
 
-        AnalyteDataAPI().createAnalyte(description: description, owner: id) { [weak self] result in
+        AnalyteDataAPI().createAnalyte(description: description, owner: id, associatedAnalyte: associatedAnalyte) { [weak self] result in
             switch result {
             case .success(let data):
 
-                let analyte = Analyte(description: data.description,
+                let analyte = MicroNeedle(description: data.description,
                                       identifier: data.uniqueIdentifier,
                                       serverID: data._id,
+                                      associatedAnalyte: data.associatedAnalyte,
                                       calibrationParam: CalibrationParam(calibrationTime: data.calibrationParameters.calibrationTime ?? 0,
                                                                          isCalibrated: data.calibrationParameters.isCalibrated,
                                                                          slope: data.calibrationParameters.correlationEquationParameters?.slope ?? 0,
                                                                          constant: data.calibrationParameters.correlationEquationParameters?.constant ?? 0))
                 
-                let model = AnalyteTableViewCellModel(description: analyte.description,
+                
+                //Set picker
+                self?.pickerData[0].removeAll(where: { str in
+                    str == analyte.description
+                })
+                
+                
+                let model = AnalyteTableViewCellModel(description: "\(analyte.description) - \(data.associatedAnalyte)",
                                                       identifier: analyte.identifier,
                                                       serverID: analyte.serverID,
                                                       isCalibrated: analyte.calibrationParam.isCalibrated)
@@ -202,6 +238,7 @@ final class CalibrationViewModel {
                 let data = AnalyteDataFetch(calibrationParameters: data.calibrationParameters, _id: data._id,
                                             description: data.description,
                                             uniqueIdentifier: data.uniqueIdentifier,
+                                            associatedAnalyte: data.associatedAnalyte,
                                             measurements: data.measurements,
                                             createdAt: data.createdAt,
                                             updatedAt: data.updatedAt)
@@ -234,7 +271,20 @@ final class CalibrationViewModel {
         self.sendActionToViewController?(.startActivityIndicators(message: .deletingFromDatabase, alertType: .neutralAppColor))
           AnalyteDataAPI().deleteAnalyte(id) { (result) in
               switch result {
-              case .success(_):
+              case .success(let data):
+                
+                //setpicker
+                let decided = self.pickerComponents.filter {
+                    $0.rawValue == data.description
+                }
+                
+                if let index = self.pickerData[0].firstIndex(where: { $0 > decided.first!.rawValue }) {
+                    self.pickerData[0].insert(decided.first!.rawValue, at: index)
+                } else {
+                    self.pickerData[0].append(decided.first!.rawValue)
+                }
+                
+                
                 self.sendActionToViewController?(.deleteRows(path: path))
                 self.sendActionToViewController?(.stopActivityIndicators(message: .deletedWithSuccess, alertType: .greenInfo))
                 let alert = UIAlertController(title: "Deleted from database", message: "Server message", preferredStyle: .alert)
@@ -437,6 +487,23 @@ final class CalibrationViewModel {
 
 // MARK: - MODELS
 
+enum AnalyteType: String {
+    case sodium = "sodium"
+    case potassium = "potassium"
+    case pH = "pH"
+    case chloride = "chloride"
+}
+
+enum MicroNeedleNumber: String {
+    case MN1 = "MN#1"
+    case MN2 = "MN#2"
+    case MN3 = "MN#3"
+    case MN4 = "MN#4"
+    case MN5 = "MN#5"
+    case MN6 = "MN#6"
+    case MN7 = "MN#7"
+}
+
 enum ChartViews {
     case mainChartForRawData
     case calibrationChart
@@ -478,10 +545,11 @@ struct Solution {
     let potential: Double
 }
 
-struct Analyte {
+struct MicroNeedle {
     let description: String
     let identifier: UUID
     let serverID: String
+    let associatedAnalyte: String
     let calibrationParam: CalibrationParam
 }
 

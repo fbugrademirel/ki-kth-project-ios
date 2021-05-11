@@ -19,7 +19,7 @@ struct DeviceDataAPI {
     private let networkingService = NetworkingService()
     
     let prodUrl = "https://ki-kth-project-api.herokuapp.com"
-    let devUrl = "http://localhost:3000"
+   // let devUrl = "http://localhost:3000"
     
     // MARK: - Operations
     
@@ -170,7 +170,7 @@ struct DeviceDataAPI {
     
     func getAllAnalytesForDevice(_ id: String, completion: @escaping (Result<[AnalyteDataFetch], Error>) -> Void ) {
         
-        let url = "\(prodUrl)/onbodydevice/allanalytes/\(id)"
+        let url = "\(prodUrl)/onbodydevice/allmicroneedles/\(id)"
         
         AuthenticationManager().getAuthToken { result in
             switch result {
