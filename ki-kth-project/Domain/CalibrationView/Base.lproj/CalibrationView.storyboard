@@ -199,19 +199,19 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="L9W-fP-mIU">
-                                <rect key="frame" x="320" y="1202" width="384" height="25.5"/>
+                                <rect key="frame" x="320" y="1196" width="384" height="25.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Mzr-cR-Dg1" userLabel="Cor Equation">
-                                <rect key="frame" x="320" y="1233.5" width="384" height="25.5"/>
+                                <rect key="frame" x="320" y="1224.5" width="384" height="25.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="syh-WV-n72" customClass="ActivityIndicatorButton" customModule="ki_kth_project" customModuleProvider="target">
-                                <rect key="frame" x="416" y="1262" width="192" height="30"/>
+                                <rect key="frame" x="416" y="1250" width="192" height="30"/>
                                 <inset key="titleEdgeInsets" minX="6" minY="6" maxX="6" maxY="6"/>
                                 <state key="normal" title="Calibrate">
                                     <color key="titleColor" name="primary"/>
@@ -220,7 +220,7 @@
                                     <action selector="calibrateButtonPressed:" destination="uSr-49-Bbt" eventType="touchUpInside" id="TAm-S4-mOs"/>
                                 </connections>
                             </button>
-                            <view userInteractionEnabled="NO" alpha="0.0" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iy6-Iy-SIc" userLabel="BlockViewForCancelling">
+                            <view userInteractionEnabled="NO" alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iy6-Iy-SIc" userLabel="BlockViewForCancelling">
                                 <rect key="frame" x="0.0" y="0.0" width="1024" height="1366"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" systemColor="systemGray4Color"/>
@@ -241,7 +241,7 @@
                             <constraint firstItem="YZs-qh-20f" firstAttribute="centerX" secondItem="ZdY-Bv-L1v" secondAttribute="centerX" id="LML-l3-OpB"/>
                             <constraint firstItem="L9W-fP-mIU" firstAttribute="height" secondItem="dWn-pK-gpg" secondAttribute="height" multiplier="0.1" id="O8A-RP-4da"/>
                             <constraint firstItem="L9W-fP-mIU" firstAttribute="centerX" secondItem="dWn-pK-gpg" secondAttribute="centerX" id="RcF-T3-g6i"/>
-                            <constraint firstItem="syh-WV-n72" firstAttribute="top" secondItem="Mzr-cR-Dg1" secondAttribute="bottom" constant="3" id="Tje-D4-nR7"/>
+                            <constraint firstItem="syh-WV-n72" firstAttribute="top" secondItem="Mzr-cR-Dg1" secondAttribute="bottom" id="Tje-D4-nR7"/>
                             <constraint firstItem="U4L-id-Swy" firstAttribute="width" secondItem="ujh-HR-eCL" secondAttribute="width" id="XU8-b9-G0S"/>
                             <constraint firstItem="rcL-2p-Mf6" firstAttribute="trailing" secondItem="YZs-qh-20f" secondAttribute="leading" constant="-3" id="YDG-1m-NKc"/>
                             <constraint firstItem="tZ2-yM-rbM" firstAttribute="height" secondItem="YZs-qh-20f" secondAttribute="height" multiplier="0.5" id="ZYn-Ly-zdh"/>
@@ -254,16 +254,21 @@
                             <constraint firstItem="syh-WV-n72" firstAttribute="centerX" secondItem="Mzr-cR-Dg1" secondAttribute="centerX" id="koq-xX-Xbc"/>
                             <constraint firstItem="L9W-fP-mIU" firstAttribute="width" secondItem="dWn-pK-gpg" secondAttribute="width" id="lnt-I9-fwj"/>
                             <constraint firstItem="szc-r6-D3d" firstAttribute="width" secondItem="itM-KU-kqu" secondAttribute="width" multiplier="0.5" id="qIw-rL-4QF"/>
-                            <constraint firstItem="L9W-fP-mIU" firstAttribute="top" secondItem="dWn-pK-gpg" secondAttribute="bottom" constant="12" id="sZ4-3M-HyE"/>
+                            <constraint firstItem="L9W-fP-mIU" firstAttribute="top" secondItem="dWn-pK-gpg" secondAttribute="bottom" constant="6" id="sZ4-3M-HyE"/>
                             <constraint firstItem="tZ2-yM-rbM" firstAttribute="centerX" secondItem="rcL-2p-Mf6" secondAttribute="centerX" id="spx-VX-SRe"/>
                             <constraint firstItem="rcL-2p-Mf6" firstAttribute="width" secondItem="itM-KU-kqu" secondAttribute="width" multiplier="0.24" id="t5S-sg-43C"/>
-                            <constraint firstItem="Mzr-cR-Dg1" firstAttribute="top" secondItem="L9W-fP-mIU" secondAttribute="bottom" constant="6" id="tQ3-we-rQg"/>
+                            <constraint firstItem="Mzr-cR-Dg1" firstAttribute="top" secondItem="L9W-fP-mIU" secondAttribute="bottom" constant="3" id="tQ3-we-rQg"/>
                             <constraint firstItem="98u-zR-Seg" firstAttribute="width" secondItem="szc-r6-D3d" secondAttribute="width" multiplier="1.3" id="ufD-Mp-C2G"/>
                             <constraint firstItem="Mzr-cR-Dg1" firstAttribute="width" secondItem="dWn-pK-gpg" secondAttribute="width" id="vCR-88-8Uz"/>
                             <constraint firstItem="98u-zR-Seg" firstAttribute="height" secondItem="szc-r6-D3d" secondAttribute="height" multiplier="0.1" id="w0q-sx-wkG"/>
                             <constraint firstItem="fJc-L6-Kdd" firstAttribute="width" secondItem="itM-KU-kqu" secondAttribute="width" multiplier="0.24" id="yXw-W0-bp6"/>
                             <constraint firstItem="rcL-2p-Mf6" firstAttribute="top" secondItem="YZs-qh-20f" secondAttribute="top" id="zNc-kH-su5"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="subviews">
+                                <exclude reference="iy6-Iy-SIc"/>
+                            </mask>
+                        </variation>
                     </view>
                     <connections>
                         <outlet property="addAnalyteButton" destination="tI0-UI-iTA" id="3nE-Qq-tKd"/>
