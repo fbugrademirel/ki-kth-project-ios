@@ -66,7 +66,7 @@ class CreateAccountViewController: UIViewController {
     private func dissmissAndSetNewRootViewController(userName: String, email: String) {
         dismiss(animated: true, completion: nil)
         let vc = presentingViewController as? InitialLoginViewController
-        vc?.viewModel.sendActionToViewController?(.loginSuccessDismissAndContinueToDeviceView(userName: userName, email: email))
+        vc?.viewModel.sendActionToViewController?(.loginSuccessDismissAndContinueToDeviceView)
     }
     
     private func greetUser(with info: InitialLoginInfoLabel, with alert: InitialLoginAlertType) {

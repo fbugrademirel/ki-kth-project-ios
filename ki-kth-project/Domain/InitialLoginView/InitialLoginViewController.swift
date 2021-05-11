@@ -47,7 +47,7 @@ class InitialLoginViewController: UIViewController {
     
     func handleReceivedFromViewModel(action: InitialLoginViewModel.Action) -> Void {
         switch action {
-        case .loginSuccessDismissAndContinueToDeviceView(let username, let email):
+        case .loginSuccessDismissAndContinueToDeviceView:
             
             let homeItem = UITabBarItem()
             homeItem.title = "Devices"

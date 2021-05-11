@@ -77,6 +77,41 @@ struct DeviceDataAPI {
         }
     }
     
+    func updateUserInfo(email: String? = nil, userName: String? = nil, password: String? = nil, completion: @escaping (Result<UpdateUserDataFetch, Error>) -> Void) {
+    
+        let url = "\(prodUrl)/user/me"
+        let updateUser = UpdateUserPost(name: userName, email: email, password: password)
+
+        AuthenticationManager().getAuthToken { result in
+            switch result {
+            case .success(let token):
+                let addHeaderToken = ["Content-Type": "application/json", "Authorization": "Bearer \(token)"]
+                networkingService.dispatchRequest(urlString: url, method: .patch, additionalHeaders: addHeaderToken, body: updateUser) { result in
+                    switch result {
+                    case .success(let data):
+                        do {
+                            let updatedUserData = try JSONDecoder().decode(UpdateUserDataFetch.self, from: data)
+                            DispatchQueue.main.async {
+                                completion(.success(updatedUserData))
+                            }
+                        } catch {
+                            DispatchQueue.main.async {
+                                completion(.failure(error))
+                            }
+                        }
+                    case .failure(let error):
+                        DispatchQueue.main.async {
+                            completion(.failure(error))
+                            print(error)
+                        }
+                    }
+                }
+            case .failure(let error):
+                completion(.failure(error))
+
+            }
+        }
+    }
     
     func logout(completion: @escaping (Error?) -> Void) {
         
@@ -239,6 +274,17 @@ struct DeviceDataAPI {
 }
 
 // MARK: - Device Data Codable
+
+struct UpdateUserPost: Codable {
+    let name: String?
+    let email: String?
+    let password: String?
+}
+
+struct UpdateUserDataFetch: Codable {
+    let name: String
+    let email: String
+}
 
 struct LoginUserPost: Codable {
     let email: String

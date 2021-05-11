@@ -220,7 +220,7 @@
                                     <action selector="calibrateButtonPressed:" destination="uSr-49-Bbt" eventType="touchUpInside" id="TAm-S4-mOs"/>
                                 </connections>
                             </button>
-                            <view userInteractionEnabled="NO" alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iy6-Iy-SIc" userLabel="BlockViewForCancelling">
+                            <view userInteractionEnabled="NO" alpha="0.0" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iy6-Iy-SIc" userLabel="BlockViewForCancelling">
                                 <rect key="frame" x="0.0" y="0.0" width="1024" height="1366"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" systemColor="systemGray4Color"/>
@@ -264,11 +264,6 @@
                             <constraint firstItem="fJc-L6-Kdd" firstAttribute="width" secondItem="itM-KU-kqu" secondAttribute="width" multiplier="0.24" id="yXw-W0-bp6"/>
                             <constraint firstItem="rcL-2p-Mf6" firstAttribute="top" secondItem="YZs-qh-20f" secondAttribute="top" id="zNc-kH-su5"/>
                         </constraints>
-                        <variation key="default">
-                            <mask key="subviews">
-                                <exclude reference="iy6-Iy-SIc"/>
-                            </mask>
-                        </variation>
                     </view>
                     <connections>
                         <outlet property="addAnalyteButton" destination="tI0-UI-iTA" id="3nE-Qq-tKd"/>

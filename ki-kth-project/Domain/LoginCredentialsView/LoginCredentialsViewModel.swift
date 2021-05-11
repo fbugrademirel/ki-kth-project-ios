@@ -12,9 +12,33 @@ final class LoginCredentialsViewModel {
     enum Action {
         case startActivityIndicators
         case stopActivityIndicators
+        case hideNameButton
+        case hideEmailButton
+        case showNameButton
+        case showEmailButton
         case resetToInitialLoginView
         case setUserName(name: String)
         case setEmail(email: String)
+    }
+    
+    var isNameEditButtonSelected: Bool = false {
+        didSet {
+            if isNameEditButtonSelected {
+                sendActionToViewController?(.showNameButton)
+            } else {
+                sendActionToViewController?(.hideNameButton)
+            }
+        }
+    }
+    
+    var isEmailEditButtonSelected: Bool = false {
+        didSet {
+            if isEmailEditButtonSelected {
+                sendActionToViewController?(.showEmailButton)
+            } else {
+                sendActionToViewController?(.hideEmailButton)
+            }
+        }
     }
     
     var userName: String? {
@@ -37,6 +61,47 @@ final class LoginCredentialsViewModel {
         userEmail = UserDefaults.userEmail
     }
     
+    func flipStateOfEditNameButton() {
+        isNameEditButtonSelected = isNameEditButtonSelected ? false : true
+    }
+    
+    func flipStateOfEditEmailButton() {
+        isEmailEditButtonSelected = isEmailEditButtonSelected ? false : true
+
+    }
+    
+    func updateUserInfoRequested(for type: UpdateFieldType, with string: String) {
+        
+        switch type {
+        case .email:
+            DeviceDataAPI().updateUserInfo(email: string) { result in
+                switch result {
+                case .success(let data):
+                    self.sendActionToViewController?(.setEmail(email: data.email))
+                case .failure(let error):
+                    Log.e(error.localizedDescription)
+                }
+            }
+        case .userName:
+            DeviceDataAPI().updateUserInfo(userName: string) { result in
+                switch result {
+                case .success(let data):
+                    self.sendActionToViewController?(.setUserName(name: data.name))
+                case .failure(let error):
+                    Log.e(error.localizedDescription)
+                }
+            }
+        case .password:
+            DeviceDataAPI().updateUserInfo(password: string) { result in
+                switch result {
+                case .success: break
+                case .failure(let error):
+                    Log.e(error.localizedDescription)
+                }
+            }
+        }
+    }
+    
     func logoutRequested() {
         
         sendActionToViewController?(.startActivityIndicators)
@@ -55,5 +120,10 @@ final class LoginCredentialsViewModel {
             }
         }
     }
-        
+}
+
+enum UpdateFieldType {
+    case email
+    case userName
+    case password
 }
