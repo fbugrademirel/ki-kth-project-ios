@@ -32,6 +32,9 @@ final class DeviceReadingViewController: UIViewController {
         viewModel.sendActionToViewController = { [weak self] action in
             self?.handleReceivedFromViewModel(action: action)
         }
+        if let name = UserDefaults.userName {
+            title = "\(name)'s Devices"
+        }
         setUI()
         viewModel.viewDidLoad()
         
@@ -63,9 +66,6 @@ final class DeviceReadingViewController: UIViewController {
             stopActivityIndicators(with: message, with: alert)
         case .presentView(with: let view):
             present(view, animated: true, completion: nil)
-        case .resetToInitialLoginView:
-            let vc = InitialLoginViewController.instantiate(with: InitialLoginViewModel())
-            (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.changeRootViewController(vc)
         }
     }
     
@@ -89,23 +89,10 @@ final class DeviceReadingViewController: UIViewController {
     @objc func refButPressed(_ sender: UIButton) {
         viewModel.fetchAllDevicesRequired()
     }
-    
-    @objc func logOutPressed(_ sender: UIBarButtonItem ) {
         
-        let alert = UIAlertController(title: "Signing out...", message: "Are you sure to sign out?", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Logout", style: .destructive) { [weak self] _ in
-            self?.viewModel.logoutRequested()
-        })
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        present(alert, animated: true, completion: nil)
-    }
-    
     // MARK: - UI
     private func setUI() {
         
-        let barButton = UIBarButtonItem(image: UIImage(systemName:"square.and.arrow.up"), style: .plain, target: self, action: #selector(logOutPressed(_:)))
-        self.navigationItem.rightBarButtonItem  = barButton
-
         let gesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         blockViewForCancelling.addGestureRecognizer(gesture)
 
