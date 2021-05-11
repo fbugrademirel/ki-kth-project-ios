@@ -65,6 +65,7 @@ final class DeviceReadingViewModel {
                 //This means logout is successfull
                 Log.s("Logout successful")
                 self.sendActionToViewController?(.resetToInitialLoginView)
+                UserDefaults.userEmail = nil
             }
         }
     }

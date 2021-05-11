@@ -12,7 +12,7 @@ final class InitialLoginViewModel {
     enum Action {
         case startActivityIndicators(message: InitialLoginInfoLabel, alert: InitialLoginAlertType)
         case stopActivityIndicators(message: InitialLoginInfoLabel, alert: InitialLoginAlertType)
-        case loginSuccessDismissAndContinueToDeviceView(userName: String)
+        case loginSuccessDismissAndContinueToDeviceView(userName: String, email: String)
         case greetUser(message: InitialLoginInfoLabel, alert: InitialLoginAlertType)
         case presentCreateAccountViewController
     }
@@ -31,7 +31,7 @@ final class InitialLoginViewModel {
             case .success(let userInfo):
                 Log.s("Logged in!")
                 self?.sendActionToViewController?(.stopActivityIndicators(message: .loggedInWithSuccess, alert: .greenInfo))
-                self?.sendActionToViewController?(.loginSuccessDismissAndContinueToDeviceView(userName: userInfo.name))
+                self?.sendActionToViewController?(.loginSuccessDismissAndContinueToDeviceView(userName: userInfo.name, email: userInfo.email))
             case .failure(let error):
                 Log.e(error)
                 self?.sendActionToViewController?(.stopActivityIndicators(message: .loginFail, alert: .redWarning))

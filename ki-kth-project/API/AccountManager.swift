@@ -22,7 +22,8 @@ public final class AccountManager {
                 Log.s("Login successful")
                 // MARK: TODO: Should this really be here?
                 AuthenticationManager().setKeyChainTokens(auth: response.token)
-                UserDefaults.userEmail = email
+                UserDefaults.userEmail = response.user.email
+                UserDefaults.userName = response.user.name
                 let user = UserAccountInfo(name: response.user.name, email: response.user.email)
                 completion(.success(user))
             case .failure(let error):

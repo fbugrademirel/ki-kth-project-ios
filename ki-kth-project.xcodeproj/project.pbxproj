@@ -35,6 +35,9 @@
 		7C3C27E92625C1EB00F83DAA /* ActivityIndicatorButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C3C27E82625C1EB00F83DAA /* ActivityIndicatorButton.swift */; };
 		7C4E33F72624754000C42669 /* ConcentrationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C4E33F52624754000C42669 /* ConcentrationTableViewCell.swift */; };
 		7C4E33F82624754100C42669 /* ConcentrationTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7C4E33F62624754000C42669 /* ConcentrationTableViewCell.xib */; };
+		7C903BE0264A97020095D4ED /* LoginCredentialsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C903BDE264A97020095D4ED /* LoginCredentialsViewController.swift */; };
+		7C903BE3264A972D0095D4ED /* LoginCredentialsView.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7C903BE2264A972D0095D4ED /* LoginCredentialsView.storyboard */; };
+		7C903BE5264A973F0095D4ED /* LoginCredentialsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C903BE4264A973F0095D4ED /* LoginCredentialsViewModel.swift */; };
 		7C943D11263D854600EC7AFC /* DeviceDataAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C943D10263D854600EC7AFC /* DeviceDataAPI.swift */; };
 		7C9E01F7263D8ECB003ACC6A /* IndicatorTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C9E01F6263D8ECB003ACC6A /* IndicatorTextField.swift */; };
 		7CDA38002623B0D700874665 /* AnalyteDataAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CDA37FF2623B0D700874665 /* AnalyteDataAPI.swift */; };
@@ -90,6 +93,9 @@
 		7C3C27E82625C1EB00F83DAA /* ActivityIndicatorButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicatorButton.swift; sourceTree = "<group>"; };
 		7C4E33F52624754000C42669 /* ConcentrationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcentrationTableViewCell.swift; sourceTree = "<group>"; };
 		7C4E33F62624754000C42669 /* ConcentrationTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConcentrationTableViewCell.xib; sourceTree = "<group>"; };
+		7C903BDE264A97020095D4ED /* LoginCredentialsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginCredentialsViewController.swift; sourceTree = "<group>"; };
+		7C903BE2264A972D0095D4ED /* LoginCredentialsView.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LoginCredentialsView.storyboard; sourceTree = "<group>"; };
+		7C903BE4264A973F0095D4ED /* LoginCredentialsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginCredentialsViewModel.swift; sourceTree = "<group>"; };
 		7C943D10263D854600EC7AFC /* DeviceDataAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceDataAPI.swift; sourceTree = "<group>"; };
 		7C9E01F6263D8ECB003ACC6A /* IndicatorTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndicatorTextField.swift; sourceTree = "<group>"; };
 		7CDA37FF2623B0D700874665 /* AnalyteDataAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyteDataAPI.swift; sourceTree = "<group>"; };
@@ -205,6 +211,16 @@
 			path = AnalyteListTableViewCell;
 			sourceTree = "<group>";
 		};
+		7C903BDD264A96DC0095D4ED /* LoginCredentialsView */ = {
+			isa = PBXGroup;
+			children = (
+				7C903BDE264A97020095D4ED /* LoginCredentialsViewController.swift */,
+				7C903BE4264A973F0095D4ED /* LoginCredentialsViewModel.swift */,
+				7C903BE2264A972D0095D4ED /* LoginCredentialsView.storyboard */,
+			);
+			path = LoginCredentialsView;
+			sourceTree = "<group>";
+		};
 		7C9E01F5263D8E72003ACC6A /* Components */ = {
 			isa = PBXGroup;
 			children = (
@@ -265,6 +281,7 @@
 			children = (
 				7CF344B02642F76A00968E7F /* InitialLoginView */,
 				7C22FEF92644074C005861E9 /* CreateAccountView */,
+				7C903BDD264A96DC0095D4ED /* LoginCredentialsView */,
 				7CE223762639903A00BD8C5B /* DeviceReadingView */,
 				7CDC8E362623AE9000430BD7 /* CalibrationView */,
 			);
@@ -435,6 +452,7 @@
 				7C066DB32634BF450030B103 /* SourceSansPro-LightItalic.ttf in Resources */,
 				7C066DB62634BF450030B103 /* SourceSansPro-ExtraLight.ttf in Resources */,
 				7CDC8E2D2623AE6B00430BD7 /* LaunchScreen.storyboard in Resources */,
+				7C903BE3264A972D0095D4ED /* LoginCredentialsView.storyboard in Resources */,
 				7C4E33F82624754100C42669 /* ConcentrationTableViewCell.xib in Resources */,
 				7C066DB82634BF450030B103 /* SourceSansPro-SemiBold.ttf in Resources */,
 				7CE2238126399BA100BD8C5B /* DeviceListTableViewCell.xib in Resources */,
@@ -501,6 +519,7 @@
 				7C066D8E2634777E0030B103 /* AppColor.swift in Sources */,
 				7CDC8E1E2623AE6B00430BD7 /* AppDelegate.swift in Sources */,
 				7C4E33F72624754000C42669 /* ConcentrationTableViewCell.swift in Sources */,
+				7C903BE0264A97020095D4ED /* LoginCredentialsViewController.swift in Sources */,
 				7C22FEF226433795005861E9 /* Log.swift in Sources */,
 				7C943D11263D854600EC7AFC /* DeviceDataAPI.swift in Sources */,
 				7CE2238326399BC000BD8C5B /* DeviceListTableViewCellViewModel.swift in Sources */,
@@ -508,6 +527,7 @@
 				7C3C27E92625C1EB00F83DAA /* ActivityIndicatorButton.swift in Sources */,
 				7CDEFBA62629C23000CA3E66 /* CalibrationViewModel.swift in Sources */,
 				7C066D84262B2F140030B103 /* ConcentrationTableViewCellModel.swift in Sources */,
+				7C903BE5264A973F0095D4ED /* LoginCredentialsViewModel.swift in Sources */,
 				7CF344B42642F7AB00968E7F /* InitialLoginViewModel.swift in Sources */,
 				7CDA38002623B0D700874665 /* AnalyteDataAPI.swift in Sources */,
 				7CE2237C263997AC00BD8C5B /* DeviceReadingViewModel.swift in Sources */,

@@ -47,10 +47,28 @@ class InitialLoginViewController: UIViewController {
     
     func handleReceivedFromViewModel(action: InitialLoginViewModel.Action) -> Void {
         switch action {
-        case .loginSuccessDismissAndContinueToDeviceView(let username):
-            let vc = DeviceReadingViewController.instantiate(with: DeviceReadingViewModel())
-            vc.title = "\(username)'s Devices"
-            navigationController?.setViewControllers([vc], animated: true)
+        case .loginSuccessDismissAndContinueToDeviceView(let username, let email):
+            
+            let homeItem = UITabBarItem()
+            homeItem.title = "Devices"
+            homeItem.image = UIImage(systemName: "house")
+            
+            let profilItem = UITabBarItem()
+            profilItem.title = "Researcher"
+            profilItem.image = UIImage(systemName: "person")
+            
+            let deviceVC = DeviceReadingViewController.instantiate(with: DeviceReadingViewModel())
+            deviceVC.tabBarItem = homeItem
+            
+            let profileVC = LoginCredentialsViewController.instantiate(with: LoginCredentialsViewModel())
+            profileVC.tabBarItem = profilItem
+            
+            let barCont = UITabBarController()
+            let navCon = UINavigationController(rootViewController: deviceVC)
+            barCont.viewControllers = [navCon, profileVC]
+            
+            (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.changeRootViewController(barCont)
+        
         case .startActivityIndicators(message: let label, alert: let alertType):
             startActivityIndicators(with: label, with: alertType)
         case .stopActivityIndicators(message: let label, alert: let alertType):
@@ -61,7 +79,6 @@ class InitialLoginViewController: UIViewController {
             let vc = CreateAccountViewController.instantiate(with: CreateAccountViewModel())
             present(vc, animated: true, completion: nil)
         }
-        
     }
     
     private func greetUser(with info: InitialLoginInfoLabel, with alert: InitialLoginAlertType) {

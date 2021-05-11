@@ -34,7 +34,6 @@ public final class AuthenticationManager {
         } else {
             Log.w("Auth token was in the wrong format! - will be renewed.")
         }
-        
         // MARK: - TODO: DO SOMETHING HERE TO FIX EXPIRED TOKEN
     }
 

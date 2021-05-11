@@ -65,7 +65,7 @@ final class DeviceReadingViewController: UIViewController {
             present(view, animated: true, completion: nil)
         case .resetToInitialLoginView:
             let vc = InitialLoginViewController.instantiate(with: InitialLoginViewModel())
-            navigationController?.setViewControllers([vc], animated: true)
+            (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.changeRootViewController(vc)
         }
     }
     

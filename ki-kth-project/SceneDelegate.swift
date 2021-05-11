@@ -17,12 +17,54 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let windowScene = (scene as? UIWindowScene) else { return }
-        let welcomeViewController = InitialLoginViewController.instantiate(with: InitialLoginViewModel())
-        window = UIWindow(frame: windowScene.coordinateSpace.bounds)
-        window?.windowScene = windowScene
-        let navigationController = UINavigationController(rootViewController: welcomeViewController)
-        window?.rootViewController = navigationController
-        window?.makeKeyAndVisible()
+        
+        
+        if let _ = UserDefaults.userEmail {
+            let homeItem = UITabBarItem()
+            homeItem.title = "Devices"
+            homeItem.image = UIImage(systemName: "house")
+            
+            let profilItem = UITabBarItem()
+            profilItem.title = "Researcher"
+            profilItem.image = UIImage(systemName: "person")
+            
+            let deviceVC = DeviceReadingViewController.instantiate(with: DeviceReadingViewModel())
+            deviceVC.tabBarItem = homeItem
+            
+            let profileVC = LoginCredentialsViewController.instantiate(with: LoginCredentialsViewModel())
+            profileVC.tabBarItem = profilItem
+            
+            let barCont = UITabBarController()
+            let navCon = UINavigationController(rootViewController: deviceVC)
+            barCont.viewControllers = [navCon, profileVC]
+            window = UIWindow(frame: windowScene.coordinateSpace.bounds)
+            window?.windowScene = windowScene
+            window?.rootViewController = barCont
+            window?.makeKeyAndVisible()
+            
+        } else {
+            
+            let welcomeViewController = InitialLoginViewController.instantiate(with: InitialLoginViewModel())
+            window = UIWindow(frame: windowScene.coordinateSpace.bounds)
+            window?.windowScene = windowScene
+            window?.rootViewController = welcomeViewController
+            window?.makeKeyAndVisible()
+        }
+    }
+    
+    func changeRootViewController(_ vc: UIViewController, animated: Bool = true) {
+        guard let window = self.window else {
+            return
+        }
+        
+        // change the root view controller to your specific view controller
+        window.rootViewController = vc
+        
+        UIView.transition(with: window,
+                              duration: 0.5,
+                              options: [.transitionFlipFromLeft],
+                              animations: nil,
+                              completion: nil)
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

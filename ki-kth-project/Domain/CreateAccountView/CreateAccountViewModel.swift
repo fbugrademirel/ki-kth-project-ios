@@ -10,7 +10,7 @@ import Foundation
 final class CreateAccountViewModel {
 
     enum Action {
-        case createAccountSuccessDismissAndContinueToDeviceView(userName: String)
+        case createAccountSuccessDismissAndContinueToDeviceView(userName: String, email: String)
     }
     var sendActionToViewController: ((Action) -> Void)?
             
@@ -26,7 +26,7 @@ final class CreateAccountViewModel {
             case .success(let userInfo):
                 Log.s("Account created!")
                 
-                self?.sendActionToViewController?(.createAccountSuccessDismissAndContinueToDeviceView(userName: userInfo.name))
+                self?.sendActionToViewController?(.createAccountSuccessDismissAndContinueToDeviceView(userName: userInfo.name, email: userInfo.email))
             case .failure(let error):
                 Log.e(error)
             }
