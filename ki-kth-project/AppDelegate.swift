@@ -31,8 +31,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UITabBar.appearance().barTintColor = AppColor.primary
         
         UITabBarItem.appearance().setTitleTextAttributes([NSAttributedString.Key.font: UIFont(name: "SourceSansPro-Bold", size: 20)!], for: .normal)
-        UITabBarItem.appearance().setTitleTextAttributes([NSAttributedString.Key.font : UIFont(name: "SourceSansPro-Bold", size: 20)! ], for: .highlighted)
-        UITabBarItem.appearance().setTitleTextAttributes([NSAttributedString.Key.font : UIFont(name: "SourceSansPro-Bold", size: 20)! ], for: .focused)
+        UIBarItem.appearance().setTitleTextAttributes([NSAttributedString.Key.font : UIFont(name: "SourceSansPro-Bold", size: 20)! ], for: .highlighted)
+        UIBarButtonItem.appearance().setTitleTextAttributes([NSAttributedString.Key.font : UIFont(name: "SourceSansPro-Bold", size: 20)! ], for: .focused)
 
 
         return true

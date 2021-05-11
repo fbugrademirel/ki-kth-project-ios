@@ -72,14 +72,19 @@ final class LoginCredentialsViewModel {
     
     func updateUserInfoRequested(for type: UpdateFieldType, with string: String) {
         
+        sendActionToViewController?(.startActivityIndicators)
         switch type {
         case .email:
             DeviceDataAPI().updateUserInfo(email: string) { result in
                 switch result {
                 case .success(let data):
                     self.sendActionToViewController?(.setEmail(email: data.email))
+                    self.sendActionToViewController?(.stopActivityIndicators)
+
                 case .failure(let error):
                     Log.e(error.localizedDescription)
+                    self.sendActionToViewController?(.stopActivityIndicators)
+
                 }
             }
         case .userName:
@@ -87,16 +92,23 @@ final class LoginCredentialsViewModel {
                 switch result {
                 case .success(let data):
                     self.sendActionToViewController?(.setUserName(name: data.name))
+                    self.sendActionToViewController?(.stopActivityIndicators)
+
                 case .failure(let error):
                     Log.e(error.localizedDescription)
+                    self.sendActionToViewController?(.stopActivityIndicators)
+
                 }
             }
         case .password:
             DeviceDataAPI().updateUserInfo(password: string) { result in
                 switch result {
-                case .success: break
+                case .success:
+                    self.sendActionToViewController?(.stopActivityIndicators)
                 case .failure(let error):
                     Log.e(error.localizedDescription)
+                    self.sendActionToViewController?(.stopActivityIndicators)
+
                 }
             }
         }

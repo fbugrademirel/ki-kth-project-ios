@@ -14,6 +14,7 @@ class LoginCredentialsViewController: UIViewController {
     @IBOutlet weak var logOutButton: ActivityIndicatorButton!
     @IBOutlet weak var hiddenSaveEmailButton: ActivityIndicatorButton!
     @IBOutlet weak var hiddenSaveNameButton: ActivityIndicatorButton!
+    @IBOutlet weak var changePasswordButton: ActivityIndicatorButton!
     
     var viewModel: LoginCredentialsViewModel!
 
@@ -46,11 +47,49 @@ class LoginCredentialsViewController: UIViewController {
     }
     
     @IBAction func saveNameButtonPressed(_ sender: Any) {
+        hideNameButton()
         viewModel.updateUserInfoRequested(for: .userName, with: userNameTextView.text)
     }
     
     @IBAction func saveEmailButtonPressed(_ sender: Any) {
+        hideEmailButton()
         viewModel.updateUserInfoRequested(for: .email, with: emailTextView.text)
+    }
+    
+    @IBAction func changePAsswordButtonPressed(_ sender: Any) {
+        let alertController = UIAlertController(title: "Change password", message: "Enter new password...", preferredStyle: .alert)
+        
+        alertController.addTextField { textField in
+            textField.placeholder = "Enter Password"
+            textField.textContentType = .password
+            textField.isSecureTextEntry = true
+        }
+        
+        alertController.addTextField { textField in
+            textField.placeholder = "Enter Password again..."
+            textField.textContentType = .password
+            textField.isSecureTextEntry = true
+        }
+        
+        
+        alertController.addAction(UIAlertAction(title: "Save", style: .default) { [weak self] _ in
+            let firstTextField = alertController.textFields![0] as UITextField
+            let secondTextField = alertController.textFields![1] as UITextField
+            
+            guard let firstText = firstTextField.text, let secondText = secondTextField.text else { return }
+            
+            if firstText == "" || secondText == "" {
+                return
+            }
+            
+            if firstText != secondText {
+                return
+            }
+            
+            self?.viewModel.updateUserInfoRequested(for: .password, with: secondText)
+        })
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        present(alertController, animated: true, completion: nil)
     }
     
     func handleReceivedFromViewModel(action: LoginCredentialsViewModel.Action) {
@@ -66,8 +105,10 @@ class LoginCredentialsViewController: UIViewController {
             (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.changeRootViewController(vc)
         case .startActivityIndicators:
             logOutButton.startActivity()
+            changePasswordButton.startActivity()
         case .stopActivityIndicators:
             logOutButton.stopActivity()
+            changePasswordButton.stopActivity()
         case .hideNameButton:
             hideNameButton()
         case .hideEmailButton:
@@ -82,8 +123,8 @@ class LoginCredentialsViewController: UIViewController {
     private func hideEmailButton() {
         emailTextView.isEditable = false
         emailTextView.resignFirstResponder()
-        hiddenSaveEmailButton.isHidden = true
-        UIView.animate(withDuration: 1) {
+        hiddenSaveEmailButton.isUserInteractionEnabled = false
+        UIView.animate(withDuration: 0.5) {
             self.hiddenSaveEmailButton.alpha = 0
         }
     }
@@ -91,8 +132,8 @@ class LoginCredentialsViewController: UIViewController {
     private func showEmailButton() {
         emailTextView.isEditable = true
         emailTextView.becomeFirstResponder()
-        self.hiddenSaveEmailButton.isHidden = false
-        UIView.animate(withDuration: 1) {
+        self.hiddenSaveEmailButton.isUserInteractionEnabled = true
+        UIView.animate(withDuration: 0.5) {
             self.hiddenSaveEmailButton.alpha = 1
         }
     }
@@ -101,8 +142,8 @@ class LoginCredentialsViewController: UIViewController {
     private func hideNameButton() {
         userNameTextView.isEditable = false
         userNameTextView.resignFirstResponder()
-        hiddenSaveNameButton.isHidden = true
-        UIView.animate(withDuration: 1) {
+        hiddenSaveNameButton.isUserInteractionEnabled = false
+        UIView.animate(withDuration: 0.5) {
             self.hiddenSaveNameButton.alpha = 0
         }
     }
@@ -110,8 +151,8 @@ class LoginCredentialsViewController: UIViewController {
     private func showNameButton() {
         userNameTextView.isEditable = true
         userNameTextView.becomeFirstResponder()
-        self.hiddenSaveNameButton.isHidden = false
-        UIView.animate(withDuration: 1) {
+        self.hiddenSaveNameButton.isUserInteractionEnabled = true
+        UIView.animate(withDuration: 0.5) {
             self.hiddenSaveNameButton.alpha = 1
         }
     }
@@ -131,6 +172,10 @@ class LoginCredentialsViewController: UIViewController {
         logOutButton.tintColor = AppColor.primary
         logOutButton.titleLabel?.font = UIFont.appFont(placement: .buttonTitle)
         logOutButton.layer.cornerRadius = 10
+        
+        changePasswordButton.tintColor = AppColor.primary
+        changePasswordButton.titleLabel?.font = UIFont.appFont(placement: .buttonTitle)
+        changePasswordButton.layer.cornerRadius = 10
         
         userNameTextView.font = UIFont.appFont(placement: .text)
         emailTextView.font = UIFont.appFont(placement: .text)
