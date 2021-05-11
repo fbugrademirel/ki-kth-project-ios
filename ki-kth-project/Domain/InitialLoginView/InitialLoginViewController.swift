@@ -59,7 +59,7 @@ class InitialLoginViewController: UIViewController {
             
             let settingsItem = UITabBarItem()
             settingsItem.title = "Settings"
-            settingsItem.image = UIImage(systemName: "gearshape")
+            settingsItem.image = UIImage(systemName: "gearshape.2")
             
             let deviceVC = DeviceReadingViewController.instantiate(with: DeviceReadingViewModel())
             deviceVC.tabBarItem = homeItem

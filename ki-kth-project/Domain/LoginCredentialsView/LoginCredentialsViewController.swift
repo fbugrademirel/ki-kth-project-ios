@@ -57,16 +57,16 @@ class LoginCredentialsViewController: UIViewController {
     }
     
     @IBAction func changePAsswordButtonPressed(_ sender: Any) {
-        let alertController = UIAlertController(title: "Change password", message: "Enter new password...", preferredStyle: .alert)
+        let alertController = UIAlertController(title: "Change password", message: nil, preferredStyle: .alert)
         
         alertController.addTextField { textField in
-            textField.placeholder = "Enter Password"
+            textField.placeholder = "Enter new password..."
             textField.textContentType = .password
             textField.isSecureTextEntry = true
         }
         
         alertController.addTextField { textField in
-            textField.placeholder = "Enter Password again..."
+            textField.placeholder = "Enter new password again..."
             textField.textContentType = .password
             textField.isSecureTextEntry = true
         }
