@@ -35,6 +35,9 @@
 		7C3C27E92625C1EB00F83DAA /* ActivityIndicatorButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C3C27E82625C1EB00F83DAA /* ActivityIndicatorButton.swift */; };
 		7C4E33F72624754000C42669 /* ConcentrationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C4E33F52624754000C42669 /* ConcentrationTableViewCell.swift */; };
 		7C4E33F82624754100C42669 /* ConcentrationTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7C4E33F62624754000C42669 /* ConcentrationTableViewCell.xib */; };
+		7C8FDEE3264AEE5900170F10 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8FDEE2264AEE5900170F10 /* SettingsViewController.swift */; };
+		7C8FDEE5264AEE6800170F10 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8FDEE4264AEE6800170F10 /* SettingsViewModel.swift */; };
+		7C8FDEE7264AEE7900170F10 /* SettingsView.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7C8FDEE6264AEE7900170F10 /* SettingsView.storyboard */; };
 		7C903BE0264A97020095D4ED /* LoginCredentialsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C903BDE264A97020095D4ED /* LoginCredentialsViewController.swift */; };
 		7C903BE3264A972D0095D4ED /* LoginCredentialsView.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7C903BE2264A972D0095D4ED /* LoginCredentialsView.storyboard */; };
 		7C903BE5264A973F0095D4ED /* LoginCredentialsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C903BE4264A973F0095D4ED /* LoginCredentialsViewModel.swift */; };
@@ -93,6 +96,9 @@
 		7C3C27E82625C1EB00F83DAA /* ActivityIndicatorButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicatorButton.swift; sourceTree = "<group>"; };
 		7C4E33F52624754000C42669 /* ConcentrationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcentrationTableViewCell.swift; sourceTree = "<group>"; };
 		7C4E33F62624754000C42669 /* ConcentrationTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConcentrationTableViewCell.xib; sourceTree = "<group>"; };
+		7C8FDEE2264AEE5900170F10 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		7C8FDEE4264AEE6800170F10 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
+		7C8FDEE6264AEE7900170F10 /* SettingsView.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SettingsView.storyboard; sourceTree = "<group>"; };
 		7C903BDE264A97020095D4ED /* LoginCredentialsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginCredentialsViewController.swift; sourceTree = "<group>"; };
 		7C903BE2264A972D0095D4ED /* LoginCredentialsView.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LoginCredentialsView.storyboard; sourceTree = "<group>"; };
 		7C903BE4264A973F0095D4ED /* LoginCredentialsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginCredentialsViewModel.swift; sourceTree = "<group>"; };
@@ -211,6 +217,16 @@
 			path = AnalyteListTableViewCell;
 			sourceTree = "<group>";
 		};
+		7C8FDEE1264AEE3700170F10 /* SettingsViewController */ = {
+			isa = PBXGroup;
+			children = (
+				7C8FDEE2264AEE5900170F10 /* SettingsViewController.swift */,
+				7C8FDEE4264AEE6800170F10 /* SettingsViewModel.swift */,
+				7C8FDEE6264AEE7900170F10 /* SettingsView.storyboard */,
+			);
+			path = SettingsViewController;
+			sourceTree = "<group>";
+		};
 		7C903BDD264A96DC0095D4ED /* LoginCredentialsView */ = {
 			isa = PBXGroup;
 			children = (
@@ -284,6 +300,7 @@
 				7C903BDD264A96DC0095D4ED /* LoginCredentialsView */,
 				7CE223762639903A00BD8C5B /* DeviceReadingView */,
 				7CDC8E362623AE9000430BD7 /* CalibrationView */,
+				7C8FDEE1264AEE3700170F10 /* SettingsViewController */,
 			);
 			path = Domain;
 			sourceTree = "<group>";
@@ -441,6 +458,7 @@
 				7C066DAF2634BF450030B103 /* SourceSansPro-BlackItalic.ttf in Resources */,
 				7C066DB42634BF450030B103 /* SourceSansPro-Light.ttf in Resources */,
 				7C22FEFF2644079A005861E9 /* CreateAccountView.storyboard in Resources */,
+				7C8FDEE7264AEE7900170F10 /* SettingsView.storyboard in Resources */,
 				7CF344B62642F7C100968E7F /* InitialLoginView.storyboard in Resources */,
 				7C066DB22634BF450030B103 /* SourceSansPro-Bold.ttf in Resources */,
 				7C066DB92634BF450030B103 /* SourceSansPro-ExtraLightItalic.ttf in Resources */,
@@ -517,6 +535,8 @@
 				7CDEFBA12629C15B00CA3E66 /* StoryboardInstantiable.swift in Sources */,
 				7C22FEF426433889005861E9 /* UserDefaults.swift in Sources */,
 				7C066D8E2634777E0030B103 /* AppColor.swift in Sources */,
+				7C8FDEE3264AEE5900170F10 /* SettingsViewController.swift in Sources */,
+				7C8FDEE5264AEE6800170F10 /* SettingsViewModel.swift in Sources */,
 				7CDC8E1E2623AE6B00430BD7 /* AppDelegate.swift in Sources */,
 				7C4E33F72624754000C42669 /* ConcentrationTableViewCell.swift in Sources */,
 				7C903BE0264A97020095D4ED /* LoginCredentialsViewController.swift in Sources */,

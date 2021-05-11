@@ -28,15 +28,22 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             profilItem.title = "Researcher"
             profilItem.image = UIImage(systemName: "person")
             
+            let settingsItem = UITabBarItem()
+            settingsItem.title = "Settings"
+            settingsItem.image = UIImage(systemName: "gearshape")
+            
             let deviceVC = DeviceReadingViewController.instantiate(with: DeviceReadingViewModel())
             deviceVC.tabBarItem = homeItem
             
             let profileVC = LoginCredentialsViewController.instantiate(with: LoginCredentialsViewModel())
             profileVC.tabBarItem = profilItem
             
+            let settingsVC = SettingsViewController.instantiate(with: SettingsViewModel())
+            settingsVC.tabBarItem = settingsItem
+            
             let barCont = UITabBarController()
             let navCon = UINavigationController(rootViewController: deviceVC)
-            barCont.viewControllers = [navCon, profileVC]
+            barCont.viewControllers = [navCon, settingsVC, profileVC]
             window = UIWindow(frame: windowScene.coordinateSpace.bounds)
             window?.windowScene = windowScene
             window?.rootViewController = barCont
