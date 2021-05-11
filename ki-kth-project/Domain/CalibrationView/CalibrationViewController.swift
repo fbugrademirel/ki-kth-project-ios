@@ -359,6 +359,7 @@ final class CalibrationViewController: UIViewController {
         }
         
         potential.font = UIFont.appFont(placement: .title)
+        potential.textColor = .systemRed
 
         setView(for: mainChartView)
         setView(for: calGraphView1)
