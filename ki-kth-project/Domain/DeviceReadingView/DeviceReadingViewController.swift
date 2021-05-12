@@ -106,7 +106,7 @@ final class DeviceReadingViewController: UIViewController {
         
         valueOnTheGraphLabel.font = UIFont.appFont(placement: .title)
         valueOnTheGraphLabel.text = ""
-        valueOnTheGraphLabel.textColor = .systemRed
+        valueOnTheGraphLabel.textColor = AppColor.primary
         
         informationLabel.font = UIFont.appFont(placement: .title)
         informationLabel.alpha = 0
