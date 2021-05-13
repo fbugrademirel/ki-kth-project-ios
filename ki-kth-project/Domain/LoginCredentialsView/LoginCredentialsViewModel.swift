@@ -122,13 +122,12 @@ final class LoginCredentialsViewModel {
                 //This means logout is not successfull
                 Log.e(error.localizedDescription)
                 self.sendActionToViewController?(.stopActivityIndicators)
-
+                
             } else {
                 //This means logout is successfull
                 Log.s("Logout successful")
                 self.sendActionToViewController?(.resetToInitialLoginView)
                 self.sendActionToViewController?(.stopActivityIndicators)
-                UserDefaults.userEmail = nil
             }
         }
     }

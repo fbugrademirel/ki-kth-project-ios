@@ -46,30 +46,37 @@ class ActivityIndicatorButton: UIButton {
     }
 
      func startActivity() {
-        self.isUserInteractionEnabled = false
-        UIView.animate(withDuration: 0.1, delay: 0, options: .curveEaseOut, animations: {
-            self.imageView?.alpha = 0
-            self.titleLabel?.alpha = 0
-            self.ai.isHidden = false
-            self.ai.startAnimating()
-        }) { (_) in
-            UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseIn, animations: {
-                self.ai.alpha = 1
-            }, completion: nil)
+        
+        DispatchQueue.main.async {
+            self.isUserInteractionEnabled = false
+            UIView.animate(withDuration: 0.1, delay: 0, options: .curveEaseOut, animations: {
+                self.imageView?.alpha = 0
+                self.titleLabel?.alpha = 0
+                self.ai.isHidden = false
+                self.ai.startAnimating()
+            }) { (_) in
+                UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseIn, animations: {
+                    self.ai.alpha = 1
+                }, completion: nil)
+            }
         }
     }
 
     func stopActivity() {
-        self.isUserInteractionEnabled = true
-        UIView.animate(withDuration: 0.1, delay: 0, options: .curveEaseOut, animations: {
-            self.ai.alpha = 0
-            self.ai.stopAnimating()
-        }) { (_) in
-            UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseIn, animations: {
-                self.imageView?.alpha = 1
-                self.titleLabel?.alpha = 1
-                self.ai.isHidden = true
-            }, completion: nil)
+    
+        DispatchQueue.main.async {
+            self.isUserInteractionEnabled = true
+
+            UIView.animate(withDuration: 0.1, delay: 0, options: .curveEaseOut, animations: {
+                self.ai.alpha = 0
+                self.ai.stopAnimating()
+            }) { (_) in
+                UIView.animate(withDuration: 0.2, delay: 0, options: .curveEaseIn, animations: {
+                    self.imageView?.alpha = 1
+                    self.titleLabel?.alpha = 1
+                    self.ai.isHidden = true
+                }, completion: nil)
+            }
         }
     }
 }

@@ -19,7 +19,7 @@ struct DeviceDataAPI {
     private let networkingService = NetworkingService()
     
     let prodUrl = "https://ki-kth-project-api.herokuapp.com"
-   // let devUrl = "http://localhost:3000"
+    //let devUrl = "http://localhost:3000"
     
     // MARK: - Operations
     
@@ -134,10 +134,10 @@ struct DeviceDataAPI {
         }
     }
     
-    func createDevice(name: String, personalID: Int, with completion: @escaping (Result<DeviceDataFetch,Error>) -> Void) {
+    func createDevice(name: String, personalID: Int, numberOfNeedles: Int, with completion: @escaping (Result<DeviceDataFetch,Error>) -> Void) {
         
         let uniqueIdentifier = UUID()
-        let device = DeviceCreationPost (name: name, deviceID: uniqueIdentifier.uuidString, personalID: personalID)
+        let device = DeviceCreationPost (name: name, deviceID: uniqueIdentifier.uuidString, personalID: personalID, intendedNumberOfNeedles: numberOfNeedles)
         let url = "\(prodUrl)/onbodydevice"
                 
         AuthenticationManager().getAuthToken { result in
@@ -316,6 +316,7 @@ struct User: Codable {
 struct DeviceDataFetch: Codable {
     let _id: String
     let name: String
+    let intendedNumberOfNeedles: Int
     let deviceID: UUID
     let personalID: Int
     let createdAt: String
@@ -326,4 +327,5 @@ struct DeviceCreationPost: Codable {
     let name: String
     let deviceID: String
     let personalID: Int
+    let intendedNumberOfNeedles: Int
 }

@@ -13,14 +13,12 @@
 
 import Foundation
 
-
-
 struct AnalyteDataAPI {
     
     // MARK: - Properties
     
     let prodUrl = "https://ki-kth-project-api.herokuapp.com"
-    let devUrl = "http://localhost:3000"
+  //  let devUrl = "http://localhost:3000"
     
     private let networkingService = NetworkingService()
     
@@ -136,6 +134,40 @@ struct AnalyteDataAPI {
         }
     }
     
+    func getValidAnalytesList(completion: @escaping (Result<ValidAnalytes, Error>) -> Void) {
+        
+        let url =  "\(prodUrl)/analytenaminglist"
+        
+        AuthenticationManager().getAuthToken { result in
+            switch result {
+            case .success(let token):
+                let addHeaderToken = ["Authorization": "Bearer \(token)"]
+                networkingService.dispatchRequest(urlString: url, method: .get, additionalHeaders: addHeaderToken) { result in
+                    switch result {
+                    case .success(let data):
+                        do {
+                            let listData = try JSONDecoder().decode(ValidAnalytes.self, from: data)
+                            DispatchQueue.main.async {
+                                completion(.success(listData))
+                            }
+                        } catch {
+                            DispatchQueue.main.async {
+                                completion(.failure(error))
+                            }
+                        }
+                    case .failure(let error):
+                        DispatchQueue.main.async {
+                            completion(.failure(error))
+                        }
+                    }
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+        
+    
     func createAnalyte(description: String, owner: String, associatedAnalyte: String, with completion: @escaping (Result<AnalyteDataFetch,Error>) -> Void) {
         
         let uniqueIdentifier = UUID()
@@ -170,6 +202,14 @@ struct AnalyteDataAPI {
 }
 
 // MARK: - Analyte Data Codable
+
+struct ValidAnalytes: Codable {
+    let analytes: [ValidAnalyte]
+}
+
+struct ValidAnalyte: Codable {
+    let analyte: String
+}
 
 struct AnalyteCalibrationPatch: Codable {
     let calibrationParameters: CalibrationParameter

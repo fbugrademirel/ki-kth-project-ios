@@ -3,6 +3,7 @@
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -10,27 +11,27 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" rowHeight="60" id="KGk-i7-Jjw" customClass="AnalyteListTableViewCell" customModule="ki_kth_project" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="450" height="60"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" rowHeight="142" id="KGk-i7-Jjw" customClass="AnalyteListTableViewCell" customModule="ki_kth_project" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="549" height="142"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
-                <rect key="frame" x="0.0" y="0.0" width="450" height="60"/>
+                <rect key="frame" x="0.0" y="0.0" width="549" height="142"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillProportionally" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="jJa-CC-VdH">
-                        <rect key="frame" x="6" y="6" width="438" height="48"/>
+                        <rect key="frame" x="6" y="6" width="537" height="130"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="I2Q-0r-uIe">
-                                <rect key="frame" x="0.0" y="0.0" width="78.5" height="24"/>
+                                <rect key="frame" x="0.0" y="0.0" width="87" height="32.5"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="249" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HfD-K3-zqF">
-                                        <rect key="frame" x="0.0" y="0.0" width="39.5" height="24"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="39.5" height="32.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="xmark" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="LAG-X7-Wkv">
-                                        <rect key="frame" x="54.5" y="2" width="24" height="19.5"/>
+                                        <rect key="frame" x="54.5" y="2" width="32.5" height="28"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="LAG-X7-Wkv" secondAttribute="height" multiplier="1:1" id="qkv-jj-n7j"/>
                                         </constraints>
@@ -38,17 +39,22 @@
                                 </subviews>
                             </stackView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4yX-PR-urp">
-                                <rect key="frame" x="0.0" y="24" width="21.5" height="12"/>
+                                <rect key="frame" x="0.0" y="32.5" width="21.5" height="67.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="8"/>
                                 <color key="textColor" systemColor="systemGreenColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="d8d-Hb-5xq">
-                                <rect key="frame" x="0.0" y="36" width="21.5" height="12"/>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5Jm-OX-jQb">
+                                <rect key="frame" x="0.0" y="100" width="240" height="30"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="240" id="TFO-FF-v2E"/>
+                                    <constraint firstAttribute="height" constant="30" id="vnN-UR-79i"/>
+                                </constraints>
+                                <color key="textColor" name="primary"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="8"/>
-                                <color key="textColor" systemColor="systemRedColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
                         </subviews>
                     </stackView>
                 </subviews>
@@ -62,21 +68,24 @@
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
                 <outlet property="analyteDescription" destination="HfD-K3-zqF" id="4Fa-L9-RQG"/>
-                <outlet property="analyteID" destination="d8d-Hb-5xq" id="AgA-x4-MDI"/>
+                <outlet property="analyteID" destination="5Jm-OX-jQb" id="XEU-lK-OSb"/>
                 <outlet property="analyteUniqueUUID" destination="4yX-PR-urp" id="PZP-iD-F18"/>
                 <outlet property="calibrationMark" destination="LAG-X7-Wkv" id="iRS-b7-e9m"/>
                 <outlet property="labelStackView" destination="jJa-CC-VdH" id="zSs-5m-JJc"/>
             </connections>
-            <point key="canvasLocation" x="-47.826086956521742" y="-62.946428571428569"/>
+            <point key="canvasLocation" x="23.913043478260871" y="-35.491071428571423"/>
         </tableViewCell>
     </objects>
     <resources>
         <image name="xmark" catalog="system" width="128" height="113"/>
+        <namedColor name="primary">
+            <color red="0.4309999942779541" green="0.046999998390674591" blue="0.25499999523162842" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
         <systemColor name="systemGreenColor">
             <color red="0.20392156862745098" green="0.7803921568627451" blue="0.34901960784313724" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </systemColor>
-        <systemColor name="systemRedColor">
-            <color red="1" green="0.23137254901960785" blue="0.18823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>
