@@ -22,6 +22,9 @@ final class DeviceReadingViewController: UIViewController {
     @IBOutlet weak var valueOnTheGraphLabel: UILabel!
     @IBOutlet weak var blockViewForCancelling: UIView!
     @IBOutlet weak var registerItemsStackView: UIStackView!
+    @IBOutlet weak var mnSelectNumberLabel: UILabel!
+    @IBOutlet weak var mnNumberIndicatorLabel: UILabel!
+    @IBOutlet weak var mnNumberStepper: UIStepper!
     
     var viewModel: DeviceReadingViewModel!
     
@@ -56,6 +59,7 @@ final class DeviceReadingViewController: UIViewController {
         case .presentCalibrationView(info: let info):
             let vc = CalibrationViewController.instantiate(with: CalibrationViewModel())
             vc.viewModel.deviceID = info.deviceId
+            vc.viewModel.numberOfNeedlesOnThisDevice = Int(mnNumberStepper.value)
             vc.title = "\(info.patientName)'s Analytes"
             navigationController?.pushViewController(vc, animated: true)
         case .updateChartUI(with: let data):
@@ -69,13 +73,17 @@ final class DeviceReadingViewController: UIViewController {
         }
     }
     
+    @IBAction func stepperPressed(_ sender: UIStepper) {
+        mnNumberIndicatorLabel.text = String(Int(sender.value))
+    }
+    
     @IBAction func registerButtonPressed(_ sender: Any) {
         if deviceNameTextField.text == "" || personalIDTextField.text == "" {
             return
         }
         guard let name = deviceNameTextField.text else { return }
         guard let id = personalIDTextField.text else { return }
-
+        
         deviceNameTextField.text = ""
         personalIDTextField.text = ""
         
@@ -92,6 +100,20 @@ final class DeviceReadingViewController: UIViewController {
         
     // MARK: - UI
     private func setUI() {
+        
+        mnNumberStepper.wraps = true
+        mnNumberStepper.autorepeat = true
+        mnNumberStepper.maximumValue = 200
+        mnNumberStepper.minimumValue = 1
+        
+        mnSelectNumberLabel.font = UIFont.appFont(placement: .boldText)
+        mnSelectNumberLabel.textColor = AppColor.primary
+        
+        mnNumberIndicatorLabel.font = UIFont.appFont(placement: .boldText)
+        mnNumberIndicatorLabel.textColor = AppColor.primary
+        mnNumberIndicatorLabel.text = String(Int(mnNumberStepper.value))
+        
+        
         
         let gesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         blockViewForCancelling.addGestureRecognizer(gesture)

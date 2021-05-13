@@ -56,20 +56,43 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="8vc-5s-nU6" userLabel="RegisterItemsStackView">
-                                <rect key="frame" x="23" y="141.5" width="338" height="72.5"/>
+                                <rect key="frame" x="23" y="102" width="338" height="112"/>
                                 <subviews>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Name of device" textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="H4G-9U-2VJ" customClass="IndicatorTextField" customModule="ki_kth_project" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="0.0" width="338" height="18"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="338" height="19.5"/>
                                         <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" autocorrectionType="no"/>
                                     </textField>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Device unique ID" textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="Shr-P9-Q6l" customClass="IndicatorTextField" customModule="ki_kth_project" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="24" width="338" height="18.5"/>
+                                        <rect key="frame" x="0.0" y="25.5" width="338" height="18.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" autocorrectionType="no" textContentType="tel"/>
                                     </textField>
+                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="12" translatesAutoresizingMaskIntoConstraints="NO" id="Hhq-CK-HpK">
+                                        <rect key="frame" x="0.0" y="50" width="338" height="32"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Select # of MNs for this device" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HVW-Id-fWq">
+                                                <rect key="frame" x="0.0" y="0.0" width="233.5" height="32"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="XNe-Z9-L5A">
+                                                <rect key="frame" x="245.5" y="0.0" width="80.5" height="32"/>
+                                                <connections>
+                                                    <action selector="stepperPressed:" destination="Y6W-OH-hqX" eventType="valueChanged" id="pcT-SG-Ntm"/>
+                                                </connections>
+                                            </stepper>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iRS-P1-R07">
+                                                <rect key="frame" x="338" y="0.0" width="0.0" height="32"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                    </stackView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7p5-29-d95" customClass="ActivityIndicatorButton" customModule="ki_kth_project" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="48.5" width="338" height="24"/>
+                                        <rect key="frame" x="0.0" y="88" width="338" height="24"/>
                                         <inset key="contentEdgeInsets" minX="6" minY="3" maxX="6" maxY="3"/>
                                         <state key="normal" title="Register">
                                             <color key="titleColor" name="primary"/>
@@ -118,6 +141,9 @@
                         <outlet property="deviceListTableView" destination="ctG-xu-SYA" id="ZKR-wH-5x1"/>
                         <outlet property="deviceNameTextField" destination="H4G-9U-2VJ" id="1YL-nZ-DCm"/>
                         <outlet property="informationLabel" destination="en0-qB-4Qa" id="Vdg-rF-i6K"/>
+                        <outlet property="mnNumberIndicatorLabel" destination="iRS-P1-R07" id="0aY-Yp-veK"/>
+                        <outlet property="mnNumberStepper" destination="XNe-Z9-L5A" id="FbT-Yj-FOz"/>
+                        <outlet property="mnSelectNumberLabel" destination="HVW-Id-fWq" id="del-OR-h3O"/>
                         <outlet property="personalIDTextField" destination="Shr-P9-Q6l" id="ESC-Ti-ee9"/>
                         <outlet property="registerDeviceButton" destination="7p5-29-d95" id="aVc-D1-Nyd"/>
                         <outlet property="registerItemsStackView" destination="8vc-5s-nU6" id="zsw-0o-nUt"/>

@@ -23,13 +23,11 @@ final class CalibrationViewModel {
         case stopActivityIndicators(message: InformationLabel, alertType: AnalytePageAlertType)
     }
     
-    let pickerComponents: [MicroNeedleNumber] = [.MN1, .MN2, .MN3, .MN4, .MN5, .MN6, .MN7]
+    //let pickerComponents: [String] = ["MN#1", "MN#2", "MN#3", "MN#4", "MN#5", "MN#6", "MN#7"]
+    var pickerComponents: [String] = []
     
     var pickerData: [[String]] = [[],
-                                  [AnalyteType.chloride.rawValue,
-                                   AnalyteType.pH.rawValue,
-                                   AnalyteType.potassium.rawValue,
-                                   AnalyteType.sodium.rawValue]] {
+                                  []] {
         didSet {
             sendActionToViewController?(.reloadPickerView)
         }
@@ -72,6 +70,7 @@ final class CalibrationViewModel {
             
     func viewDidLoad(for id: String) {
         fetchAllAnalytesForDevice(id: id)
+        getValidAnalytes()
     }
     
     func handleFromAnalyteTableView(action: AnalyteTableViewCellModel.ActionToParent) {
@@ -87,6 +86,23 @@ final class CalibrationViewModel {
             print("Handled by CalibrationViewModel from concentration table view")
         }
     }
+    
+    func getValidAnalytes() {
+        
+        AnalyteDataAPI().getValidAnalytesList { result in
+            switch result {
+            case .success(let data):
+                let validAnalytes = data.analytes.map({ data -> (String) in
+                    return data.analyte
+                })
+                self.pickerData[1] = validAnalytes
+                print(validAnalytes)
+            case .failure(let error):
+                Log.e(error.localizedDescription)
+            }
+        }
+    }
+
     
     func analyteCalibrationRequired() {
         sendActionToViewController?(.startActivityIndicators(message: .creating, alertType: .neutralAppColor))
@@ -144,10 +160,10 @@ final class CalibrationViewModel {
                 //Filter picker
                 let filtered = self?.pickerComponents.filter { mn in
                     !sorted.contains { mndata in
-                        mn.rawValue == mndata.description
+                        mn == mndata.description
                     }
                 }.map({ mn -> String in
-                    mn.rawValue
+                    mn
                 })
                 
                 self?.pickerData[0] = filtered!
@@ -275,13 +291,13 @@ final class CalibrationViewModel {
                 
                 //setpicker
                 let decided = self.pickerComponents.filter {
-                    $0.rawValue == data.description
+                    $0 == data.description
                 }
                 
-                if let index = self.pickerData[0].firstIndex(where: { $0 > decided.first!.rawValue }) {
-                    self.pickerData[0].insert(decided.first!.rawValue, at: index)
+                if let index = self.pickerData[0].firstIndex(where: { $0 > decided.first! }) {
+                    self.pickerData[0].insert(decided.first!, at: index)
                 } else {
-                    self.pickerData[0].append(decided.first!.rawValue)
+                    self.pickerData[0].append(decided.first!)
                 }
                 
                 
@@ -486,23 +502,6 @@ final class CalibrationViewModel {
 }
 
 // MARK: - MODELS
-
-enum AnalyteType: String {
-    case sodium = "sodium"
-    case potassium = "potassium"
-    case pH = "pH"
-    case chloride = "chloride"
-}
-
-enum MicroNeedleNumber: String {
-    case MN1 = "MN#1"
-    case MN2 = "MN#2"
-    case MN3 = "MN#3"
-    case MN4 = "MN#4"
-    case MN5 = "MN#5"
-    case MN6 = "MN#6"
-    case MN7 = "MN#7"
-}
 
 enum ChartViews {
     case mainChartForRawData
