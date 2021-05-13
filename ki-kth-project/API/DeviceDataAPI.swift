@@ -18,14 +18,14 @@ struct DeviceDataAPI {
     // MARK: - Properties
     private let networkingService = NetworkingService()
     
-   // let devUrl = "https://ki-kth-project-api.herokuapp.com"
-    let devUrl = "http://localhost:3000"
+    let prodUrl = "https://ki-kth-project-api.herokuapp.com"
+    //let devUrl = "http://localhost:3000"
     
     // MARK: - Operations
     
     func login(email: String, password: String, with completion: @escaping (Result<LoginUserDataFetch, Error>) -> Void) {
         
-        let url = "\(devUrl)/user/login"
+        let url = "\(prodUrl)/user/login"
         let login = LoginUserPost(email: email, password: password)
         let addHeader = ["Content-Type": "application/json"]
         networkingService.dispatchRequest(urlString: url, method: .post, additionalHeaders: addHeader, body: login) { result in
@@ -51,7 +51,7 @@ struct DeviceDataAPI {
     
     func createAccount(name: String, email: String, password: String, with completion: @escaping (Result<CreateUserDataFetch, Error>) -> Void) {
         
-        let url = "\(devUrl)/user"
+        let url = "\(prodUrl)/user"
         let createUser = CreateUserPost(name: name, email: email, password: password)
         let addHeader = ["Content-Type": "application/json"]
 
@@ -79,7 +79,7 @@ struct DeviceDataAPI {
     
     func updateUserInfo(email: String? = nil, userName: String? = nil, password: String? = nil, completion: @escaping (Result<UpdateUserDataFetch, Error>) -> Void) {
     
-        let url = "\(devUrl)/user/me"
+        let url = "\(prodUrl)/user/me"
         let updateUser = UpdateUserPost(name: userName, email: email, password: password)
 
         AuthenticationManager().getAuthToken { result in
@@ -115,7 +115,7 @@ struct DeviceDataAPI {
     
     func logout(completion: @escaping (Error?) -> Void) {
         
-        let url = "\(devUrl)/user/logout"
+        let url = "\(prodUrl)/user/logout"
         AuthenticationManager().getAuthToken { result in
             switch result {
             case .success(let token):
@@ -138,7 +138,7 @@ struct DeviceDataAPI {
         
         let uniqueIdentifier = UUID()
         let device = DeviceCreationPost (name: name, deviceID: uniqueIdentifier.uuidString, personalID: personalID, intendedNumberOfNeedles: numberOfNeedles)
-        let url = "\(devUrl)/onbodydevice"
+        let url = "\(prodUrl)/onbodydevice"
                 
         AuthenticationManager().getAuthToken { result in
             switch result {
@@ -172,7 +172,7 @@ struct DeviceDataAPI {
     
     func deleteDeviceByID(id: String, completion: @escaping (Result<DeviceDataFetch, Error>) -> Void ) {
         
-        let url =  "\(devUrl)/onbodydevice/\(id)"
+        let url =  "\(prodUrl)/onbodydevice/\(id)"
         
         AuthenticationManager().getAuthToken { result in
             switch result {
@@ -205,7 +205,7 @@ struct DeviceDataAPI {
     
     func getAllAnalytesForDevice(_ id: String, completion: @escaping (Result<[AnalyteDataFetch], Error>) -> Void ) {
         
-        let url = "\(devUrl)/onbodydevice/allmicroneedles/\(id)"
+        let url = "\(prodUrl)/onbodydevice/allmicroneedles/\(id)"
         
         AuthenticationManager().getAuthToken { result in
             switch result {
@@ -239,7 +239,7 @@ struct DeviceDataAPI {
     
     func getAllDevices(with completion: @escaping (Result<[DeviceDataFetch], Error>) -> Void ) {
         
-        let url = "\(devUrl)/user/allonbodydevices"
+        let url = "\(prodUrl)/user/allonbodydevices"
         
         AuthenticationManager().getAuthToken { result in
             switch result {
