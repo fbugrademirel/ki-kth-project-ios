@@ -13,7 +13,7 @@ final class AnalyteListTableViewCell: UITableViewCell {
     
     @IBOutlet weak var analyteDescription: UILabel!
     @IBOutlet weak var analyteUniqueUUID: UILabel!
-    @IBOutlet weak var analyteID: UILabel!
+    @IBOutlet weak var analyteID: UITextView!
     @IBOutlet weak var labelStackView: UIStackView!
     @IBOutlet weak var calibrationMark: UIImageView!
     
@@ -53,6 +53,7 @@ final class AnalyteListTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+                
         labelStackView.subviews.forEach {
             if let label = $0 as? UILabel {
                 label.font = UIFont.appFont(placement: .text)

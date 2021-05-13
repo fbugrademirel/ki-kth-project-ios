@@ -59,7 +59,7 @@ final class DeviceReadingViewController: UIViewController {
         case .presentCalibrationView(info: let info):
             let vc = CalibrationViewController.instantiate(with: CalibrationViewModel())
             vc.viewModel.deviceID = info.deviceId
-            vc.viewModel.numberOfNeedlesOnThisDevice = Int(mnNumberStepper.value)
+            vc.viewModel.intendedNumberOfNeedles  = info.intendedNumberOfNeedles
             vc.title = "\(info.patientName)'s Analytes"
             navigationController?.pushViewController(vc, animated: true)
         case .updateChartUI(with: let data):
@@ -91,7 +91,7 @@ final class DeviceReadingViewController: UIViewController {
         
         guard let intID = Int(id) else { return }
         
-        viewModel.createDeviceRequired(name: name, personalID: intID)
+        viewModel.createDeviceRequired(name: name, personalID: intID, numberOfNeedles: Int(mnNumberStepper.value))
     }
     
     @objc func refButPressed(_ sender: UIButton) {

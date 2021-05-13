@@ -20,18 +20,20 @@ final class DeviceListTableViewCellViewModel {
     let patientName: String
     let patientID: Int
     let serverID: String
+    let intendedNumberOfNeedles: Int
     
     var sendActionToParentModel: ((ActionToParent) -> Void)?
     var sendActionToOwnView: ((ActionToOwnView) -> Void)?
     
-    init(name: String, id: Int, serverID: String) {
+    init(name: String, id: Int, serverID: String, intendedNumberOfNeedles: Int) {
         self.patientName = name
         self.patientID = id
         self.serverID = serverID
+        self.intendedNumberOfNeedles = intendedNumberOfNeedles
     }
     
     func calibrateViewRequested() {
-        sendActionToParentModel?(.presentCalibrationView(info: ViewInfoInCell(patientName: patientName, deviceId: serverID)))
+        sendActionToParentModel?(.presentCalibrationView(info: ViewInfoInCell(patientName: patientName, deviceId: serverID, intendedNumberOfNeedles: intendedNumberOfNeedles)))
     }
     
     func calibratedAnalytesForThisDeviceRequested() {
@@ -65,4 +67,5 @@ final class DeviceListTableViewCellViewModel {
 struct ViewInfoInCell {
     let patientName: String
     let deviceId: String
+    let intendedNumberOfNeedles: Int
 }

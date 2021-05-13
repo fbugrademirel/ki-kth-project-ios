@@ -24,6 +24,15 @@ final class CalibrationViewModel {
     }
     
     //let pickerComponents: [String] = ["MN#1", "MN#2", "MN#3", "MN#4", "MN#5", "MN#6", "MN#7"]
+    var intendedNumberOfNeedles: Int? {
+        didSet {
+            if let number = intendedNumberOfNeedles {
+                for i in 1...number {
+                    pickerComponents.append("MN#\(i)")
+                }
+            }
+        }
+    }
     var pickerComponents: [String] = []
     
     var pickerData: [[String]] = [[],

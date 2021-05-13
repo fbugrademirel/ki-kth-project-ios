@@ -41,7 +41,9 @@ final class DeviceReadingViewModel {
     func handleReceivedFromDeviceTableViewCell(action: DeviceListTableViewCellViewModel.ActionToParent) {
         switch action {
         case .presentCalibrationView(info: let info):
-            fetchAndPresentCalibrationView(ViewInfo(patientName: info.patientName, deviceId: info.deviceId))
+            fetchAndPresentCalibrationView(ViewInfo(patientName: info.patientName,
+                                                    deviceId: info.deviceId,
+                                                    intendedNumberOfNeedles: info.intendedNumberOfNeedles))
         }
     }
     
@@ -53,20 +55,21 @@ final class DeviceReadingViewModel {
         sendActionToViewController?(.reloadDeviceListTableView)
     }
     
-    func createDeviceRequired(name: String, personalID: Int) {
+    func createDeviceRequired(name: String, personalID: Int, numberOfNeedles: Int) {
         
         sendActionToViewController?(.startActivityIndicators(message: .creating, alert: .neutralAppColor))
 
-        DeviceDataAPI().createDevice(name: name, personalID: personalID) { [weak self] result in
+        DeviceDataAPI().createDevice(name: name, personalID: personalID, numberOfNeedles: numberOfNeedles) { [weak self] result in
             
             switch result {
             case .success(let data):
                 
-                let device = Device(name: data.name, id: data.personalID)
+                let device = Device(name: data.name, id: data.personalID, intendedNumberOfNeedles: data.intendedNumberOfNeedles)
                 
                 let viewModel = DeviceListTableViewCellViewModel(name: device.name,
                                                              id: device.id,
-                                                             serverID: data._id)
+                                                             serverID: data._id,
+                                                             intendedNumberOfNeedles: data.intendedNumberOfNeedles)
                 
                 viewModel.sendActionToParentModel = { [weak self] action in
                     self?.handleReceivedFromDeviceTableViewCell(action: action)
@@ -160,9 +163,12 @@ final class DeviceReadingViewModel {
                 }
                 
                 let fetchedDevices = sorted.map { data -> DeviceListTableViewCellViewModel in
-                    let device = Device(name: data.name, id: data.personalID)
+                    let device = Device(name: data.name, id: data.personalID, intendedNumberOfNeedles: data.intendedNumberOfNeedles)
                     
-                    let viewModel = DeviceListTableViewCellViewModel(name: device.name, id: device.id, serverID: data._id)
+                    let viewModel = DeviceListTableViewCellViewModel(name: device.name,
+                                                                     id: device.id,
+                                                                     serverID: data._id,
+                                                                     intendedNumberOfNeedles: data.intendedNumberOfNeedles)
                     viewModel.sendActionToParentModel = { [weak self] action in
                         self?.handleReceivedFromDeviceTableViewCell(action: action)
                     }
@@ -247,6 +253,7 @@ final class DeviceReadingViewModel {
 struct ViewInfo {
     let patientName: String
     let deviceId: String
+    let intendedNumberOfNeedles: Int
 }
 
 struct ChartData {
@@ -258,6 +265,7 @@ struct ChartData {
 struct Device {
     let name: String
     let id: Int
+    let intendedNumberOfNeedles: Int
 }
 
 
