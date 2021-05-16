@@ -72,19 +72,19 @@
                                         <rect key="frame" x="0.0" y="62" width="338" height="32"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Select # of MNs for this device" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HVW-Id-fWq">
-                                                <rect key="frame" x="0.0" y="0.0" width="178.5" height="32"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="233.5" height="32"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <stepper opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" maximumValue="100" translatesAutoresizingMaskIntoConstraints="NO" id="XNe-Z9-L5A">
-                                                <rect key="frame" x="190.5" y="0.0" width="94" height="32"/>
+                                                <rect key="frame" x="245.5" y="0.0" width="80.5" height="32"/>
                                                 <connections>
                                                     <action selector="stepperPressed:" destination="Y6W-OH-hqX" eventType="valueChanged" id="pcT-SG-Ntm"/>
                                                 </connections>
                                             </stepper>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iRS-P1-R07">
-                                                <rect key="frame" x="296.5" y="0.0" width="41.5" height="32"/>
+                                                <rect key="frame" x="338" y="0.0" width="0.0" height="32"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>

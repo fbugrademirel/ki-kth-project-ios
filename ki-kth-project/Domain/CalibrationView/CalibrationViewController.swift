@@ -15,13 +15,13 @@ final class CalibrationViewController: UIViewController {
     var refreshControl = UIRefreshControl()
     
     @IBOutlet weak var informationLabel: UILabel!
-    @IBOutlet weak var corCoefficent: UILabel!
+    @IBOutlet weak var corCoefficentLabel: UILabel!
     @IBOutlet weak var mainChartView: LineChartView!
-    @IBOutlet weak var calGraphView1: LineChartView!
-    @IBOutlet weak var calGraphView2: LineChartView!
-    @IBOutlet weak var concentrationTable: UITableView!
+    @IBOutlet weak var calCurveGraphView: LineChartView!
+    @IBOutlet weak var linearCalGraphView: LineChartView!
+    @IBOutlet weak var concentrationTableView: UITableView!
     @IBOutlet weak var analyteListTableView: UITableView!
-    @IBOutlet weak var potential: UILabel!
+    @IBOutlet weak var potentialReadingLabel: UILabel!
     @IBOutlet weak var concTextField: IndicatorTextField!
     @IBOutlet weak var addAnalyteButton: ActivityIndicatorButton!
     @IBOutlet weak var analytesStackView: UIStackView!
@@ -58,11 +58,11 @@ final class CalibrationViewController: UIViewController {
 // MARK: - IBAction
     @IBAction func addConc(_ sender: UIButton) {
         
-        guard let conc1 = concTextField.text, let pot1 = potential.text?.replacingOccurrences(of: " mV", with: "") else { return }
+        guard let conc1 = concTextField.text, let pot1 = potentialReadingLabel.text?.replacingOccurrences(of: " mV", with: "") else { return }
         
         guard let conc2 = Double(conc1), let pot2 = Double(pot1) else {
             concTextField.indicatesError = true
-            potential.text = "Invalid entry"
+            potentialReadingLabel.text = "Invalid entry"
             return
         }
                 
@@ -88,7 +88,7 @@ final class CalibrationViewController: UIViewController {
     
     @IBAction func drawLinearGraph(_ sender: Any) {
         
-        if let selectedRows = concentrationTable.indexPathsForSelectedRows {
+        if let selectedRows = concentrationTableView.indexPathsForSelectedRows {
 
             var entries: [ChartDataEntry] = []
             
@@ -106,7 +106,7 @@ final class CalibrationViewController: UIViewController {
     
     @IBAction func clearSelected(_ sender: UIButton) {
   
-        if let indexPaths = concentrationTable.indexPathsForSelectedRows  {
+        if let indexPaths = concentrationTableView.indexPathsForSelectedRows  {
             let sortedPaths = indexPaths.sorted { $0.row > $1.row }
             for indexPath in sortedPaths {
                 let count = viewModel.concentrationTableViewCellModels.count
@@ -202,7 +202,7 @@ final class CalibrationViewController: UIViewController {
     private func resetAllTablesAndChartData() {
         
         informationLabel.text = ""
-        corCoefficent.text = ""
+        corCoefficentLabel.text = ""
         corEquationLabel.text = ""
         
         viewModel.regressionSlope = nil
@@ -220,12 +220,12 @@ final class CalibrationViewController: UIViewController {
         DispatchQueue.main.async {
             
             // Cor Coefficient
-            self.corCoefficent.alpha = 1
-            self.corCoefficent.text = "Correalation Coefficent (r) is \(String(format: "%.4f", corValue))"
+            self.corCoefficentLabel.alpha = 1
+            self.corCoefficentLabel.text = "Correalation Coefficent (r) is \(String(format: "%.4f", corValue))"
             if corValue > 7 {
-                self.corCoefficent.tintColor = .systemGreen
+                self.corCoefficentLabel.tintColor = .systemGreen
             } else {
-                self.corCoefficent.tintColor = .systemRed
+                self.corCoefficentLabel.tintColor = .systemRed
             }
             
             // Cor Equation
@@ -239,14 +239,14 @@ final class CalibrationViewController: UIViewController {
         case .mainChartForRawData:
             mainChartView.clearValues()
         case .calibrationChart:
-            calGraphView1.clearValues()
+            calCurveGraphView.clearValues()
         case .linearRegressionChart:
-            calGraphView2.clearValues()
+            linearCalGraphView.clearValues()
         }
     }
     
     private func updateUIforConcentrationListTableView() {
-        concentrationTable.reloadData()
+        concentrationTableView.reloadData()
     }
 
     private func updateUIforAnalyteListTableView() {
@@ -261,11 +261,11 @@ final class CalibrationViewController: UIViewController {
             mainChartView.fitScreen()
             mainChartView.animate(xAxisDuration: 2)
         case .calibrationChart:
-            calGraphView1.data = data
-            calGraphView1.animate(xAxisDuration: 0.1)
+            calCurveGraphView.data = data
+            calCurveGraphView.animate(xAxisDuration: 0.1)
         case .linearRegressionChart:
-            calGraphView2.data = data
-            calGraphView2.animate(xAxisDuration: 0.1)
+            linearCalGraphView.data = data
+            linearCalGraphView.animate(xAxisDuration: 0.1)
         }
     }
     
@@ -291,9 +291,9 @@ final class CalibrationViewController: UIViewController {
         informationLabel.textColor = AppColor.primary
         
         // Cor. Coefficient label
-        corCoefficent.alpha = 0
-        corCoefficent.textColor = AppColor.primary
-        corCoefficent.font = UIFont.appFont(placement: .boldText)
+        corCoefficentLabel.alpha = 0
+        corCoefficentLabel.textColor = AppColor.primary
+        corCoefficentLabel.font = UIFont.appFont(placement: .boldText)
         
         //Cor. Equation label
         corEquationLabel.alpha = 0
@@ -357,20 +357,20 @@ final class CalibrationViewController: UIViewController {
             }
         }
         
-        potential.font = UIFont.appFont(placement: .title)
-        potential.textColor = AppColor.primary
+        potentialReadingLabel.font = UIFont.appFont(placement: .title)
+        potentialReadingLabel.textColor = AppColor.primary
 
         setView(for: mainChartView)
-        setView(for: calGraphView1)
-        setView(for: calGraphView2)
+        setView(for: calCurveGraphView)
+        setView(for: linearCalGraphView)
     
         mainChartView.delegate = self
         
-        concentrationTable.delegate = self
-        concentrationTable.allowsMultipleSelectionDuringEditing = true
-        concentrationTable.setEditing(true, animated: true)
-        concentrationTable.dataSource = self
-        concentrationTable.register(UINib(nibName: ConcentrationTableViewCell.nibName, bundle: nil), forCellReuseIdentifier: ConcentrationTableViewCell.nibName)
+        concentrationTableView.delegate = self
+        concentrationTableView.allowsMultipleSelectionDuringEditing = true
+        concentrationTableView.setEditing(true, animated: true)
+        concentrationTableView.dataSource = self
+        concentrationTableView.register(UINib(nibName: ConcentrationTableViewCell.nibName, bundle: nil), forCellReuseIdentifier: ConcentrationTableViewCell.nibName)
         
         
         analyteListTableView.delegate = self
@@ -514,7 +514,7 @@ extension CalibrationViewController: UITextFieldDelegate {
 extension CalibrationViewController: ChartViewDelegate {
     
     func chartValueSelected(_ chartView: ChartViewBase, entry: ChartDataEntry, highlight: Highlight) {
-        potential.text = "\(String(entry.y)) mV"
+        potentialReadingLabel.text = "\(String(entry.y)) mV"
     }
     
 }
@@ -562,7 +562,7 @@ extension CalibrationViewController: UITableViewDelegate {
 extension CalibrationViewController: UITableViewDataSource {
         
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if tableView.isEqual(concentrationTable) {
+        if tableView.isEqual(concentrationTableView) {
             return viewModel.concentrationTableViewCellModels.count
         } else {
             return viewModel.analyteListTableViewCellModels.count
@@ -572,7 +572,7 @@ extension CalibrationViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        if tableView.isEqual(concentrationTable) {
+        if tableView.isEqual(concentrationTableView) {
             let cell = tableView.dequeueReusableCell(withIdentifier: ConcentrationTableViewCell.nibName, for: indexPath) as! ConcentrationTableViewCell
             
             cell.viewModel = viewModel.concentrationTableViewCellModels[indexPath.row]
