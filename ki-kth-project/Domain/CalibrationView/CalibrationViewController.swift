@@ -33,7 +33,6 @@ final class CalibrationViewController: UIViewController {
     @IBOutlet weak var blockViewForCancelling: UIView!
     @IBOutlet weak var concentrationElementsStackView: UIStackView!
     @IBOutlet weak var microNeedleHeadersStackView: UIStackView!
-    
     @IBOutlet weak var pickerView: UIPickerView!
     
     
@@ -49,10 +48,6 @@ final class CalibrationViewController: UIViewController {
         if let id = viewModel.deviceID {
             viewModel.viewDidLoad(for: id)
         }
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
     }
     
 // MARK: - IBAction

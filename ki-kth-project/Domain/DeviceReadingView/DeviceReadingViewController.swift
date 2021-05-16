@@ -14,7 +14,7 @@ final class DeviceReadingViewController: UIViewController {
     
     @IBOutlet weak var deviceListTableView: UITableView!
     @IBOutlet weak var chartsStackView: UIStackView!
-    @IBOutlet weak var scrollView: UIScrollView!
+    @IBOutlet weak var calibratedDataGraphsScrollView: UIScrollView!
     @IBOutlet weak var informationLabel: UILabel!
     @IBOutlet weak var deviceNameTextField: IndicatorTextField!
     @IBOutlet weak var personalIDTextField: IndicatorTextField!
@@ -28,7 +28,7 @@ final class DeviceReadingViewController: UIViewController {
     
     var viewModel: DeviceReadingViewModel!
     
-    
+    // MARK: -Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -40,7 +40,6 @@ final class DeviceReadingViewController: UIViewController {
         }
         setUI()
         viewModel.viewDidLoad()
-        
     }
     
     // MARK: -TODO: Move expensive operations to the viewDidAppear if you need a smoother first login!

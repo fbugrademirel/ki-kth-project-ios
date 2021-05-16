@@ -21,7 +21,7 @@ public final class AccountManager {
         DeviceDataAPI().login(email: email, password: password) { result in
             switch result {
             case .success(let response):
-                Log.s("Login successful")
+                Log.s("Login successful!")
                 // MARK: TODO: Should this really be here?
                 AuthenticationManager().setKeyChainTokens(auth: response.token)
                 UserDefaults.userEmail = response.user.email
@@ -67,7 +67,7 @@ public final class AccountManager {
                 //Now the token on the keychain is a useless old token
                 AuthenticationManager().removeKeyChainTokens()
                 UserDefaults.userEmail = nil
-                Log.i("LOGGED OUT")
+                Log.s("Logout successful!")
                 completion(nil)
             }
         }
