@@ -23,7 +23,6 @@ final class CalibrationViewModel {
         case stopActivityIndicators(message: InformationLabel, alertType: AnalytePageAlertType)
     }
     
-    //let pickerComponents: [String] = ["MN#1", "MN#2", "MN#3", "MN#4", "MN#5", "MN#6", "MN#7"]
     var intendedNumberOfNeedles: Int? {
         didSet {
             if let number = intendedNumberOfNeedles {
@@ -329,7 +328,7 @@ final class CalibrationViewModel {
             return
         }
         
-        let set1 = LineChartDataSet(entries: yValuesForMain, label: "Raw Data from Server ")
+        let set1 = LineChartDataSet(entries: yValuesForMain, label: "Raw Data of from Server ")
         set1.mode = .cubicBezier
         set1.drawCirclesEnabled = true
         set1.lineWidth = 0

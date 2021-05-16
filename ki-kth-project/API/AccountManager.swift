@@ -15,7 +15,9 @@ public final class AccountManager {
         case invalidFields
     }
 
-    public static func login(email: String, password: String, completion: @escaping (Result<UserAccountInfo, AccountError>)->Void) {
+    public static func login(email: String,
+                             password: String,
+                             completion: @escaping (Result<UserAccountInfo, AccountError>) -> Void) {
         DeviceDataAPI().login(email: email, password: password) { result in
             switch result {
             case .success(let response):
@@ -24,7 +26,8 @@ public final class AccountManager {
                 AuthenticationManager().setKeyChainTokens(auth: response.token)
                 UserDefaults.userEmail = response.user.email
                 UserDefaults.userName = response.user.name
-                let user = UserAccountInfo(name: response.user.name, email: response.user.email)
+                let user = UserAccountInfo(name: response.user.name,
+                                           email: response.user.email)
                 completion(.success(user))
             case .failure(let error):
                 Log.e(error)

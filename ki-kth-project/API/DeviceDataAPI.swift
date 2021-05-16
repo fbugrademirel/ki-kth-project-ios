@@ -23,16 +23,22 @@ struct DeviceDataAPI {
     
     // MARK: - Operations
     
-    func login(email: String, password: String, with completion: @escaping (Result<LoginUserDataFetch, Error>) -> Void) {
+    func login(email: String,
+               password: String,
+               with completion: @escaping (Result<LoginUserDataFetch, Error>) -> Void) {
         
         let url = "\(prodUrl)/user/login"
         let login = LoginUserPost(email: email, password: password)
         let addHeader = ["Content-Type": "application/json"]
-        networkingService.dispatchRequest(urlString: url, method: .post, additionalHeaders: addHeader, body: login) { result in
+        networkingService.dispatchRequest(urlString: url,
+                                          method: .post,
+                                          additionalHeaders: addHeader,
+                                          body: login) { result in
             switch result {
             case .success(let data):
                 do {
-                    let loginData = try JSONDecoder().decode(LoginUserDataFetch.self, from: data)
+                    let loginData = try JSONDecoder().decode(LoginUserDataFetch.self,
+                                                             from: data)
                     DispatchQueue.main.async {
                         completion(.success(loginData))
                     }

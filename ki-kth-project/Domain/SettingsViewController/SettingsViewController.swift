@@ -28,7 +28,7 @@ final class SettingsViewController: UIViewController {
 }
 
 
- 
+ // MARK: -Storyboard Instantiable
 
 extension SettingsViewController: StoryboardInstantiable {
     static var storyboardName: String {

@@ -61,6 +61,7 @@ final class DeviceListTableViewCell: UITableViewCell {
             view.removeFromSuperview()
         }
         
+        var timeForAnimation: Double = 1;
         analytes.forEach { analyte in
             let label = UILabel()
             label.alpha = 0
@@ -72,12 +73,11 @@ final class DeviceListTableViewCell: UITableViewCell {
             } else {
                 label.textColor = .systemRed
             }
-            DispatchQueue.main.async {
-                UIView.animate(withDuration: 0.5, delay: 0.5, options: .curveEaseInOut, animations: {
-                    self.calibrationInfoStackView.addArrangedSubview(label)
-                    label.alpha = 1
-                })
-            }
+            self.calibrationInfoStackView.addArrangedSubview(label)
+            UIView.animate(withDuration: 0.2, delay: timeForAnimation * 0.05, animations: {
+                label.alpha = 1
+            })
+            timeForAnimation += 2
         }
     }
     

@@ -9,9 +9,7 @@ import UIKit
 import Charts
 
 final class CalibrationViewController: UIViewController {
-    
-    let service = NetworkingService()
-    
+        
     var viewModel: CalibrationViewModel!
     
     var refreshControl = UIRefreshControl()
@@ -46,10 +44,6 @@ final class CalibrationViewController: UIViewController {
         viewModel.sendActionToViewController = { [weak self] action in
             self?.handleReceivedFromViewModel(action: action)
         }
-        
-        pickerView.dataSource = self
-        pickerView.delegate = self
-        pickerView.setValue(AppColor.primary, forKey: "textColor")
         
         setUI()
         if let id = viewModel.deviceID {
@@ -276,6 +270,11 @@ final class CalibrationViewController: UIViewController {
     }
     
     private func setUI() {
+        
+        //Picker View
+        pickerView.dataSource = self
+        pickerView.delegate = self
+        pickerView.setValue(AppColor.primary, forKey: "textColor")
         
         //Block View For Cancelling
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
