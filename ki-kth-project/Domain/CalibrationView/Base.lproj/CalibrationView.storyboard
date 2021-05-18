@@ -225,6 +225,13 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" systemColor="systemGray4Color"/>
                             </view>
+                            <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.0" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="WcG-gP-F5c">
+                                <rect key="frame" x="412" y="573" width="200" height="200"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="200" placeholder="YES" id="6PN-Bz-css"/>
+                                    <constraint firstAttribute="width" constant="200" placeholder="YES" id="wKx-Uv-H1m"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="ZdY-Bv-L1v"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -239,6 +246,7 @@
                             <constraint firstItem="ujh-HR-eCL" firstAttribute="width" secondItem="ZdY-Bv-L1v" secondAttribute="width" multiplier="0.24" id="KCi-M6-eT5"/>
                             <constraint firstItem="98u-zR-Seg" firstAttribute="centerX" secondItem="szc-r6-D3d" secondAttribute="centerX" id="LC4-e1-U7L"/>
                             <constraint firstItem="YZs-qh-20f" firstAttribute="centerX" secondItem="ZdY-Bv-L1v" secondAttribute="centerX" id="LML-l3-OpB"/>
+                            <constraint firstItem="WcG-gP-F5c" firstAttribute="centerY" secondItem="ZdY-Bv-L1v" secondAttribute="centerY" placeholder="YES" id="Nxw-rc-svd"/>
                             <constraint firstItem="L9W-fP-mIU" firstAttribute="height" secondItem="dWn-pK-gpg" secondAttribute="height" multiplier="0.1" id="O8A-RP-4da"/>
                             <constraint firstItem="L9W-fP-mIU" firstAttribute="centerX" secondItem="dWn-pK-gpg" secondAttribute="centerX" id="RcF-T3-g6i"/>
                             <constraint firstItem="syh-WV-n72" firstAttribute="top" secondItem="Mzr-cR-Dg1" secondAttribute="bottom" id="Tje-D4-nR7"/>
@@ -253,6 +261,7 @@
                             <constraint firstItem="szc-r6-D3d" firstAttribute="top" secondItem="98u-zR-Seg" secondAttribute="bottom" constant="12" id="hPS-9c-Kd4"/>
                             <constraint firstItem="syh-WV-n72" firstAttribute="centerX" secondItem="Mzr-cR-Dg1" secondAttribute="centerX" id="koq-xX-Xbc"/>
                             <constraint firstItem="L9W-fP-mIU" firstAttribute="width" secondItem="dWn-pK-gpg" secondAttribute="width" id="lnt-I9-fwj"/>
+                            <constraint firstItem="WcG-gP-F5c" firstAttribute="centerX" secondItem="ZdY-Bv-L1v" secondAttribute="centerX" placeholder="YES" id="pdA-oy-gDd"/>
                             <constraint firstItem="szc-r6-D3d" firstAttribute="width" secondItem="itM-KU-kqu" secondAttribute="width" multiplier="0.5" id="qIw-rL-4QF"/>
                             <constraint firstItem="L9W-fP-mIU" firstAttribute="top" secondItem="dWn-pK-gpg" secondAttribute="bottom" constant="6" id="sZ4-3M-HyE"/>
                             <constraint firstItem="tZ2-yM-rbM" firstAttribute="centerX" secondItem="rcL-2p-Mf6" secondAttribute="centerX" id="spx-VX-SRe"/>
@@ -286,6 +295,7 @@
                         <outlet property="microNeedleHeadersStackView" destination="IX1-4D-D8h" id="exp-MA-bv2"/>
                         <outlet property="pickerView" destination="dYG-xs-fDg" id="2Pr-bM-o5E"/>
                         <outlet property="potentialReadingLabel" destination="Tq8-Td-vE1" id="MHD-eV-7Is"/>
+                        <outlet property="qrImageView" destination="WcG-gP-F5c" id="GEl-3b-t7J"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Fxf-8n-ICq" sceneMemberID="firstResponder"/>

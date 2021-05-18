@@ -34,6 +34,7 @@ final class CalibrationViewController: UIViewController {
     @IBOutlet weak var concentrationElementsStackView: UIStackView!
     @IBOutlet weak var microNeedleHeadersStackView: UIStackView!
     @IBOutlet weak var pickerView: UIPickerView!
+    @IBOutlet weak var qrImageView: UIImageView!
     
     
 // MARK: - Lifecyle
@@ -142,20 +143,16 @@ final class CalibrationViewController: UIViewController {
         viewModel.analyteCalibrationRequired()
     }
     
-    @objc func dismissKeyboard() {
-        self.blockViewForCancelling.isUserInteractionEnabled = false
-        analytesStackView.isUserInteractionEnabled = false
-        concentrationElementsStackView.isUserInteractionEnabled = false
-        UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut) {
-            self.blockViewForCancelling.alpha = 0
-        } completion: { _ in
-            self.view.sendSubviewToBack(self.analytesStackView)
-            self.view.sendSubviewToBack(self.concentrationElementsStackView)
-            self.analytesStackView.isUserInteractionEnabled = true
-            self.concentrationElementsStackView.isUserInteractionEnabled = true
+    @objc func dismissAll() {
+        if let status = viewModel.isQRCodeCurrentlyPresented {
+            if status {
+                dismissQRCode()
+                return
+            }
         }
-        concTextField.resignFirstResponder()
+        dismissKeyboard()
     }
+    
     
 // MARK: - Handle from view model
     func handleReceivedFromViewModel(action :CalibrationViewModel.Action) {
@@ -170,6 +167,8 @@ final class CalibrationViewController: UIViewController {
             makeCorrLabelsVisible(corValue: parameters.rValue,
                                   slope: parameters.slope,
                                   constant: parameters.constant)
+        case .presentQRCode(descriptionAndServerID: let id, point: let point):
+            presentQRCode(descriptionAndServerID: id, point: point)
         case .clearChart(for: let chart):
             clearChart(for: chart)
         case .updateChartUI(for: let chart, with: let data):
@@ -186,6 +185,59 @@ final class CalibrationViewController: UIViewController {
     }
     
 // MARK: - Operations
+    
+    private func presentQRCode(descriptionAndServerID: String, point: CGPoint) {
+
+        self.blockViewForCancelling.isUserInteractionEnabled = true
+        viewModel.isQRCodeCurrentlyPresented = true
+        
+        qrImageView.translatesAutoresizingMaskIntoConstraints = true
+        qrImageView.isHidden = false
+        qrImageView.frame = CGRect(x: point.x, y: point.y, width: 40, height: 40)
+        qrImageView.frame.origin = point
+        qrImageView.layer.cornerRadius = 3
+        qrImageView.image = QRCodeGenerator().generateQRCode(from: descriptionAndServerID)
+
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
+            self.blockViewForCancelling.alpha = 0.95
+            self.qrImageView.frame = CGRect(x: self.view.center.x - 50, y: self.view.center.y - 50, width: 100, height: 100)
+            self.qrImageView.alpha = 1
+        }
+    }
+    
+    private func dismissQRCode() {
+        
+        viewModel.isQRCodeCurrentlyPresented = false
+        self.blockViewForCancelling.isUserInteractionEnabled = false
+        
+        UIView.animate(withDuration: 0.3, delay: 0.01, options: .curveEaseOut) {
+            if let point = self.viewModel.latestHandledQRCoordinate {
+                self.qrImageView.frame = CGRect(x: point.x, y: point.y, width: 40, height: 40)
+            } else {
+                self.qrImageView.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
+            }
+            self.blockViewForCancelling.alpha = 0
+            self.qrImageView.alpha = 0
+        } completion: { _ in
+            self.qrImageView.image = nil
+            self.qrImageView.isHidden = true
+        }
+    }
+    
+    private func dismissKeyboard() {
+        self.blockViewForCancelling.isUserInteractionEnabled = false
+        analytesStackView.isUserInteractionEnabled = false
+        concentrationElementsStackView.isUserInteractionEnabled = false
+        UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut) {
+            self.blockViewForCancelling.alpha = 0
+        } completion: { _ in
+            self.view.sendSubviewToBack(self.analytesStackView)
+            self.view.sendSubviewToBack(self.concentrationElementsStackView)
+            self.analytesStackView.isUserInteractionEnabled = true
+            self.concentrationElementsStackView.isUserInteractionEnabled = true
+        }
+        concTextField.resignFirstResponder()
+    }
     
     private func deleteRows(path: IndexPath) {
         self.analyteListTableView.beginUpdates()
@@ -272,7 +324,7 @@ final class CalibrationViewController: UIViewController {
         pickerView.setValue(AppColor.primary, forKey: "textColor")
         
         //Block View For Cancelling
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissAll))
         blockViewForCancelling.addGestureRecognizer(tapGesture)
         
         
@@ -366,7 +418,6 @@ final class CalibrationViewController: UIViewController {
         concentrationTableView.setEditing(true, animated: true)
         concentrationTableView.dataSource = self
         concentrationTableView.register(UINib(nibName: ConcentrationTableViewCell.nibName, bundle: nil), forCellReuseIdentifier: ConcentrationTableViewCell.nibName)
-        
         
         analyteListTableView.delegate = self
         analyteListTableView.delaysContentTouches = false;
@@ -537,6 +588,10 @@ extension CalibrationViewController: UITableViewDelegate {
         
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return true
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 50
     }
 
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath)

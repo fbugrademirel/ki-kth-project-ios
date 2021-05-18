@@ -23,11 +23,7 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" image="xmark" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="LAG-X7-Wkv">
-                        <rect key="frame" x="63.5" y="72" width="20" height="15.5"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="20" id="Iat-KT-gEO"/>
-                            <constraint firstAttribute="height" constant="20" id="pZS-F1-fgq"/>
-                        </constraints>
+                        <rect key="frame" x="819.5" y="72" width="17.5" height="15.5"/>
                     </imageView>
                     <imageView clipsSubviews="YES" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="751" translatesAutoresizingMaskIntoConstraints="NO" id="eng-Rg-hzK">
                         <rect key="frame" x="853" y="60" width="40" height="40"/>
@@ -40,9 +36,9 @@
                 <constraints>
                     <constraint firstItem="HfD-K3-zqF" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="12" id="4m9-Q5-1jN"/>
                     <constraint firstAttribute="trailing" secondItem="eng-Rg-hzK" secondAttribute="trailing" constant="6" id="Gwi-0h-Du4"/>
-                    <constraint firstItem="LAG-X7-Wkv" firstAttribute="leading" secondItem="HfD-K3-zqF" secondAttribute="trailing" constant="12" id="U9S-du-WM1"/>
+                    <constraint firstItem="LAG-X7-Wkv" firstAttribute="centerY" secondItem="eng-Rg-hzK" secondAttribute="centerY" id="Png-lr-NJV"/>
+                    <constraint firstItem="eng-Rg-hzK" firstAttribute="leading" secondItem="LAG-X7-Wkv" secondAttribute="trailing" constant="16" id="klC-i8-xU2"/>
                     <constraint firstItem="eng-Rg-hzK" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="tOb-P6-CcR"/>
-                    <constraint firstItem="LAG-X7-Wkv" firstAttribute="centerY" secondItem="HfD-K3-zqF" secondAttribute="centerY" id="vJO-3q-0qx"/>
                     <constraint firstItem="HfD-K3-zqF" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="wXO-7Q-7Xo"/>
                 </constraints>
             </tableViewCellContentView>

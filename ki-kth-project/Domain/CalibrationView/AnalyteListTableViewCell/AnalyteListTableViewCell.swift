@@ -35,7 +35,7 @@ final class AnalyteListTableViewCell: UITableViewCell {
         self.analyteDescription.font = UIFont.appFont(placement: .text)
         self.analyteDescription.text = viewModel.description
         
-        qrCodeImageView.image = generateQRCode(from: viewModel.serverID)
+        qrCodeImageView.image = QRCodeGenerator().generateQRCode(from: viewModel.serverID)
                 
         calibrationMark.image = viewModel.isCalibrated ?
             UIImage(systemName: "checkmark")?.withTintColor(.systemGreen, renderingMode: .alwaysOriginal) :
@@ -61,26 +61,26 @@ final class AnalyteListTableViewCell: UITableViewCell {
     }
     
     @objc func qrCodeImageTapped() {
-        DispatchQueue.main.async {
-           print("Tapped")
-        }
+        viewModel.qrViewTapped(point: getCoordinate(qrCodeImageView))
     }
     
-    func generateQRCode(from string: String) -> UIImage? {
-        let data = string.data(using: String.Encoding.ascii)
+    private func getCoordinate(_ view: UIView) -> CGPoint {
+        var x = view.frame.origin.x
+        var y = view.frame.origin.y
+        var oldView = view
 
-        if let filter = CIFilter(name: "CIQRCodeGenerator") {
-            filter.setValue(data, forKey: "inputMessage")
-            let transform = CGAffineTransform(scaleX: 3, y: 3)
-
-            if let output = filter.outputImage?.transformed(by: transform) {
-                return UIImage(ciImage: output)
+        while let superView = oldView.superview {
+            x += superView.frame.origin.x
+            y += superView.frame.origin.y
+            if superView.next is UIViewController {
+                break //superView is the rootView of a UIViewController
             }
+            oldView = superView
         }
 
-        return nil
+        return CGPoint(x: x, y: y)
     }
-
+    
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
          super.setHighlighted(highlighted, animated: animated)
          // do your custom things with the cell subviews here

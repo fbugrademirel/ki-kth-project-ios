@@ -21,6 +21,7 @@ final class CalibrationViewModel {
         case updateChartUI(for: ChartViews, with: LineChartData)
         case startActivityIndicators(message: InformationLabel, alertType: AnalytePageAlertType)
         case stopActivityIndicators(message: InformationLabel, alertType: AnalytePageAlertType)
+        case presentQRCode(descriptionAndServerID: String, point: CGPoint)
     }
     
     var intendedNumberOfNeedles: Int? {
@@ -43,6 +44,9 @@ final class CalibrationViewModel {
     
     var deviceID: String?
     var latestHandledAnalyteId: String?
+    var latestHandledQRCoordinate: CGPoint?
+    var isQRCodeCurrentlyPresented: Bool?
+    
     var regressionSlope: Double?
     var regressionConstant: Double?
     
@@ -83,8 +87,9 @@ final class CalibrationViewModel {
     
     func handleFromAnalyteTableView(action: AnalyteTableViewCellModel.ActionToParent) {
         switch action {
-        case .toParent:
-            print("Handled by CalibrationViewModel from analyte table view")
+        case .qrViewTapped(analyteDescriptionAndServerID: let id, globalPoint: let point):
+            latestHandledQRCoordinate = point
+            sendActionToViewController?(.presentQRCode(descriptionAndServerID: id, point: point))
         }
     }
     
@@ -241,7 +246,9 @@ final class CalibrationViewModel {
                                                       identifier: analyte.identifier,
                                                       serverID: analyte.serverID,
                                                       isCalibrated: analyte.calibrationParam.isCalibrated)
-                
+                model.sendActionToParentModel = { [weak self] action in
+                    self?.handleFromAnalyteTableView(action: action)
+                }
                 self?.sendActionToViewController?(.stopActivityIndicators(message: .createdWithSuccess, alertType: .greenInfo))// here
                 self?.analyteListTableViewCellModels.insert(model, at: 0)
             case .failure(let error):
