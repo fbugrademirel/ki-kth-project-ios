@@ -534,7 +534,7 @@ extension CalibrationViewController: UITableViewDelegate {
             viewModel.getAnalytesByIdRequested(viewModel.analyteListTableViewCellModels[indexPath.row].serverID)
         }
     }
-    
+        
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return true
     }

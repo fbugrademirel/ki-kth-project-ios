@@ -12,10 +12,8 @@ final class AnalyteListTableViewCell: UITableViewCell {
     static let nibName = "AnalyteListTableViewCell"
     
     @IBOutlet weak var analyteDescription: UILabel!
-    @IBOutlet weak var analyteUniqueUUID: UILabel!
-    @IBOutlet weak var analyteID: UITextView!
-    @IBOutlet weak var labelStackView: UIStackView!
     @IBOutlet weak var calibrationMark: UIImageView!
+    @IBOutlet weak var qrCodeImageView: UIImageView!
     
     var viewModel: AnalyteTableViewCellModel! {
         didSet {
@@ -32,15 +30,13 @@ final class AnalyteListTableViewCell: UITableViewCell {
     
     private func configure() {
         
+        qrCodeImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(qrCodeImageTapped)))
+        
         self.analyteDescription.font = UIFont.appFont(placement: .text)
         self.analyteDescription.text = viewModel.description
         
-        self.analyteUniqueUUID.font = UIFont.appFont(placement: .passiveText)
-        self.analyteUniqueUUID.text = viewModel.identifier.uuidString
-        
-        self.analyteID.font = UIFont.appFont(placement: .passiveText)
-        self.analyteID.text = viewModel.serverID
-        
+        qrCodeImageView.image = generateQRCode(from: viewModel.serverID)
+                
         calibrationMark.image = viewModel.isCalibrated ?
             UIImage(systemName: "checkmark")?.withTintColor(.systemGreen, renderingMode: .alwaysOriginal) :
             UIImage(systemName: "xmark")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal)
@@ -53,12 +49,9 @@ final class AnalyteListTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
-                
-        labelStackView.subviews.forEach {
-            if let label = $0 as? UILabel {
-                label.font = UIFont.appFont(placement: .text)
-            }
-        }
+        
+        analyteDescription.font = UIFont.appFont(placement: .text)
+ 
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -67,6 +60,27 @@ final class AnalyteListTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
+    @objc func qrCodeImageTapped() {
+        DispatchQueue.main.async {
+           print("Tapped")
+        }
+    }
+    
+    func generateQRCode(from string: String) -> UIImage? {
+        let data = string.data(using: String.Encoding.ascii)
+
+        if let filter = CIFilter(name: "CIQRCodeGenerator") {
+            filter.setValue(data, forKey: "inputMessage")
+            let transform = CGAffineTransform(scaleX: 3, y: 3)
+
+            if let output = filter.outputImage?.transformed(by: transform) {
+                return UIImage(ciImage: output)
+            }
+        }
+
+        return nil
+    }
+
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
          super.setHighlighted(highlighted, animated: animated)
          // do your custom things with the cell subviews here
