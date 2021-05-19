@@ -7,6 +7,7 @@
 
 import UIKit
 import Charts
+import AVFoundation
 
 final class DeviceReadingViewController: UIViewController {
 
@@ -25,6 +26,7 @@ final class DeviceReadingViewController: UIViewController {
     @IBOutlet weak var mnSelectNumberLabel: UILabel!
     @IBOutlet weak var mnNumberIndicatorLabel: UILabel!
     @IBOutlet weak var mnNumberStepper: UIStepper!
+    @IBOutlet weak var qrImageView: UIImageView!
     
     var viewModel: DeviceReadingViewModel!
     
@@ -70,6 +72,10 @@ final class DeviceReadingViewController: UIViewController {
             stopActivityIndicators(with: message, with: alert)
         case .presentView(with: let view):
             present(view, animated: true, completion: nil)
+        case .presentQRCode(descriptionAndServerID: let id, point: let point):
+            presentQRCode(descriptionAndServerID: id, point: point)
+        case .copyAnalyteInfoToClipboard(serverID: let serverID, description: let desc):
+            copyToClipBoardAndShowInfo(serverID: serverID, desc: desc)
         }
     }
     
@@ -97,6 +103,16 @@ final class DeviceReadingViewController: UIViewController {
     @objc func refButPressed(_ sender: UIButton) {
         viewModel.fetchAllDevicesRequired()
     }
+    
+    @objc func dismissAll() {
+        if let status = viewModel.isQRCodeCurrentlyPresented {
+            if status {
+                dismissQRCode()
+                return
+            }
+        }
+        dismissKeyboard()
+    }
         
     // MARK: - UI
     private func setUI() {
@@ -115,7 +131,7 @@ final class DeviceReadingViewController: UIViewController {
         
         
         
-        let gesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(dismissAll))
         blockViewForCancelling.addGestureRecognizer(gesture)
 
         registerDeviceButton.titleLabel?.font = UIFont.appFont(placement: .buttonTitle)
@@ -155,6 +171,65 @@ final class DeviceReadingViewController: UIViewController {
 
         self.deviceListTableView.deleteRows(at: [path], with: .fade)
         self.deviceListTableView.endUpdates()
+    }
+    
+    private func copyToClipBoardAndShowInfo(serverID: String, desc: String) {
+        AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
+        let systemSoundID: SystemSoundID = 1057
+        AudioServicesPlaySystemSound (systemSoundID)
+        UIPasteboard.general.string = "\(desc):\(serverID)"
+        UIView.animate(withDuration: 0.05) {
+            self.informationLabel.text = "Analyte copied to clipboard!"
+            self.informationLabel.alpha = 1
+            self.informationLabel.textColor = AppColor.primary
+        } completion: { _ in
+            UIView.animate(withDuration: 1) {
+                self.informationLabel.alpha = 0
+            } completion: { _ in
+                self.informationLabel.text = ""
+            }
+        }
+    }
+    
+    private func presentQRCode(descriptionAndServerID: String, point: CGPoint) {
+
+        self.blockViewForCancelling.isUserInteractionEnabled = true
+        viewModel.isQRCodeCurrentlyPresented = true
+        
+        qrImageView.translatesAutoresizingMaskIntoConstraints = true
+        qrImageView.isHidden = false
+        qrImageView.frame = CGRect(x: point.x, y: point.y, width: 40, height: 40)
+        qrImageView.frame.origin = point
+        qrImageView.layer.cornerRadius = 3
+        print(descriptionAndServerID)
+        qrImageView.image = QRCodeGenerator().generateQRCode(from: descriptionAndServerID)
+        
+        print(qrImageView.image)
+
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
+            self.blockViewForCancelling.alpha = 0.95
+            self.qrImageView.frame = CGRect(x: self.view.center.x - 50, y: self.view.center.y - 50, width: 100, height: 100)
+            self.qrImageView.alpha = 1
+        }
+    }
+    
+    private func dismissQRCode() {
+        
+        viewModel.isQRCodeCurrentlyPresented = false
+        self.blockViewForCancelling.isUserInteractionEnabled = false
+        
+        UIView.animate(withDuration: 0.3, delay: 0.01, options: .curveEaseOut) {
+            if let point = self.viewModel.latestHandledQRCoordinate {
+                self.qrImageView.frame = CGRect(x: point.x, y: point.y, width: 40, height: 40)
+            } else {
+                self.qrImageView.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
+            }
+            self.blockViewForCancelling.alpha = 0
+            self.qrImageView.alpha = 0
+        } completion: { _ in
+            self.qrImageView.image = nil
+            self.qrImageView.isHidden = true
+        }
     }
     
     @objc func dismissKeyboard() {

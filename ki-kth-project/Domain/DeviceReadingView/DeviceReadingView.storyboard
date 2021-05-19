@@ -107,15 +107,24 @@
                                 <rect key="frame" x="0.0" y="0.0" width="1024" height="1346"/>
                                 <color key="backgroundColor" systemColor="systemGray4Color"/>
                             </view>
+                            <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.0" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="HK4-9x-Cf0">
+                                <rect key="frame" x="412" y="573" width="200" height="200"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="200" placeholder="YES" id="Zeo-lW-Hhn"/>
+                                    <constraint firstAttribute="height" constant="200" placeholder="YES" id="oW0-4U-KFq"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="HK4-9x-Cf0" firstAttribute="centerX" secondItem="vDu-zF-Fre" secondAttribute="centerX" placeholder="YES" id="1PO-oq-DFQ"/>
                             <constraint firstItem="4we-wj-4nD" firstAttribute="bottom" secondItem="wmu-I6-sWx" secondAttribute="top" constant="-6" id="87Z-BR-Hc7"/>
                             <constraint firstItem="4we-wj-4nD" firstAttribute="width" secondItem="wmu-I6-sWx" secondAttribute="width" multiplier="0.5" id="8sX-CE-qsn"/>
                             <constraint firstItem="wmu-I6-sWx" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" constant="100" id="BfE-0p-bbK"/>
                             <constraint firstItem="en0-qB-4Qa" firstAttribute="centerX" secondItem="vDu-zF-Fre" secondAttribute="centerX" id="CwK-Ed-mLW"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="wmu-I6-sWx" secondAttribute="trailing" constant="12" id="D2S-yb-bek"/>
+                            <constraint firstItem="HK4-9x-Cf0" firstAttribute="centerY" secondItem="vDu-zF-Fre" secondAttribute="centerY" placeholder="YES" id="D9A-ZW-bnn"/>
                             <constraint firstItem="wmu-I6-sWx" firstAttribute="width" secondItem="5EZ-qb-Rvc" secondAttribute="width" multiplier="0.63" id="DLW-ZW-Tqn"/>
                             <constraint firstItem="4we-wj-4nD" firstAttribute="trailing" secondItem="wmu-I6-sWx" secondAttribute="trailing" id="Gke-vP-29s"/>
                             <constraint firstItem="ctG-xu-SYA" firstAttribute="height" secondItem="wmu-I6-sWx" secondAttribute="height" multiplier="0.5" id="I2n-ma-jmM"/>
@@ -146,6 +155,7 @@
                         <outlet property="mnNumberStepper" destination="XNe-Z9-L5A" id="FbT-Yj-FOz"/>
                         <outlet property="mnSelectNumberLabel" destination="HVW-Id-fWq" id="del-OR-h3O"/>
                         <outlet property="personalIDTextField" destination="Shr-P9-Q6l" id="ESC-Ti-ee9"/>
+                        <outlet property="qrImageView" destination="HK4-9x-Cf0" id="RsJ-qJ-M3U"/>
                         <outlet property="registerDeviceButton" destination="7p5-29-d95" id="aVc-D1-Nyd"/>
                         <outlet property="registerItemsStackView" destination="8vc-5s-nU6" id="zsw-0o-nUt"/>
                         <outlet property="valueOnTheGraphLabel" destination="4we-wj-4nD" id="IcW-Cn-5iX"/>

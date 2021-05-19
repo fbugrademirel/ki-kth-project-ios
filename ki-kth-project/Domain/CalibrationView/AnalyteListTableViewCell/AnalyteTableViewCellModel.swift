@@ -36,7 +36,6 @@ final class AnalyteTableViewCellModel {
     
     func qrViewLongPressed() {
         sendActionToParentModel?(.qrViewLongPressed(serverID: serverID, description: description))
-        print("LONG")
     }
     
     func qrViewTapped(point: CGPoint) {

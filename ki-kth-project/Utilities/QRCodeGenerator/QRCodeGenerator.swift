@@ -9,7 +9,7 @@ import UIKit
 
 public struct QRCodeGenerator {
     public func generateQRCode(from string: String) -> UIImage? {
-        let data = string.data(using: String.Encoding.ascii)
+        let data = string.data(using: String.Encoding.nonLossyASCII)
 
         if let filter = CIFilter(name: "CIQRCodeGenerator") {
             filter.setValue(data, forKey: "inputMessage")

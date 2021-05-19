@@ -17,7 +17,7 @@
                 <rect key="frame" x="0.0" y="0.0" width="501" height="100"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="HGf-tb-Vh6">
+                    <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="HGf-tb-Vh6">
                         <rect key="frame" x="3" y="3" width="495" height="94"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="A76-Va-VQt">
@@ -38,10 +38,10 @@
                                 </subviews>
                             </stackView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="3" translatesAutoresizingMaskIntoConstraints="NO" id="j66-Jg-ypX">
-                                <rect key="frame" x="51.5" y="0.0" width="359.5" height="94"/>
+                                <rect key="frame" x="56.5" y="0.0" width="294.5" height="94"/>
                             </stackView>
                             <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" horizontalCompressionResistancePriority="751" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SZK-6a-PYR" customClass="ActivityIndicatorButton" customModule="ki_kth_project" customModuleProvider="target">
-                                <rect key="frame" x="421" y="32" width="74" height="30"/>
+                                <rect key="frame" x="366" y="32" width="74" height="30"/>
                                 <inset key="contentEdgeInsets" minX="6" minY="6" maxX="6" maxY="6"/>
                                 <state key="normal" title="Calibrate">
                                     <color key="titleColor" name="primary"/>
@@ -50,6 +50,13 @@
                                     <action selector="calibrateButtonPressed:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="hUL-Ml-bWN"/>
                                 </connections>
                             </button>
+                            <imageView clipsSubviews="YES" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="9gx-Eq-WN6">
+                                <rect key="frame" x="455" y="27" width="40" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="40" id="JBy-0H-W2Y"/>
+                                    <constraint firstAttribute="height" constant="40" id="X6z-lj-CPa"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                     </stackView>
                 </subviews>
@@ -67,6 +74,7 @@
                 <outlet property="labelStackView" destination="A76-Va-VQt" id="Sfl-jo-Tsa"/>
                 <outlet property="patientID" destination="9nM-Q8-xG4" id="G4w-sC-tEr"/>
                 <outlet property="patientName" destination="3nJ-3T-NIo" id="LlI-bv-t3v"/>
+                <outlet property="qrCodeImageView" destination="9gx-Eq-WN6" id="Bgm-v8-NyC"/>
             </connections>
             <point key="canvasLocation" x="-131.15942028985509" y="-70.982142857142847"/>
         </tableViewCell>

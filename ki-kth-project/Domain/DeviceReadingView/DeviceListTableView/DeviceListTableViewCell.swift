@@ -16,6 +16,7 @@ final class DeviceListTableViewCell: UITableViewCell {
     @IBOutlet weak var patientID: UILabel!
     @IBOutlet weak var labelStackView: UIStackView!
     @IBOutlet weak var calibrationInfoStackView: UIStackView!
+    @IBOutlet weak var qrCodeImageView: UIImageView!
     
     
     var viewModel: DeviceListTableViewCellViewModel! {
@@ -28,6 +29,21 @@ final class DeviceListTableViewCell: UITableViewCell {
         viewModel.calibrateViewRequested()
     }
     
+    @objc func qrCodeImageLongPressed(gesture: UIGestureRecognizer) {
+        
+        if let longPress = gesture as? UILongPressGestureRecognizer {
+            if longPress.state == UIGestureRecognizer.State.began {
+                viewModel.qrViewLongPressed()
+            } else {
+                return
+            }
+        }
+    }
+    
+    @objc func qrCodeImageTapped() {
+        viewModel.qrViewTapped(point: getCoordinate(qrCodeImageView))
+    }
+    
     func handle(action: DeviceListTableViewCellViewModel.ActionToOwnView) {
         switch action {
         case .showCalibratedAnalytes(analytes: let analytes):
@@ -35,9 +51,34 @@ final class DeviceListTableViewCell: UITableViewCell {
         }
     }
     
-    private func configure() {
+    private func getCoordinate(_ view: UIView) -> CGPoint {
+        var x = view.frame.origin.x
+        var y = view.frame.origin.y
+        var oldView = view
 
-        patientName.text = viewModel.patientName
+        while let superView = oldView.superview {
+            x += superView.frame.origin.x
+            y += superView.frame.origin.y
+            if superView.next is UIViewController {
+                break //superView is the rootView of a UIViewController
+            }
+            oldView = superView
+        }
+
+        return CGPoint(x: x, y: y)
+    }
+    
+    private func configure() {
+        
+        qrCodeImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(qrCodeImageTapped)))
+        let long = UILongPressGestureRecognizer(target: self, action: #selector(qrCodeImageLongPressed(gesture:)))
+        long.minimumPressDuration = 0.75
+        qrCodeImageView.addGestureRecognizer(long)
+        
+        qrCodeImageView.image = QRCodeGenerator().generateQRCode(from: viewModel.serverID)
+
+        
+        patientName.text = viewModel.deviceDescription
         patientID.text = String(viewModel.patientID)
         
         viewModel.sendActionToOwnView = { [weak self] action in

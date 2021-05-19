@@ -18,7 +18,12 @@ final class DeviceReadingViewModel {
         case startActivityIndicators(message: DeviceInformationLabel, alert: DevicePageAlertType)
         case stopActivityIndicators(message: DeviceInformationLabel, alert: DevicePageAlertType)
         case presentView(with: UIAlertController)
+        case presentQRCode(descriptionAndServerID: String, point: CGPoint)
+        case copyAnalyteInfoToClipboard(serverID: String, description: String)
     }
+    
+    var latestHandledQRCoordinate: CGPoint?
+    var isQRCodeCurrentlyPresented: Bool?
     
     var yValuesForMain: [ChartData] = [] {
         didSet {
@@ -44,6 +49,10 @@ final class DeviceReadingViewModel {
             fetchAndPresentCalibrationView(ViewInfo(patientName: info.patientName,
                                                     deviceId: info.deviceId,
                                                     intendedNumberOfNeedles: info.intendedNumberOfNeedles))
+        case .qrViewTapped(deviceDescriptionAndServerID: let deviceDescriptionAndServerID, globalPoint: let globalPoint):
+            sendActionToViewController?(.presentQRCode(descriptionAndServerID: deviceDescriptionAndServerID, point: globalPoint))
+        case .qrViewLongPressed(serverID: let serverID, description: let description):
+            sendActionToViewController?(.copyAnalyteInfoToClipboard(serverID: serverID, description: description))
         }
     }
     
