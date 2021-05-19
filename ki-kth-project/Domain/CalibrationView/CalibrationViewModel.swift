@@ -22,6 +22,7 @@ final class CalibrationViewModel {
         case startActivityIndicators(message: InformationLabel, alertType: AnalytePageAlertType)
         case stopActivityIndicators(message: InformationLabel, alertType: AnalytePageAlertType)
         case presentQRCode(descriptionAndServerID: String, point: CGPoint)
+        case copyAnalyteInfoToClipboard(serverID: String, description: String)
     }
     
     var intendedNumberOfNeedles: Int? {
@@ -87,6 +88,8 @@ final class CalibrationViewModel {
     
     func handleFromAnalyteTableView(action: AnalyteTableViewCellModel.ActionToParent) {
         switch action {
+        case .qrViewLongPressed(serverID: let serverID, description: let desc):
+            sendActionToViewController?(.copyAnalyteInfoToClipboard(serverID: serverID, description: desc))
         case .qrViewTapped(analyteDescriptionAndServerID: let id, globalPoint: let point):
             latestHandledQRCoordinate = point
             sendActionToViewController?(.presentQRCode(descriptionAndServerID: id, point: point))

@@ -31,6 +31,9 @@ final class AnalyteListTableViewCell: UITableViewCell {
     private func configure() {
         
         qrCodeImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(qrCodeImageTapped)))
+        let long = UILongPressGestureRecognizer(target: self, action: #selector(qrCodeImageLongPressed(gesture:)))
+        long.minimumPressDuration = 0.75
+        qrCodeImageView.addGestureRecognizer(long)
         
         self.analyteDescription.font = UIFont.appFont(placement: .text)
         self.analyteDescription.text = viewModel.description
@@ -58,6 +61,17 @@ final class AnalyteListTableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state
+    }
+    
+    @objc func qrCodeImageLongPressed(gesture: UIGestureRecognizer) {
+        
+        if let longPress = gesture as? UILongPressGestureRecognizer {
+            if longPress.state == UIGestureRecognizer.State.began {
+                viewModel.qrViewLongPressed()
+            } else {
+                return
+            }
+        }
     }
     
     @objc func qrCodeImageTapped() {

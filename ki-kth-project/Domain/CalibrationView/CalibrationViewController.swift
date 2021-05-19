@@ -7,6 +7,7 @@
 
 import UIKit
 import Charts
+import AVFoundation
 
 final class CalibrationViewController: UIViewController {
         
@@ -169,6 +170,8 @@ final class CalibrationViewController: UIViewController {
                                   constant: parameters.constant)
         case .presentQRCode(descriptionAndServerID: let id, point: let point):
             presentQRCode(descriptionAndServerID: id, point: point)
+        case .copyAnalyteInfoToClipboard(serverID: let serverID, description: let desc):
+            copyToClipBoardAndShowInfo(serverID: serverID, desc: desc)
         case .clearChart(for: let chart):
             clearChart(for: chart)
         case .updateChartUI(for: let chart, with: let data):
@@ -185,6 +188,24 @@ final class CalibrationViewController: UIViewController {
     }
     
 // MARK: - Operations
+    
+    private func copyToClipBoardAndShowInfo(serverID: String, desc: String) {
+        AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
+        let systemSoundID: SystemSoundID = 1057
+        AudioServicesPlaySystemSound (systemSoundID)
+        UIPasteboard.general.string = "\(desc):\(serverID)"
+        UIView.animate(withDuration: 0.05) {
+            self.informationLabel.text = "Analyte copied to clipboard!"
+            self.informationLabel.alpha = 1
+            self.informationLabel.textColor = AppColor.primary
+        } completion: { _ in
+            UIView.animate(withDuration: 1) {
+                self.informationLabel.alpha = 0
+            } completion: { _ in
+                self.informationLabel.text = ""
+            }
+        }
+    }
     
     private func presentQRCode(descriptionAndServerID: String, point: CGPoint) {
 
