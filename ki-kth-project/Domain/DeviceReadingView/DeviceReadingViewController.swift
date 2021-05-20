@@ -303,6 +303,7 @@ final class DeviceReadingViewController: UIViewController {
             yAxis.drawZeroLineEnabled = true
             yAxis.axisMinimum = 0
             yAxis.axisMaximum = lineChartData.yMax * 1.5
+            yAxis.drawGridLinesEnabled = false
             
             lineChartView.xAxis.labelPosition = .bottom
             lineChartView.xAxis.axisLineColor = .darkGray
@@ -313,7 +314,6 @@ final class DeviceReadingViewController: UIViewController {
             lineChartView.xAxis.spaceMax = 200
             lineChartView.xAxis.avoidFirstLastClippingEnabled = true
 
-                        
             lineChartView.xAxis.valueFormatter = DateValueFormatter()
             
             lineChartView.data = lineChartData
@@ -328,8 +328,8 @@ final class DeviceReadingViewController: UIViewController {
             DispatchQueue.main.async {
                 
                 self.chartsStackView.addArrangedSubview(lineChartView)
-                lineChartView.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 0.6).isActive = true
-                lineChartView.heightAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 0.6).isActive = true
+                lineChartView.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 0.5).isActive = true
+                lineChartView.heightAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 0.5).isActive = true
                 UIView.animate(withDuration: 1, delay: 0, options: .curveEaseIn) {
                     lineChartView.alpha = 1
                 } 

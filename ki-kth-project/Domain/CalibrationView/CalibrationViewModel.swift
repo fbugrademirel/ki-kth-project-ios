@@ -277,17 +277,19 @@ final class CalibrationViewModel {
                                             createdAt: data.createdAt,
                                             updatedAt: data.updatedAt)
                 
-                guard let time = data.measurements.first?.time else {
+                guard let _ = data.measurements.first?.time else {
                     self?.sendActionToViewController?(.stopActivityIndicators(message: .invalidData, alertType: .redWarning))
                     return
                 }
                 
-                let doubleTime = Double(time) /// cast to double
+                //let doubleTime = Double(time) /// cast to double
             
                 let chartPoints = data.measurements.map { (measurement) -> ChartDataEntry in
                 
-                    let entry = ChartDataEntry(x: Double(measurement.time)! - doubleTime!, y: measurement.value)
-                    
+                    //This is for 1 . . 2 . . .3 .  .
+                    //let entry = ChartDataEntry(x: Double(measurement.time)! - doubleTime!, y: measurement.value)
+                    let entry = ChartDataEntry(x: Double(measurement.time)!, y: measurement.value)
+
                     return entry
                 }
                 self?.latestHandledAnalyteId = data._id

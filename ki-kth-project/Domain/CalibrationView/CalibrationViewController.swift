@@ -471,12 +471,18 @@ final class CalibrationViewController: UIViewController {
         yAxis.labelTextColor = .darkGray
         yAxis.axisLineColor = .darkGray
         yAxis.labelPosition = .outsideChart
-
+        yAxis.axisMinimum = 0
+        
+        lineChartView.xAxis.valueFormatter = DateValueFormatter()
         lineChartView.xAxis.labelPosition = .bottom
         lineChartView.xAxis.axisLineColor = .darkGray
         lineChartView.xAxis.labelFont = .boldSystemFont(ofSize: 12)
-        lineChartView.xAxis.setLabelCount(6, force: false)
+        lineChartView.xAxis.setLabelCount(3, force: true)
         lineChartView.xAxis.labelTextColor = .black
+        lineChartView.xAxis.labelTextColor = .darkGray
+        lineChartView.xAxis.granularityEnabled = true
+        lineChartView.xAxis.spaceMax = 200
+        lineChartView.xAxis.avoidFirstLastClippingEnabled = true
     }
     
     private func startActivityIndicators(with info: InformationLabel, with alert: AnalytePageAlertType){

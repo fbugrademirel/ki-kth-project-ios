@@ -223,11 +223,14 @@ final class DeviceReadingViewModel {
         yValuesForMain.sorted {$0.description < $1.description}.forEach { chartData in
             
             if !chartData.entries.isEmpty {
-                let set1 = LineChartDataSet(entries: chartData.entries, label: "Calibrated Data for \(chartData.description) - \(chartData.analyte)")
+                let set1 = LineChartDataSet(entries: chartData.entries, label: "\(chartData.description) - \(chartData.analyte) (Calibrated)")
                 set1.mode = .stepped
                 set1.drawCirclesEnabled = true
                 set1.lineWidth = 2
-                set1.setColor(.systemBlue)
+                set1.setColor(UIColor(red: 0,
+                                      green: 0.5,
+                                      blue: CGFloat.random(in: 0...1),
+                                      alpha: 1))
                 set1.setCircleColor(.systemBlue)
                 set1.drawValuesEnabled = true
                 set1.drawCirclesEnabled = false
