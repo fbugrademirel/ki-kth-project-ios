@@ -18,7 +18,9 @@ struct DeviceDataAPI {
     // MARK: - Properties
     private let networkingService = NetworkingService()
     
-    let prodUrl = "https://ki-kth-project-api.herokuapp.com"
+    let prodUrl = "http://localhost:3000"
+    
+//    let prodUrl = "https://ki-kth-project-api.herokuapp.com"
     //let devUrl = "http://localhost:3000"
     
     // MARK: - Operations

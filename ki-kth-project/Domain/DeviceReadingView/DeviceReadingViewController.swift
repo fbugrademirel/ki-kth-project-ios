@@ -42,13 +42,13 @@ final class DeviceReadingViewController: UIViewController {
         }
         setUI()
         viewModel.viewDidLoad()
-        
     }
     
     // MARK: -TODO: Move expensive operations to the viewDidAppear if you need a smoother first login!
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         viewModel.reloadTableViewsRequired()
+        viewModel.fetchLatestHandledAnalyte()
     }
     
     // MARK: - Handle
@@ -204,7 +204,6 @@ final class DeviceReadingViewController: UIViewController {
         print(descriptionAndServerID)
         qrImageView.image = QRCodeGenerator().generateQRCode(from: descriptionAndServerID)
         
-        print(qrImageView.image)
 
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
             self.blockViewForCancelling.alpha = 0.95
@@ -309,7 +308,7 @@ final class DeviceReadingViewController: UIViewController {
             lineChartView.xAxis.labelTextColor = .darkGray
             
             lineChartView.data = lineChartData
-            lineChartView.fitScreen()
+            lineChartView.sizeToFit()
             lineChartView.animate(xAxisDuration: 2)
             
             lineChartView.delegate = self

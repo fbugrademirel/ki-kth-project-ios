@@ -60,13 +60,16 @@ public final class AccountManager {
             if let error = error {
                 Log.e(error)
                 //Handle Error Logic
+                UserDefaults.userName = nil
                 UserDefaults.userEmail = nil
                 completion(error)
+                
             } else {
                 //This means successgully logged out. Handle logout logic
                 //Now the token on the keychain is a useless old token
                 AuthenticationManager().removeKeyChainTokens()
                 UserDefaults.userEmail = nil
+                UserDefaults.userName = nil
                 Log.s("Logout successful!")
                 completion(nil)
             }

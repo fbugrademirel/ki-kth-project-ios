@@ -122,7 +122,7 @@ final class LoginCredentialsViewModel {
                 //This means logout is not successfull
                 Log.e(error.localizedDescription)
                 self.sendActionToViewController?(.stopActivityIndicators)
-                
+                self.sendActionToViewController?(.resetToInitialLoginView)
             } else {
                 //This means logout is successfull
                 Log.s("Logout successful")

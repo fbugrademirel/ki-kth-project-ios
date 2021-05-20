@@ -22,6 +22,7 @@ final class DeviceReadingViewModel {
         case copyAnalyteInfoToClipboard(serverID: String, description: String)
     }
     
+    var latestHandledAnalyteID: String?
     var latestHandledQRCoordinate: CGPoint?
     var isQRCodeCurrentlyPresented: Bool?
     
@@ -43,6 +44,12 @@ final class DeviceReadingViewModel {
         fetchAllDevicesRequired()
     }
     
+    func fetchLatestHandledAnalyte() {
+        if let id = latestHandledAnalyteID {
+            getAnalytesByIdRequested(id)
+        }
+    }
+    
     func handleReceivedFromDeviceTableViewCell(action: DeviceListTableViewCellViewModel.ActionToParent) {
         switch action {
         case .presentCalibrationView(info: let info):
@@ -51,6 +58,7 @@ final class DeviceReadingViewModel {
                                                     intendedNumberOfNeedles: info.intendedNumberOfNeedles))
         case .qrViewTapped(deviceDescriptionAndServerID: let deviceDescriptionAndServerID, globalPoint: let globalPoint):
             sendActionToViewController?(.presentQRCode(descriptionAndServerID: deviceDescriptionAndServerID, point: globalPoint))
+            latestHandledQRCoordinate = globalPoint
         case .qrViewLongPressed(serverID: let serverID, description: let description):
             sendActionToViewController?(.copyAnalyteInfoToClipboard(serverID: serverID, description: description))
         }
@@ -98,7 +106,7 @@ final class DeviceReadingViewModel {
     func getAnalytesByIdRequested(_ id: String) {
         
         sendActionToViewController?(.startActivityIndicators(message: .fetching, alert: .neutralAppColor))
-        
+        latestHandledAnalyteID = id
         DeviceDataAPI().getAllAnalytesForDevice(id) { [weak self] result in
             switch result {
             case .success(let data):
@@ -124,10 +132,18 @@ final class DeviceReadingViewModel {
                     return !data.measurements.isEmpty
                 }
                 
-                self?.setGraphs(with: filtered)
+                var isThereACalibratedOne = false
+                filtered.forEach { analyte in
+                    if analyte.calibrationParameters.isCalibrated {
+                        isThereACalibratedOne = true
+                    }
+                }
                 
+                self?.setGraphs(with: filtered)
                 if filtered.isEmpty {
                     self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithSuccessButEmpty, alert: .greenInfo))
+                } else if(!isThereACalibratedOne){
+                    self?.sendActionToViewController?(.stopActivityIndicators(message: .noAnalyteIsCalibratedYet, alert: .redWarning))
                 } else {
                     self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithSuccess, alert: .greenInfo))
                 }
@@ -285,6 +301,7 @@ enum DevicePageAlertType {
 }
 
 enum DeviceInformationLabel: String {
+    case noAnalyteIsCalibratedYet = "There is no calibrated analyte!"
     case calibrationParameterError = "Regression Data is not calculated!"
     case calibratedWithSuccess = "Analyte calibrated with success!"
     case calibratedWithFailure = "Analyte calibration failed!"

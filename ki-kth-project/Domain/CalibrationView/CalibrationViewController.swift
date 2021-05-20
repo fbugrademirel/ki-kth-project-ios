@@ -218,7 +218,6 @@ final class CalibrationViewController: UIViewController {
         qrImageView.frame.origin = point
         qrImageView.layer.cornerRadius = 3
         qrImageView.image = QRCodeGenerator().generateQRCode(from: descriptionAndServerID)
-        print(qrImageView.image)
 
         UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
             self.blockViewForCancelling.alpha = 0.95

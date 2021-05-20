@@ -74,8 +74,9 @@ class InitialLoginViewController: UIViewController {
             let navCon = UINavigationController(rootViewController: deviceVC)
             barCont.viewControllers = [navCon, settingsVC, profileVC]
             
-            (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.changeRootViewController(barCont)
-        
+            DispatchQueue.main.async {
+                (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.changeRootViewController(barCont)
+            }
         case .startActivityIndicators(message: let label, alert: let alertType):
             startActivityIndicators(with: label, with: alertType)
         case .stopActivityIndicators(message: let label, alert: let alertType):

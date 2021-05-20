@@ -86,7 +86,6 @@ final class DeviceListTableViewCell: UITableViewCell {
         }
         
         setUI()
-        
         viewModel.calibratedAnalytesForThisDeviceRequested()
     }
     

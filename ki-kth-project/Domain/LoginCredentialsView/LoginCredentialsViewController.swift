@@ -102,7 +102,9 @@ class LoginCredentialsViewController: UIViewController {
             hideNameButton()
         case .resetToInitialLoginView:
             let vc = InitialLoginViewController.instantiate(with: InitialLoginViewModel())
-            (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.changeRootViewController(vc)
+            DispatchQueue.main.async {
+                (UIApplication.shared.connectedScenes.first?.delegate as? SceneDelegate)?.changeRootViewController(vc)
+            }
         case .startActivityIndicators:
             logOutButton.startActivity()
             changePasswordButton.startActivity()
