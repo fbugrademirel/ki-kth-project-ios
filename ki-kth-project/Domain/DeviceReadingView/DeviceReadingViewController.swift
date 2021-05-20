@@ -300,20 +300,33 @@ final class DeviceReadingViewController: UIViewController {
             yAxis.labelTextColor = .darkGray
             yAxis.axisLineColor = .darkGray
             yAxis.labelPosition = .outsideChart
-
+            yAxis.drawZeroLineEnabled = true
+            yAxis.axisMinimum = 0
+            yAxis.axisMaximum = lineChartData.yMax * 1.5
+            
             lineChartView.xAxis.labelPosition = .bottom
             lineChartView.xAxis.axisLineColor = .darkGray
             lineChartView.xAxis.labelFont = UIFont.appFont(placement: .boldText)
-            lineChartView.xAxis.setLabelCount(6, force: false)
+            lineChartView.xAxis.setLabelCount(3, force: true)
             lineChartView.xAxis.labelTextColor = .darkGray
+            lineChartView.xAxis.granularityEnabled = true
+            lineChartView.xAxis.spaceMax = 200
+            lineChartView.xAxis.avoidFirstLastClippingEnabled = true
+
+                        
+            lineChartView.xAxis.valueFormatter = DateValueFormatter()
             
             lineChartView.data = lineChartData
-            lineChartView.sizeToFit()
-            lineChartView.animate(xAxisDuration: 2)
-            
+            lineChartView.fitScreen()
+            lineChartView.animate(xAxisDuration: 1)
             lineChartView.delegate = self
             
+            chartsStackView.arrangedSubviews.forEach { arrangedSubViews in
+                arrangedSubViews.removeFromSuperview()
+            }
+            
             DispatchQueue.main.async {
+                
                 self.chartsStackView.addArrangedSubview(lineChartView)
                 lineChartView.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 0.6).isActive = true
                 lineChartView.heightAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 0.6).isActive = true
@@ -481,3 +494,5 @@ extension DeviceReadingViewController: StoryboardInstantiable {
         return viewController
     }
 }
+
+

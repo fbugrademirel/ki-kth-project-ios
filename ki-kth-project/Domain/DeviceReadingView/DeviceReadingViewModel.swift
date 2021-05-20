@@ -44,12 +44,6 @@ final class DeviceReadingViewModel {
         fetchAllDevicesRequired()
     }
     
-    func fetchLatestHandledAnalyte() {
-        if let id = latestHandledAnalyteID {
-            getAnalytesByIdRequested(id)
-        }
-    }
-    
     func handleReceivedFromDeviceTableViewCell(action: DeviceListTableViewCellViewModel.ActionToParent) {
         switch action {
         case .presentCalibrationView(info: let info):
@@ -66,6 +60,12 @@ final class DeviceReadingViewModel {
     
     func fetchAndPresentCalibrationView(_ info: ViewInfo) {
         sendActionToViewController?(.presentCalibrationView(info: info))
+    }
+    
+    func fetchLatestHandledAnalyte() {
+        if let id = latestHandledAnalyteID {
+            getAnalytesByIdRequested(id)
+        }
     }
     
     func reloadTableViewsRequired() {
@@ -220,13 +220,13 @@ final class DeviceReadingViewModel {
             return
         }
         
-        yValuesForMain.forEach { chartData in
+        yValuesForMain.sorted {$0.description < $1.description}.forEach { chartData in
             
             if !chartData.entries.isEmpty {
                 let set1 = LineChartDataSet(entries: chartData.entries, label: "Calibrated Data for \(chartData.description) - \(chartData.analyte)")
-                set1.mode = .cubicBezier
-               // set1.drawCirclesEnabled = true
-                set1.lineWidth = 5
+                set1.mode = .stepped
+                set1.drawCirclesEnabled = true
+                set1.lineWidth = 2
                 set1.setColor(.systemBlue)
                 set1.setCircleColor(.systemBlue)
                 set1.drawValuesEnabled = true
@@ -240,7 +240,7 @@ final class DeviceReadingViewModel {
                 set1.highlightColor = .systemRed
                 
                 let data = LineChartData(dataSet: set1)
-                data.setDrawValues(true)
+                data.setDrawValues(false)
                 dataArray.append(data)
             }
         }
@@ -264,7 +264,9 @@ final class DeviceReadingViewModel {
                         
                         y = pow(10, y)
                         
-                        let entry = ChartDataEntry(x: Double(measurement.time)! - referenceTime, y: y)
+                        // This is for 1 .. 2. ..  . .....
+                     //   let entry = ChartDataEntry(x: Double(measurement.time)! - referenceTime, y: y)
+                        let entry = ChartDataEntry(x: Double(measurement.time)!, y: y)
                         chartPoints.append(entry)
                     }
                 }

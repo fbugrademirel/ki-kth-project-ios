@@ -36,6 +36,7 @@
 		7C4E33F72624754000C42669 /* ConcentrationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C4E33F52624754000C42669 /* ConcentrationTableViewCell.swift */; };
 		7C4E33F82624754100C42669 /* ConcentrationTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7C4E33F62624754000C42669 /* ConcentrationTableViewCell.xib */; };
 		7C5877862653F4FE0061916F /* QRCodeGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C5877852653F4FE0061916F /* QRCodeGenerator.swift */; };
+		7C587853265703420061916F /* DateValueFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C587852265703420061916F /* DateValueFormatter.swift */; };
 		7C8FDEE3264AEE5900170F10 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8FDEE2264AEE5900170F10 /* SettingsViewController.swift */; };
 		7C8FDEE5264AEE6800170F10 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C8FDEE4264AEE6800170F10 /* SettingsViewModel.swift */; };
 		7C8FDEE7264AEE7900170F10 /* SettingsView.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7C8FDEE6264AEE7900170F10 /* SettingsView.storyboard */; };
@@ -98,6 +99,7 @@
 		7C4E33F52624754000C42669 /* ConcentrationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConcentrationTableViewCell.swift; sourceTree = "<group>"; };
 		7C4E33F62624754000C42669 /* ConcentrationTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ConcentrationTableViewCell.xib; sourceTree = "<group>"; };
 		7C5877852653F4FE0061916F /* QRCodeGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRCodeGenerator.swift; sourceTree = "<group>"; };
+		7C587852265703420061916F /* DateValueFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateValueFormatter.swift; sourceTree = "<group>"; };
 		7C8FDEE2264AEE5900170F10 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		7C8FDEE4264AEE6800170F10 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		7C8FDEE6264AEE7900170F10 /* SettingsView.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SettingsView.storyboard; sourceTree = "<group>"; };
@@ -227,6 +229,14 @@
 			path = QRCodeGenerator;
 			sourceTree = "<group>";
 		};
+		7C5878512657032C0061916F /* DateValueFormatter */ = {
+			isa = PBXGroup;
+			children = (
+				7C587852265703420061916F /* DateValueFormatter.swift */,
+			);
+			path = DateValueFormatter;
+			sourceTree = "<group>";
+		};
 		7C8FDEE1264AEE3700170F10 /* SettingsViewController */ = {
 			isa = PBXGroup;
 			children = (
@@ -330,6 +340,7 @@
 		7CDC8E392623AF4200430BD7 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				7C5878512657032C0061916F /* DateValueFormatter */,
 				7C5877872653F63F0061916F /* QRCodeGenerator */,
 				7C22FEF026433789005861E9 /* Log */,
 				7C9E01F5263D8E72003ACC6A /* Components */,
@@ -560,6 +571,7 @@
 				7CDEFBA62629C23000CA3E66 /* CalibrationViewModel.swift in Sources */,
 				7C066D84262B2F140030B103 /* ConcentrationTableViewCellModel.swift in Sources */,
 				7C903BE5264A973F0095D4ED /* LoginCredentialsViewModel.swift in Sources */,
+				7C587853265703420061916F /* DateValueFormatter.swift in Sources */,
 				7CF344B42642F7AB00968E7F /* InitialLoginViewModel.swift in Sources */,
 				7CDA38002623B0D700874665 /* AnalyteDataAPI.swift in Sources */,
 				7CE2237C263997AC00BD8C5B /* DeviceReadingViewModel.swift in Sources */,
