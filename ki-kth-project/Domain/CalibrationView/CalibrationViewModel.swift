@@ -68,7 +68,10 @@ final class CalibrationViewModel {
     
     var yValuesForMainRawDataLine: ([ChartDataEntry], Bool) = ([], false) {
         didSet {
-            if yValuesForMainRawDataLine.1{
+            if yValuesForMainRawDataLine.0.isEmpty {
+                timer?.invalidate()
+            }
+            if yValuesForMainRawDataLine.1 {
                 setDataForMainGraph(isForAutoRefresh: true)
             } else {
                 setDataForMainGraph()

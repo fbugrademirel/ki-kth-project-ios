@@ -30,6 +30,9 @@ final class DeviceReadingViewModel {
     
     var yValuesForMain: ([ChartData], Bool) = ([], false) {
         didSet {
+            if yValuesForMain.0.isEmpty {
+                timer?.invalidate()
+            }
             if yValuesForMain.1 {
                 setDataForMainGraph(isForRefresh: true)
             } else {
