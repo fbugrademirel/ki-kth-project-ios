@@ -414,7 +414,7 @@ final class CalibrationViewModel {
         set1.lineWidth = 0
         set1.setCircleColor(.systemRed)
 
-        set1.setColor(.systemBlue)
+        set1.setColor(.systemRed)
 
         set1.drawHorizontalHighlightIndicatorEnabled = false
         set1.highlightColor = .systemRed

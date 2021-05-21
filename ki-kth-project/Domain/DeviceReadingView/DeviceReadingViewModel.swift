@@ -162,6 +162,7 @@ final class DeviceReadingViewModel {
           DeviceDataAPI().deleteDeviceByID(id: id) { (result) in
               switch result {
               case .success(_):
+                self.yValuesForMain = []
                 self.sendActionToViewController?(.deleteRows(path: path))
                 self.sendActionToViewController?(.stopActivityIndicators(message: .deletedWithSuccess, alert: .greenInfo))
                 let alert = UIAlertController(title: "Deleted from database", message: "Server message", preferredStyle: .alert)
@@ -221,14 +222,14 @@ final class DeviceReadingViewModel {
         }
         
         yValuesForMain.sorted {$0.description < $1.description}.forEach { chartData in
-            
+        
             if !chartData.entries.isEmpty {
                 let set1 = LineChartDataSet(entries: chartData.entries, label: "\(chartData.description) - \(chartData.analyte) (Calibrated)")
                 set1.mode = .stepped
                 set1.drawCirclesEnabled = true
                 set1.lineWidth = 2
-                set1.setColor(UIColor(red: 0,
-                                      green: 0.5,
+                set1.setColor(UIColor(red: CGFloat.random(in: 0...1),
+                                      green: CGFloat.random(in: 0...1),
                                       blue: CGFloat.random(in: 0...1),
                                       alpha: 1))
                 set1.setCircleColor(.systemBlue)
@@ -266,7 +267,6 @@ final class DeviceReadingViewModel {
                         var y = ((measurement.value) - (analyte.calibrationParameters.correlationEquationParameters?.constant)!) / (analyte.calibrationParameters.correlationEquationParameters?.slope)!
                         
                         y = pow(10, y)
-                        
                         // This is for 1 .. 2. ..  . .....
                      //   let entry = ChartDataEntry(x: Double(measurement.time)! - referenceTime, y: y)
                         let entry = ChartDataEntry(x: Double(measurement.time)!, y: y)

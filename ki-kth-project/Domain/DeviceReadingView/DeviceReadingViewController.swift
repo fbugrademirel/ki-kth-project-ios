@@ -14,6 +14,7 @@ final class DeviceReadingViewController: UIViewController {
     var refreshController = UIRefreshControl()
     
     @IBOutlet weak var deviceListTableView: UITableView!
+    @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var chartsStackView: UIStackView!
     @IBOutlet weak var calibratedDataGraphsScrollView: UIScrollView!
     @IBOutlet weak var informationLabel: UILabel!
@@ -282,93 +283,164 @@ final class DeviceReadingViewController: UIViewController {
         }
     }
     
-    private func updateChartUI(with entries: [LineChartData]) {
+    private func updateChartUI(with data: [LineChartData]) {
         
-        entries.forEach { lineChartData in
-            
-            let lineChartView = LineChartView()
-            lineChartView.alpha = 0
-            lineChartView.translatesAutoresizingMaskIntoConstraints = false
-            lineChartView.backgroundColor = .white
-            lineChartView.rightAxis.enabled = false
-            lineChartView.borderLineWidth = 1
-            lineChartView.legend.font = UIFont.appFont(placement: .boldText)
-            
-            let yAxis = lineChartView.leftAxis
-            yAxis.labelFont = UIFont.appFont(placement: .boldText)
-            yAxis.setLabelCount(6, force: false)
-            yAxis.labelTextColor = .darkGray
-            yAxis.axisLineColor = .darkGray
-            yAxis.labelPosition = .outsideChart
-            yAxis.drawZeroLineEnabled = true
-            yAxis.axisMinimum = 0
-            yAxis.axisMaximum = lineChartData.yMax * 1.5
-            yAxis.drawGridLinesEnabled = false
-            
-            lineChartView.xAxis.labelPosition = .bottom
-            lineChartView.xAxis.axisLineColor = .darkGray
-            lineChartView.xAxis.labelFont = UIFont.appFont(placement: .boldText)
-            lineChartView.xAxis.setLabelCount(3, force: true)
-            lineChartView.xAxis.labelTextColor = .darkGray
-            lineChartView.xAxis.granularityEnabled = true
-            lineChartView.xAxis.spaceMax = 200
-            lineChartView.xAxis.avoidFirstLastClippingEnabled = true
-
-            lineChartView.xAxis.valueFormatter = DateValueFormatter()
-            
-            lineChartView.data = lineChartData
-            lineChartView.fitScreen()
-            lineChartView.animate(xAxisDuration: 1)
-            lineChartView.delegate = self
-            
-            chartsStackView.arrangedSubviews.forEach { arrangedSubViews in
-                arrangedSubViews.removeFromSuperview()
+        /// This array will contain the data such as MN#1-Sodium that is already in the ScrollView
+        let existingFilteredData = data.filter { lineChartData in
+           return chartsStackView.arrangedSubviews.contains { view in
+                let lineChartView = view as! LineChartView
+                return lineChartView.lineData?.dataSets[0].label ==  lineChartData.dataSets[0].label
             }
+        }
+
+        /// This array will contain the data that is new and be added
+        let nonExistingFilteredData = data.filter { lineChartData in
+           return !chartsStackView.arrangedSubviews.contains { view in
+                let lineChartView = view as! LineChartView
+                return lineChartView.lineData?.dataSets[0].label ==  lineChartData.dataSets[0].label
+            }
+        }
+
+        /// Check the arranged subviews and if they do not contain an existing data type, remove it from the superview
+        chartsStackView.arrangedSubviews.forEach { view in
+            let lineChartView = view as! LineChartView
+            let doesContain = existingFilteredData.contains { lineChartData in
+                return lineChartView.lineData?.dataSets[0].label == lineChartData.dataSets[0].label
+            }
+
+            if !doesContain {
+                lineChartView.removeFromSuperview()
+            }
+        }
+        
+        /// Replace existing data
+        existingFilteredData.forEach { data in
+            chartsStackView.arrangedSubviews.forEach { view in
+                let lineChartView = view as! LineChartView
+                if lineChartView.lineData?.dataSets[0].label == data.dataSets[0].label {
+                    lineChartView.data = data
+                    lineChartView.leftAxis.resetCustomAxisMax()
+                    lineChartView.leftAxis.axisMinimum = 0
+                    lineChartView.leftAxis.resetCustomAxisMax()
+                    lineChartView.leftAxis.axisMaximum = data.yMax * 1.2
+                    lineChartView.notifyDataSetChanged()
+                    lineChartView.fitScreen()
+                    lineChartView.animate(xAxisDuration: 0.5)
+                    lineChartView.delegate = self
+                }
+            }
+        }
+        
+        /// Add non Existing new data to the scroll-view
+        nonExistingFilteredData.forEach { lineChartData in
+            var lineChartView = LineChartView()
+            lineChartView =  configureLineChartView(view: lineChartView, for: lineChartData)
+
+            let offset = self.scrollView.contentOffset
+            
+//            self.chartsStackView.arrangedSubviews.forEach { arrangedSubViews in
+//                arrangedSubViews.removeFromSuperview()
+//            }
+            
+            
             
             DispatchQueue.main.async {
+                var index = 0
+                if !self.chartsStackView.arrangedSubviews.isEmpty {
+                    index = self.chartsStackView.arrangedSubviews.count;
+                    for (i, each) in self.chartsStackView.arrangedSubviews.enumerated() {
+                        let view = each as! LineChartView
+                        if let labelOfView = view.lineData?.dataSets[0].label,
+                           let labelOfData = lineChartData.dataSets[0].label {
+                            if labelOfView > labelOfData {
+                                index = i
+                                break
+                            }
+                        }
+                    }
+                }
                 
-                self.chartsStackView.addArrangedSubview(lineChartView)
+                self.chartsStackView.insertArrangedSubview(lineChartView, at: index)
                 lineChartView.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 0.5).isActive = true
                 lineChartView.heightAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 0.5).isActive = true
-                UIView.animate(withDuration: 1, delay: 0, options: .curveEaseIn) {
-                    lineChartView.alpha = 1
-                } 
+                                
+                self.scrollView.setContentOffset(offset, animated: false)
             }
         }
     }
     
-    private func setView(with: LineChartData) {
+    private func configureLineChartView(view: LineChartView, for lineChartData: LineChartData) -> LineChartView {
         
-        let lineChartView = LineChartView()
-        
+        let lineChartView = view
+        lineChartView.alpha = 1
         lineChartView.translatesAutoresizingMaskIntoConstraints = false
         lineChartView.backgroundColor = .white
         lineChartView.rightAxis.enabled = false
         lineChartView.borderLineWidth = 1
+        lineChartView.legend.font = UIFont.appFont(placement: .boldText)
         
         let yAxis = lineChartView.leftAxis
-        yAxis.labelFont = .boldSystemFont(ofSize: 12)
+        yAxis.labelFont = UIFont.appFont(placement: .boldText)
         yAxis.setLabelCount(6, force: false)
         yAxis.labelTextColor = .darkGray
         yAxis.axisLineColor = .darkGray
         yAxis.labelPosition = .outsideChart
-
+        yAxis.drawZeroLineEnabled = true
+        yAxis.axisMinimum = 0
+        yAxis.axisMaximum = lineChartData.yMax * 1.2
+        yAxis.drawGridLinesEnabled = false
+        
         lineChartView.xAxis.labelPosition = .bottom
         lineChartView.xAxis.axisLineColor = .darkGray
-        lineChartView.xAxis.labelFont = .boldSystemFont(ofSize: 12)
-        lineChartView.xAxis.setLabelCount(6, force: false)
-        lineChartView.xAxis.labelTextColor = .black
+        lineChartView.xAxis.labelFont = UIFont.appFont(placement: .boldText)
+        lineChartView.xAxis.setLabelCount(3, force: true)
+        lineChartView.xAxis.labelTextColor = .darkGray
+        lineChartView.xAxis.granularityEnabled = true
+        lineChartView.xAxis.spaceMax = 100
+        lineChartView.xAxis.avoidFirstLastClippingEnabled = true
+
+        lineChartView.xAxis.valueFormatter = DateValueFormatter()
+        
+        lineChartView.data = lineChartData
+        lineChartView.fitScreen()
+        lineChartView.animate(xAxisDuration: 0.5)
+        lineChartView.delegate = self
+        
+        return lineChartView
     }
+    
+//    private func setView(with: LineChartData) {
+//
+//        let lineChartView = LineChartView()
+//
+//        lineChartView.translatesAutoresizingMaskIntoConstraints = false
+//        lineChartView.backgroundColor = .white
+//        lineChartView.rightAxis.enabled = false
+//        lineChartView.borderLineWidth = 1
+//
+//        let yAxis = lineChartView.leftAxis
+//        yAxis.labelFont = .boldSystemFont(ofSize: 12)
+//        yAxis.setLabelCount(6, force: false)
+//        yAxis.labelTextColor = .darkGray
+//        yAxis.axisLineColor = .darkGray
+//        yAxis.labelPosition = .outsideChart
+//
+//        lineChartView.xAxis.labelPosition = .bottom
+//        lineChartView.xAxis.axisLineColor = .darkGray
+//        lineChartView.xAxis.labelFont = .boldSystemFont(ofSize: 12)
+//        lineChartView.xAxis.setLabelCount(6, force: false)
+//        lineChartView.xAxis.labelTextColor = .black
+//    }
     
     private func resetAllTablesAndChartData() {
         
         viewModel.yValuesForMain = []
         informationLabel.text = ""
         valueOnTheGraphLabel.text = ""
-        chartsStackView.arrangedSubviews.forEach { view in
-            chartsStackView.removeArrangedSubview(view)
-            view.removeFromSuperview()
-        }
+//        chartsStackView.arrangedSubviews.forEach { view in
+//            chartsStackView.removeArrangedSubview(view)
+//            view.removeFromSuperview()
+//        }
     }
     
     private func showAlert(path: IndexPath) {
@@ -404,6 +476,8 @@ final class DeviceReadingViewController: UIViewController {
     }
 
 }
+
+// MARK: - ScrollViewDelegate
 
 
 

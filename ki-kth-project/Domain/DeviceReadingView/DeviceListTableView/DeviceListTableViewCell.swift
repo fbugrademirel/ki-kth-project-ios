@@ -96,28 +96,44 @@ final class DeviceListTableViewCell: UITableViewCell {
     
     private func setAnalyteInfo(analytes: [MicroNeedle]) {
         
-        calibrationInfoStackView.arrangedSubviews.forEach { view in
-            calibrationInfoStackView.removeArrangedSubview(view)
+        var sorted = analytes.sorted { mn1, mn2 in
+            mn2.description < mn1.description
+        }.sorted { mn1, mn2 in
+            mn1.calibrationParam.isCalibrated
+        }.sorted { mn1, mn2 in
+            mn1.calibrationParam.calibrationTime > mn2.calibrationParam.calibrationTime
+        }
+        
+        if sorted.count > 4 {
+            sorted.removeSubrange(4...(sorted.count - 1))
+        }
+        
+        self.calibrationInfoStackView.arrangedSubviews.forEach { view in
+            self.calibrationInfoStackView.removeArrangedSubview(view)
             view.removeFromSuperview()
         }
         
-        var timeForAnimation: Double = 1;
-        analytes.forEach { analyte in
-            let label = UILabel()
-            label.alpha = 0
-            label.font = UIFont.appFont(placement: .text)
-            label.text = "\(analyte.description) - \(analyte.associatedAnalyte)"
-            label.translatesAutoresizingMaskIntoConstraints = false
-            if analyte.calibrationParam.isCalibrated {
-                label.textColor = .systemGreen
-            } else {
-                label.textColor = .systemRed
+        DispatchQueue.main.async {
+            
+            var timeForAnimation: Double = 1;
+            
+            sorted.forEach { analyte in
+                let label = UILabel()
+                label.alpha = 0
+                label.font = UIFont.appFont(placement: .text)
+                label.text = "\(analyte.description) - \(analyte.associatedAnalyte)"
+                label.translatesAutoresizingMaskIntoConstraints = false
+                if analyte.calibrationParam.isCalibrated {
+                    label.textColor = .systemGreen
+                } else {
+                    label.textColor = .systemRed
+                }
+                self.calibrationInfoStackView.addArrangedSubview(label)
+                UIView.animate(withDuration: 0.2, delay: timeForAnimation * 0.05, animations: {
+                    label.alpha = 1
+                })
+                timeForAnimation += 2
             }
-            self.calibrationInfoStackView.addArrangedSubview(label)
-            UIView.animate(withDuration: 0.2, delay: timeForAnimation * 0.05, animations: {
-                label.alpha = 1
-            })
-            timeForAnimation += 2
         }
     }
     

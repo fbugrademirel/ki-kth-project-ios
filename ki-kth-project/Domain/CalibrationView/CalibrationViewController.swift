@@ -330,9 +330,11 @@ final class CalibrationViewController: UIViewController {
             mainChartView.animate(xAxisDuration: 2)
         case .calibrationChart:
             calCurveGraphView.data = data
+            calCurveGraphView.fitScreen()
             calCurveGraphView.animate(xAxisDuration: 0.1)
         case .linearRegressionChart:
             linearCalGraphView.data = data
+            calCurveGraphView.fitScreen()
             linearCalGraphView.animate(xAxisDuration: 0.1)
         }
     }
@@ -428,9 +430,9 @@ final class CalibrationViewController: UIViewController {
         potentialReadingLabel.font = UIFont.appFont(placement: .title)
         potentialReadingLabel.textColor = AppColor.primary
 
-        setView(for: mainChartView)
-        setView(for: calCurveGraphView)
-        setView(for: linearCalGraphView)
+        setView(for: mainChartView, viewType: .mainChartForRawData)
+        setView(for: calCurveGraphView, viewType: .calibrationChart)
+        setView(for: linearCalGraphView, viewType: .linearRegressionChart)
     
         mainChartView.delegate = self
         
@@ -459,7 +461,7 @@ final class CalibrationViewController: UIViewController {
         analyteListTableView.register(UINib(nibName: AnalyteListTableViewCell.nibName, bundle: nil), forCellReuseIdentifier: AnalyteListTableViewCell.nibName)
     }
     
-    private func setView(for lineChartView: LineChartView) {
+    private func setView(for lineChartView: LineChartView, viewType: ChartViews) {
         lineChartView.translatesAutoresizingMaskIntoConstraints = false
         lineChartView.backgroundColor = .white
         lineChartView.rightAxis.enabled = false
@@ -471,9 +473,11 @@ final class CalibrationViewController: UIViewController {
         yAxis.labelTextColor = .darkGray
         yAxis.axisLineColor = .darkGray
         yAxis.labelPosition = .outsideChart
-        yAxis.axisMinimum = 0
+        //yAxis.axisMinimum = 0
         
-        lineChartView.xAxis.valueFormatter = DateValueFormatter()
+        if viewType == .mainChartForRawData {
+            lineChartView.xAxis.valueFormatter = DateValueFormatter()
+        }
         lineChartView.xAxis.labelPosition = .bottom
         lineChartView.xAxis.axisLineColor = .darkGray
         lineChartView.xAxis.labelFont = .boldSystemFont(ofSize: 12)
@@ -481,7 +485,6 @@ final class CalibrationViewController: UIViewController {
         lineChartView.xAxis.labelTextColor = .black
         lineChartView.xAxis.labelTextColor = .darkGray
         lineChartView.xAxis.granularityEnabled = true
-        lineChartView.xAxis.spaceMax = 200
         lineChartView.xAxis.avoidFirstLastClippingEnabled = true
     }
     
@@ -587,7 +590,7 @@ extension CalibrationViewController: UITextFieldDelegate {
 extension CalibrationViewController: ChartViewDelegate {
     
     func chartValueSelected(_ chartView: ChartViewBase, entry: ChartDataEntry, highlight: Highlight) {
-        potentialReadingLabel.text = "\(String(entry.y)) mV"
+        potentialReadingLabel.text = "\(String(format:"%.1f", entry.y)) mV"
     }
     
 }
