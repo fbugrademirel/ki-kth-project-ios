@@ -228,10 +228,24 @@ final class DeviceReadingViewModel {
                 set1.mode = .stepped
                 set1.drawCirclesEnabled = true
                 set1.lineWidth = 2
-                set1.setColor(UIColor(red: CGFloat.random(in: 0...1),
-                                      green: CGFloat.random(in: 0...1),
-                                      blue: CGFloat.random(in: 0...1),
-                                      alpha: 1))
+                
+                let desc = chartData.analyte
+                
+                if desc.contains("sodium") {
+                    set1.setColor(.systemGreen)
+                } else if desc.contains("potassium") {
+                    set1.setColor(.systemBlue)
+                } else if desc.contains("pH") {
+                    set1.setColor(.systemTeal)
+                } else if desc.contains("chloride") {
+                    set1.setColor(.systemPurple)
+                } else {
+                    set1.setColor(UIColor(red: CGFloat.random(in: 0...1),
+                                          green: CGFloat.random(in: 0...1),
+                                          blue: CGFloat.random(in: 0...1),
+                                          alpha: 1))
+                }
+
                 set1.setCircleColor(.systemBlue)
                 set1.drawValuesEnabled = true
                 set1.drawCirclesEnabled = false

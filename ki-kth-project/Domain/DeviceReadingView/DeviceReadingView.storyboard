@@ -49,8 +49,14 @@
                                 <color key="textColor" systemColor="systemRedColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jBS-v9-fSN" userLabel="DateofMeasurement">
+                                <rect key="frame" x="970.5" y="50" width="41.5" height="20.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" systemColor="systemRedColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4we-wj-4nD">
-                                <rect key="frame" x="689.5" y="73.5" width="322.5" height="20.5"/>
+                                <rect key="frame" x="970.5" y="73.5" width="41.5" height="20.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" systemColor="systemRedColor"/>
                                 <nil key="highlightedColor"/>
@@ -120,8 +126,8 @@
                         <constraints>
                             <constraint firstItem="HK4-9x-Cf0" firstAttribute="centerX" secondItem="vDu-zF-Fre" secondAttribute="centerX" placeholder="YES" id="1PO-oq-DFQ"/>
                             <constraint firstItem="4we-wj-4nD" firstAttribute="bottom" secondItem="wmu-I6-sWx" secondAttribute="top" constant="-6" id="87Z-BR-Hc7"/>
-                            <constraint firstItem="4we-wj-4nD" firstAttribute="width" secondItem="wmu-I6-sWx" secondAttribute="width" multiplier="0.5" id="8sX-CE-qsn"/>
                             <constraint firstItem="wmu-I6-sWx" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" constant="100" id="BfE-0p-bbK"/>
+                            <constraint firstItem="jBS-v9-fSN" firstAttribute="bottom" secondItem="4we-wj-4nD" secondAttribute="top" constant="-3" id="BwL-s1-2Zy"/>
                             <constraint firstItem="en0-qB-4Qa" firstAttribute="centerX" secondItem="vDu-zF-Fre" secondAttribute="centerX" id="CwK-Ed-mLW"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="wmu-I6-sWx" secondAttribute="trailing" constant="12" id="D2S-yb-bek"/>
                             <constraint firstItem="HK4-9x-Cf0" firstAttribute="centerY" secondItem="vDu-zF-Fre" secondAttribute="centerY" placeholder="YES" id="D9A-ZW-bnn"/>
@@ -135,6 +141,7 @@
                             <constraint firstItem="ctG-xu-SYA" firstAttribute="width" secondItem="5EZ-qb-Rvc" secondAttribute="width" multiplier="0.33" id="YJT-E3-4PH"/>
                             <constraint firstItem="ctG-xu-SYA" firstAttribute="firstBaseline" secondItem="wmu-I6-sWx" secondAttribute="firstBaseline" constant="200" id="ZIB-rX-Xpn"/>
                             <constraint firstItem="wmu-I6-sWx" firstAttribute="top" secondItem="en0-qB-4Qa" secondAttribute="bottom" constant="6" id="aQv-2S-jy8"/>
+                            <constraint firstItem="jBS-v9-fSN" firstAttribute="trailing" secondItem="wmu-I6-sWx" secondAttribute="trailing" id="agc-aL-Yvw"/>
                             <constraint firstItem="8vc-5s-nU6" firstAttribute="bottom" secondItem="ctG-xu-SYA" secondAttribute="top" constant="-6" id="auT-gK-nVo"/>
                             <constraint firstItem="ctG-xu-SYA" firstAttribute="trailing" secondItem="wmu-I6-sWx" secondAttribute="leading" constant="-6" id="euB-9W-08V"/>
                             <constraint firstItem="nNa-5l-Ppq" firstAttribute="leading" secondItem="vDu-zF-Fre" secondAttribute="leading" id="gHK-I5-4As"/>
@@ -148,6 +155,7 @@
                         <outlet property="blockViewForCancelling" destination="nNa-5l-Ppq" id="wve-Xs-h42"/>
                         <outlet property="calibratedDataGraphsScrollView" destination="wmu-I6-sWx" id="bpe-ZF-qdw"/>
                         <outlet property="chartsStackView" destination="eiS-1E-G0G" id="YDZ-j7-dYq"/>
+                        <outlet property="dateOfMeasurementLAbel" destination="jBS-v9-fSN" id="qwm-tB-BXJ"/>
                         <outlet property="deviceListTableView" destination="ctG-xu-SYA" id="ZKR-wH-5x1"/>
                         <outlet property="deviceNameTextField" destination="H4G-9U-2VJ" id="1YL-nZ-DCm"/>
                         <outlet property="informationLabel" destination="en0-qB-4Qa" id="Vdg-rF-i6K"/>

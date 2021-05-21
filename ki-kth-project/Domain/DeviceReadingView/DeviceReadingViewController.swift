@@ -22,6 +22,7 @@ final class DeviceReadingViewController: UIViewController {
     @IBOutlet weak var personalIDTextField: IndicatorTextField!
     @IBOutlet weak var registerDeviceButton: ActivityIndicatorButton!
     @IBOutlet weak var valueOnTheGraphLabel: UILabel!
+    @IBOutlet weak var dateOfMeasurementLAbel: UILabel!
     @IBOutlet weak var blockViewForCancelling: UIView!
     @IBOutlet weak var registerItemsStackView: UIStackView!
     @IBOutlet weak var mnSelectNumberLabel: UILabel!
@@ -143,10 +144,14 @@ final class DeviceReadingViewController: UIViewController {
         deviceNameTextField.font = UIFont.appFont(placement: .text)
         deviceNameTextField.delegate = self
         
-        valueOnTheGraphLabel.font = UIFont.appFont(placement: .title)
+        valueOnTheGraphLabel.font = UIFont.appFont(placement: .boldText)
         valueOnTheGraphLabel.text = ""
         valueOnTheGraphLabel.textColor = AppColor.primary
         
+        dateOfMeasurementLAbel.font = UIFont.appFont(placement: .boldText)
+        dateOfMeasurementLAbel.text = ""
+        dateOfMeasurementLAbel.textColor = AppColor.primary
+                
         informationLabel.font = UIFont.appFont(placement: .title)
         informationLabel.alpha = 0
         informationLabel.text = ""
@@ -437,6 +442,7 @@ final class DeviceReadingViewController: UIViewController {
         viewModel.yValuesForMain = []
         informationLabel.text = ""
         valueOnTheGraphLabel.text = ""
+        dateOfMeasurementLAbel.text = ""
 //        chartsStackView.arrangedSubviews.forEach { view in
 //            chartsStackView.removeArrangedSubview(view)
 //            view.removeFromSuperview()
@@ -552,6 +558,11 @@ extension DeviceReadingViewController: ChartViewDelegate {
     
     func chartValueSelected(_ chartView: ChartViewBase, entry: ChartDataEntry, highlight: Highlight) {
         valueOnTheGraphLabel.text = "Concentration: \(String(format:"%.2f" ,entry.y))"
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm:ss"
+        formatter.string(from: Date(timeIntervalSince1970: entry.x))
+        let str = formatter.string(from: Date(timeIntervalSince1970: entry.x))
+        dateOfMeasurementLAbel.text = "Time:\(str)"
     }
     
 }
