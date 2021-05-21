@@ -14,7 +14,7 @@ final class DeviceReadingViewModel {
         case reloadDeviceListTableView
         case deleteRows(path: IndexPath)
         case presentCalibrationView(info: ViewInfo)
-        case updateChartUI(with: [LineChartData])
+        case updateChartUI(with: [LineChartData], forRefresh: Bool)
         case startActivityIndicators(message: DeviceInformationLabel, alert: DevicePageAlertType)
         case stopActivityIndicators(message: DeviceInformationLabel, alert: DevicePageAlertType)
         case presentView(with: UIAlertController)
@@ -22,13 +22,19 @@ final class DeviceReadingViewModel {
         case copyAnalyteInfoToClipboard(serverID: String, description: String)
     }
     
+    weak var timer: Timer?
+
     var latestHandledAnalyteID: String?
     var latestHandledQRCoordinate: CGPoint?
     var isQRCodeCurrentlyPresented: Bool?
     
-    var yValuesForMain: [ChartData] = [] {
+    var yValuesForMain: ([ChartData], Bool) = ([], false) {
         didSet {
-            setDataForMainGraph()
+            if yValuesForMain.1 {
+                setDataForMainGraph(isForRefresh: true)
+            } else {
+                setDataForMainGraph()
+            }
         }
     }
     
@@ -62,9 +68,9 @@ final class DeviceReadingViewModel {
         sendActionToViewController?(.presentCalibrationView(info: info))
     }
     
-    func fetchLatestHandledAnalyte() {
+    func fetchLatestHandledAnalyte(isForRefresh: Bool) {
         if let id = latestHandledAnalyteID {
-            getAnalytesByIdRequested(id)
+            getAnalytesByIdRequested(id, isForAutoRefresh: isForRefresh)
         }
     }
     
@@ -103,10 +109,14 @@ final class DeviceReadingViewModel {
         }
     }
     
-    func getAnalytesByIdRequested(_ id: String) {
+    func getAnalytesByIdRequested(_ id: String, isForAutoRefresh: Bool = false) {
         
-        sendActionToViewController?(.startActivityIndicators(message: .fetching, alert: .neutralAppColor))
+        if !isForAutoRefresh {
+            sendActionToViewController?(.startActivityIndicators(message: .fetching, alert: .neutralAppColor))
+        }
+        
         latestHandledAnalyteID = id
+        
         DeviceDataAPI().getAllAnalytesForDevice(id) { [weak self] result in
             switch result {
             case .success(let data):
@@ -139,17 +149,25 @@ final class DeviceReadingViewModel {
                     }
                 }
                 
-                self?.setGraphs(with: filtered)
+                self?.setGraphs(with: filtered, isForAutoRefresh: isForAutoRefresh)
                 if filtered.isEmpty {
-                    self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithSuccessButEmpty, alert: .greenInfo))
+                    if !isForAutoRefresh {
+                        self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithSuccessButEmpty, alert: .greenInfo))
+                    }
                 } else if(!isThereACalibratedOne){
-                    self?.sendActionToViewController?(.stopActivityIndicators(message: .noAnalyteIsCalibratedYet, alert: .redWarning))
+                    if !isForAutoRefresh{
+                        self?.sendActionToViewController?(.stopActivityIndicators(message: .noAnalyteIsCalibratedYet, alert: .redWarning))
+                    }
                 } else {
-                    self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithSuccess, alert: .greenInfo))
+                    if !isForAutoRefresh {
+                        self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithSuccess, alert: .greenInfo))
+                    }
                 }
                 
             case .failure(let error):
-                self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithFailure, alert: .redWarning))
+                if !isForAutoRefresh {
+                    self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithFailure, alert: .redWarning))
+                }
                 print(error.localizedDescription)
             }
         }
@@ -162,7 +180,10 @@ final class DeviceReadingViewModel {
           DeviceDataAPI().deleteDeviceByID(id: id) { (result) in
               switch result {
               case .success(_):
-                self.yValuesForMain = []
+                self.yValuesForMain = ([], false)
+                if self.latestHandledAnalyteID == id {
+                    self.timer?.invalidate()
+                }
                 self.sendActionToViewController?(.deleteRows(path: path))
                 self.sendActionToViewController?(.stopActivityIndicators(message: .deletedWithSuccess, alert: .greenInfo))
                 let alert = UIAlertController(title: "Deleted from database", message: "Server message", preferredStyle: .alert)
@@ -212,16 +233,16 @@ final class DeviceReadingViewModel {
     }
 
 // MARK: - Operations
-    private func setDataForMainGraph() {
+    private func setDataForMainGraph(isForRefresh: Bool = false) {
         
         var dataArray: [LineChartData] = []
         
-        if yValuesForMain.isEmpty {
+        if yValuesForMain.0.isEmpty {
             //sendActionToViewController?(.clearChart(for: .mainChartForRawData))
             return
         }
         
-        yValuesForMain.sorted {$0.description < $1.description}.forEach { chartData in
+        yValuesForMain.0.sorted {$0.description < $1.description}.forEach { chartData in
         
             if !chartData.entries.isEmpty {
                 let set1 = LineChartDataSet(entries: chartData.entries, label: "\(chartData.description) - \(chartData.analyte) (Calibrated)")
@@ -262,10 +283,10 @@ final class DeviceReadingViewModel {
                 dataArray.append(data)
             }
         }
-        sendActionToViewController?(.updateChartUI(with: dataArray))
+        sendActionToViewController?(.updateChartUI(with: dataArray, forRefresh: isForRefresh))
     }
     
-    private func setGraphs(with data: [AnalyteDataFetch]) {
+    private func setGraphs(with data: [AnalyteDataFetch], isForAutoRefresh: Bool) {
         
         var yValues: [ChartData] = []
         
@@ -290,7 +311,7 @@ final class DeviceReadingViewModel {
                 yValues.append(ChartData(entries: chartPoints, description: analyte.description, analyte: analyte.associatedAnalyte))
             }
         }
-        yValuesForMain = yValues
+        yValuesForMain = (yValues, isForAutoRefresh)
     }
 }
 

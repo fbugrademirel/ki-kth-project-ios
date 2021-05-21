@@ -47,6 +47,8 @@ final class CalibrationViewController: UIViewController {
         }
         
         setUI()
+        setTimer()
+        
         if let id = viewModel.deviceID {
             viewModel.viewDidLoad(for: id)
         }
@@ -95,9 +97,9 @@ final class CalibrationViewController: UIViewController {
                 entries.append(ChartDataEntry(x: viewModel.concentrationTableViewCellModels[each.row].concLog, y: viewModel.concentrationTableViewCellModels[each.row].potential))
 
             }
-            viewModel.yValuesForCal2 = entries
+            viewModel.yValuesForLinearRegressionLine = entries
         } else {
-            viewModel.yValuesForCal2 = []
+            viewModel.yValuesForLinearRegressionLine = []
         }
     }
     
@@ -137,7 +139,7 @@ final class CalibrationViewController: UIViewController {
         let entries = viewModel.concentrationTableViewCellModels.map { (solution) -> ChartDataEntry in
             return ChartDataEntry(x: solution.concLog, y: solution.potential)
         }
-        viewModel.yValuesForCal1 = entries
+        viewModel.yValuesForCalibrationCurve = entries
     }
     
     @IBAction func calibrateButtonPressed(_ sender: Any) {
@@ -152,6 +154,14 @@ final class CalibrationViewController: UIViewController {
             }
         }
         dismissKeyboard()
+    }
+    
+    @objc func fireTimer() {
+        
+        guard let id = viewModel.latestHandledAnalyteId else {
+            return
+        }
+        viewModel.getAnalyteDataByIdRequested(id, isAutoRefresh: true)
     }
     
     
@@ -174,8 +184,8 @@ final class CalibrationViewController: UIViewController {
             copyToClipBoardAndShowInfo(serverID: serverID, desc: desc)
         case .clearChart(for: let chart):
             clearChart(for: chart)
-        case .updateChartUI(for: let chart, with: let data):
-            updateChart(of: chart, with: data)
+        case .updateChartUI(for: let chart, with: let data, isForAutoRefresh: let bool):
+            updateChart(of: chart, with: data, isForRefresh: bool)
         case .reloadAnayteListTableView:
             updateUIforAnalyteListTableView()
         case .reloadConcentrationListTableView:
@@ -188,6 +198,15 @@ final class CalibrationViewController: UIViewController {
     }
     
 // MARK: - Operations
+    
+    private func setTimer() {
+        viewModel.timer = Timer.scheduledTimer(timeInterval: 1,
+                                     target: self,
+                                     selector: #selector(fireTimer),
+                                     userInfo: nil,
+                                     repeats: true)
+        viewModel.timer?.tolerance = 0.5
+    }
     
     private func copyToClipBoardAndShowInfo(serverID: String, desc: String) {
         AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
@@ -278,9 +297,9 @@ final class CalibrationViewController: UIViewController {
         viewModel.latestHandledAnalyteId = nil
         
         viewModel.concentrationTableViewCellModels = []
-        viewModel.yValuesForMain = []
-        viewModel.yValuesForCal1 = []
-        viewModel.yValuesForCal2 = []
+        viewModel.yValuesForMainRawDataLine = ([], false)
+        viewModel.yValuesForCalibrationCurve = []
+        viewModel.yValuesForLinearRegressionLine = []
     }
     
 // MARK: - UI
@@ -321,13 +340,15 @@ final class CalibrationViewController: UIViewController {
         analyteListTableView.reloadData()
     }
     
-    private func updateChart(of chart: ChartViews, with data: LineChartData) {
+    private func updateChart(of chart: ChartViews, with data: LineChartData, isForRefresh: Bool = false) {
         
         switch chart {
         case .mainChartForRawData:
             mainChartView.data = data
             mainChartView.fitScreen()
-            mainChartView.animate(xAxisDuration: 2)
+            if !isForRefresh {
+                mainChartView.animate(xAxisDuration: 2)
+            }
         case .calibrationChart:
             calCurveGraphView.data = data
             calCurveGraphView.fitScreen()
@@ -612,7 +633,10 @@ extension CalibrationViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if tableView.isEqual(analyteListTableView) {
             resetAllTablesAndChartData()
-            viewModel.getAnalytesByIdRequested(viewModel.analyteListTableViewCellModels[indexPath.row].serverID)
+            viewModel.getAnalyteDataByIdRequested(viewModel.analyteListTableViewCellModels[indexPath.row].serverID, isAutoRefresh: false)
+            if viewModel.timer == nil {
+                setTimer()
+            }
         }
     }
         

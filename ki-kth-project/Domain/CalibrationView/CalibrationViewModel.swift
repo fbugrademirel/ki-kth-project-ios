@@ -18,7 +18,7 @@ final class CalibrationViewModel {
         case clearChart(for: ChartViews)
         case reloadAnayteListTableView
         case reloadConcentrationListTableView
-        case updateChartUI(for: ChartViews, with: LineChartData)
+        case updateChartUI(for: ChartViews, with: LineChartData, isForAutoRefresh: Bool)
         case startActivityIndicators(message: InformationLabel, alertType: AnalytePageAlertType)
         case stopActivityIndicators(message: InformationLabel, alertType: AnalytePageAlertType)
         case presentQRCode(descriptionAndServerID: String, point: CGPoint)
@@ -34,6 +34,9 @@ final class CalibrationViewModel {
             }
         }
     }
+    
+    weak var timer: Timer?
+
     var pickerComponents: [String] = []
     
     var pickerData: [[String]] = [[],
@@ -63,19 +66,25 @@ final class CalibrationViewModel {
         }
     }
     
-    var yValuesForMain: [ChartDataEntry] = [] {
+    var yValuesForMainRawDataLine: ([ChartDataEntry], Bool) = ([], false) {
         didSet {
-            setDataForMainGraph()
+            if yValuesForMainRawDataLine.1{
+                setDataForMainGraph(isForAutoRefresh: true)
+            } else {
+                setDataForMainGraph()
+            }
         }
     }
-    var yValuesForCal1: [ChartDataEntry] = [] {
+    
+    var yValuesForCalibrationCurve: [ChartDataEntry] = [] {
         didSet {
-            setDataForCal1()
+            setDataForCalibrationCurve()
         }
     }
-    var yValuesForCal2: [ChartDataEntry] = [] {
+    
+    var yValuesForLinearRegressionLine: [ChartDataEntry] = [] {
         didSet {
-            setDataForCal2()
+            setDataForLinearRegressionGraph()
         }
     }
     
@@ -261,9 +270,11 @@ final class CalibrationViewModel {
         }
     }
     
-    func getAnalytesByIdRequested(_ id: String){
+    func getAnalyteDataByIdRequested(_ id: String, isAutoRefresh: Bool = false) {
         
-        sendActionToViewController?(.startActivityIndicators(message: .fetching, alertType: .neutralAppColor))
+        if !isAutoRefresh {
+            sendActionToViewController?(.startActivityIndicators(message: .fetching, alertType: .neutralAppColor))
+        }
 
         AnalyteDataAPI().getAnalyteData(id) { [weak self] result  in
             switch result {
@@ -278,7 +289,9 @@ final class CalibrationViewModel {
                                             updatedAt: data.updatedAt)
                 
                 guard let _ = data.measurements.first?.time else {
-                    self?.sendActionToViewController?(.stopActivityIndicators(message: .invalidData, alertType: .redWarning))
+                    if !isAutoRefresh {
+                        self?.sendActionToViewController?(.stopActivityIndicators(message: .invalidData, alertType: .redWarning))
+                    }
                     return
                 }
                 
@@ -293,11 +306,15 @@ final class CalibrationViewModel {
                     return entry
                 }
                 self?.latestHandledAnalyteId = data._id
-                self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithSuccess, alertType: .greenInfo))
-
-                self?.yValuesForMain = chartPoints
+                if !isAutoRefresh {
+                    self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithSuccess, alertType: .greenInfo))
+                }
+                
+                self?.yValuesForMainRawDataLine = (chartPoints, isAutoRefresh)
             case .failure(let error):
-                self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithFailure,  alertType: .redWarning))
+                if !isAutoRefresh {
+                    self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithFailure,  alertType: .redWarning))
+                }
                 print(error.localizedDescription)
             }
         }
@@ -308,6 +325,10 @@ final class CalibrationViewModel {
           AnalyteDataAPI().deleteAnalyte(id) { (result) in
               switch result {
               case .success(let data):
+                
+                if self.latestHandledAnalyteId == id {
+                    self.timer?.invalidate()
+                }
                 
                 //setpicker
                 let decided = self.pickerComponents.filter {
@@ -333,50 +354,49 @@ final class CalibrationViewModel {
           }
     }
     
-    private func setDataForMainGraph() {
+    private func setDataForMainGraph(isForAutoRefresh: Bool = false) {
         
-        if yValuesForMain.isEmpty {
+        let yValuesForMainRawDataLine = yValuesForMainRawDataLine.0
+        
+        if yValuesForMainRawDataLine.isEmpty {
             sendActionToViewController?(.clearChart(for: .mainChartForRawData))
             return
         }
         
-        let set1 = LineChartDataSet(entries: yValuesForMain, label: "Raw Data of from Server ")
-        set1.mode = .cubicBezier
-        set1.drawCirclesEnabled = true
-        set1.lineWidth = 0
-        set1.setColor(.systemBlue)
-        set1.setCircleColor(.systemBlue)
-
-        //set1.fill = Fill(color: .white)
-        //set1.fillAlpha = 0.8
-        //set1.drawFilledEnabled = true
+        let set = LineChartDataSet(entries: yValuesForMainRawDataLine, label: "Raw Data of from Server ")
+        set.mode = .cubicBezier
+        set.drawCirclesEnabled = true
+        set.lineWidth = 0
+        set.setColor(.systemBlue)
+        set.setCircleColor(.systemBlue)
+        set.drawHorizontalHighlightIndicatorEnabled = false
+        set.highlightColor = .systemRed
         
-        set1.drawHorizontalHighlightIndicatorEnabled = false
-        set1.highlightColor = .systemRed
-        
-        let data = LineChartData(dataSet: set1)
+        let data = LineChartData(dataSet: set)
         data.setDrawValues(false)
         
-        sendActionToViewController?(.updateChartUI(for: .mainChartForRawData, with: data))
+        sendActionToViewController?(.updateChartUI(for: .mainChartForRawData,
+                                                   with: data,
+                                                   isForAutoRefresh: isForAutoRefresh))
     }
     
-    private func setDataForCal1() {
+    private func setDataForCalibrationCurve() {
         
-        if yValuesForCal1.isEmpty {
+        if yValuesForCalibrationCurve.isEmpty {
             sendActionToViewController?(.clearChart(for: .calibrationChart))
             return
         }
         
-        let sorted = yValuesForCal1.sorted {
+        let sorted = yValuesForCalibrationCurve.sorted {
             $0.x <= $1.x
         }
         
-        if sorted != yValuesForCal1 {
+        if sorted != yValuesForCalibrationCurve {
      //       informationLAbel.text = "Invalid for calibration curve graph!"
             return
         }
         
-        let set1 = LineChartDataSet(entries: yValuesForCal1, label: "Calibration Curve")
+        let set1 = LineChartDataSet(entries: yValuesForCalibrationCurve, label: "Calibration Curve")
         set1.mode = .cubicBezier
         set1.drawCirclesEnabled = true
         set1.lineWidth = 5
@@ -388,27 +408,27 @@ final class CalibrationViewModel {
         
         let data = LineChartData(dataSet: set1)
         data.setDrawValues(true)
-        sendActionToViewController?(.updateChartUI(for: .calibrationChart, with: data))
+        sendActionToViewController?(.updateChartUI(for: .calibrationChart, with: data, isForAutoRefresh: false))
     }
     
-    private func setDataForCal2(){
+    private func setDataForLinearRegressionGraph(){
         
-        if yValuesForCal2.isEmpty {
+        if yValuesForLinearRegressionLine.isEmpty {
             sendActionToViewController?(.clearChart(for: .linearRegressionChart))
             return
         }
         
-        let sorted = yValuesForCal2.sorted {
+        let sorted = yValuesForLinearRegressionLine.sorted {
             $0.x <= $1.x
         }
         
-        if sorted != yValuesForCal2 {
+        if sorted != yValuesForLinearRegressionLine {
    //         informationLAbel.text = "Invalid for calibration curve graph!"
             return
         }
         
         
-        let set1 = LineChartDataSet(entries: yValuesForCal2, label: "Linear Calibration Graph Points")
+        let set1 = LineChartDataSet(entries: yValuesForLinearRegressionLine, label: "Linear Calibration Graph Points")
         set1.mode = .cubicBezier
         set1.drawCirclesEnabled = true
         set1.lineWidth = 0
@@ -425,23 +445,23 @@ final class CalibrationViewModel {
         // Regression
         var totalX: Double = 0
         var totalY: Double = 0
-        yValuesForCal2.forEach { entry in
+        yValuesForLinearRegressionLine.forEach { entry in
             totalX += entry.x
             totalY += entry.y
         }
         
-        let meanX = totalX / Double(yValuesForCal2.count)
-        let meanY = totalY / Double(yValuesForCal2.count)
+        let meanX = totalX / Double(yValuesForLinearRegressionLine.count)
+        let meanY = totalY / Double(yValuesForLinearRegressionLine.count)
         
         var Sxx: Double = 0
         var Syy: Double = 0
-        yValuesForCal2.forEach { entry in
+        yValuesForLinearRegressionLine.forEach { entry in
             Sxx += pow((entry.x - meanX), 2)
             Syy += pow((entry.y - meanY), 2)
         }
         
         var Sxy: Double = 0
-        yValuesForCal2.forEach { entry in
+        yValuesForLinearRegressionLine.forEach { entry in
             Sxy += ((entry.x - meanX)*(entry.y - meanY))
         }
         
@@ -449,7 +469,7 @@ final class CalibrationViewModel {
         let A = meanY - (B * meanX)
         
         // y = A + Bx ADD SLOPE ON THE INTERCEPT
-        yValuesForCal2.forEach { entry in
+        yValuesForLinearRegressionLine.forEach { entry in
             lrgValuesArray.append(ChartDataEntry(x: entry.x, y: (A + (B*entry.x))))
         }
         
@@ -476,49 +496,8 @@ final class CalibrationViewModel {
         let sets = [set1, set2]
         let data = LineChartData(dataSets: sets)
         data.setDrawValues(false)
-        sendActionToViewController?(.updateChartUI(for: .linearRegressionChart, with: data))
+        sendActionToViewController?(.updateChartUI(for: .linearRegressionChart, with: data, isForAutoRefresh: false))
     }
-    
-    /// This method will not be used in current implementation
-    /*
-     func fetchAllAnaytesRequired() {
-
-         sendActionToViewController?(.startActivityIndicators(message: .fetching))
-         AnalyteDataAPI().getAllAnalytes { [weak self] result in
-             switch result {
-
-             case .success(let data):
-                 //TODO: Adjust sorting according to time
-                 let sorted = data.sorted {
-                     $0.updatedAt > $1.updatedAt
-                 }
-
-                 let fetched = sorted.map { (data) -> AnalyteTableViewCellModel in
-                     let analyte = Analyte(description: data.description,
-                                           identifier: data.uniqueIdentifier,
-                                           serverID: data._id,
-                                           calibrationParam: CalibrationParam(isCalibrated: data.calibrationParameters.isCalibrated, slope: data.calibrationParameters.slope ?? 0, constant: data.calibrationParameters.constant ?? 0))
-
-                     let viewModel = AnalyteTableViewCellModel(description: analyte.description,
-                                                           identifier: analyte.identifier,
-                                                           serverID: analyte.serverID,
-                                                           isCalibrated: analyte.calibrationParam.isCalibrated)
-                     viewModel.sendActionToParentModel = { [weak self] action in
-                         self?.handleFromAnalyteTableView(action: action)
-                     }
-                     return viewModel
-                 }
-
-                 self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithSuccess))
-                 self?.analyteListTableViewCellModels = fetched
-
-             case .failure(let error):
-                 self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithFailure))
-                 print(error.localizedDescription)
-             }
-         }
-     }
-     */
 }
 
 // MARK: - MODELS

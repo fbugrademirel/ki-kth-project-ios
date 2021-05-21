@@ -12,7 +12,7 @@ import AVFoundation
 final class DeviceReadingViewController: UIViewController {
 
     var refreshController = UIRefreshControl()
-    
+            
     @IBOutlet weak var deviceListTableView: UITableView!
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var chartsStackView: UIStackView!
@@ -35,13 +35,14 @@ final class DeviceReadingViewController: UIViewController {
     // MARK: -Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         viewModel.sendActionToViewController = { [weak self] action in
             self?.handleReceivedFromViewModel(action: action)
         }
         if let name = UserDefaults.userName {
             title = "\(name)'s Devices"
         }
+        setTimer()
         setUI()
         viewModel.viewDidLoad()
     }
@@ -50,7 +51,7 @@ final class DeviceReadingViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         viewModel.reloadTableViewsRequired()
-        viewModel.fetchLatestHandledAnalyte()
+        viewModel.fetchLatestHandledAnalyte(isForRefresh: false)
     }
     
     // MARK: - Handle
@@ -66,8 +67,8 @@ final class DeviceReadingViewController: UIViewController {
             vc.viewModel.intendedNumberOfNeedles  = info.intendedNumberOfNeedles
             vc.title = "\(info.patientName)'s Analytes"
             navigationController?.pushViewController(vc, animated: true)
-        case .updateChartUI(with: let data):
-            updateChartUI(with: data)
+        case .updateChartUI(with: let data, forRefresh: let bool):
+            updateChartUI(with: data, isForRefresh: bool)
         case .startActivityIndicators(message: let message, alert: let alert):
             startActivityIndicators(with: message, with: alert)
         case .stopActivityIndicators(message: let message, alert: let alert):
@@ -100,6 +101,10 @@ final class DeviceReadingViewController: UIViewController {
         guard let intID = Int(id) else { return }
         
         viewModel.createDeviceRequired(name: name, personalID: intID, numberOfNeedles: Int(mnNumberStepper.value))
+    }
+    
+    @objc func fireTimer() {
+        viewModel.fetchLatestHandledAnalyte(isForRefresh: true)
     }
     
     @objc func refButPressed(_ sender: UIButton) {
@@ -288,7 +293,7 @@ final class DeviceReadingViewController: UIViewController {
         }
     }
     
-    private func updateChartUI(with data: [LineChartData]) {
+    private func updateChartUI(with data: [LineChartData], isForRefresh: Bool) {
         
         /// This array will contain the data such as MN#1-Sodium that is already in the ScrollView
         let existingFilteredData = data.filter { lineChartData in
@@ -330,7 +335,9 @@ final class DeviceReadingViewController: UIViewController {
                     lineChartView.leftAxis.axisMaximum = data.yMax * 1.2
                     lineChartView.notifyDataSetChanged()
                     lineChartView.fitScreen()
-                    lineChartView.animate(xAxisDuration: 0.5)
+                    if !isForRefresh {
+                        lineChartView.animate(xAxisDuration: 0.5)
+                    }
                     lineChartView.delegate = self
                 }
             }
@@ -339,15 +346,13 @@ final class DeviceReadingViewController: UIViewController {
         /// Add non Existing new data to the scroll-view
         nonExistingFilteredData.forEach { lineChartData in
             var lineChartView = LineChartView()
-            lineChartView =  configureLineChartView(view: lineChartView, for: lineChartData)
+            lineChartView =  configureLineChartView(view: lineChartView, for: lineChartData, isForRefresh: isForRefresh)
 
             let offset = self.scrollView.contentOffset
             
 //            self.chartsStackView.arrangedSubviews.forEach { arrangedSubViews in
 //                arrangedSubViews.removeFromSuperview()
 //            }
-            
-            
             
             DispatchQueue.main.async {
                 var index = 0
@@ -374,7 +379,7 @@ final class DeviceReadingViewController: UIViewController {
         }
     }
     
-    private func configureLineChartView(view: LineChartView, for lineChartData: LineChartData) -> LineChartView {
+    private func configureLineChartView(view: LineChartView, for lineChartData: LineChartData, isForRefresh: Bool) -> LineChartView {
         
         let lineChartView = view
         lineChartView.alpha = 1
@@ -408,9 +413,11 @@ final class DeviceReadingViewController: UIViewController {
         
         lineChartView.data = lineChartData
         lineChartView.fitScreen()
-        lineChartView.animate(xAxisDuration: 0.5)
+        if !isForRefresh {
+            lineChartView.animate(xAxisDuration: 0.5)
+
+        }
         lineChartView.delegate = self
-        
         return lineChartView
     }
     
@@ -439,7 +446,7 @@ final class DeviceReadingViewController: UIViewController {
     
     private func resetAllTablesAndChartData() {
         
-        viewModel.yValuesForMain = []
+        viewModel.yValuesForMain = ([], false)
         informationLabel.text = ""
         valueOnTheGraphLabel.text = ""
         dateOfMeasurementLAbel.text = ""
@@ -447,6 +454,15 @@ final class DeviceReadingViewController: UIViewController {
 //            chartsStackView.removeArrangedSubview(view)
 //            view.removeFromSuperview()
 //        }
+    }
+    
+    private func setTimer() {
+        viewModel.timer = Timer.scheduledTimer(timeInterval: 1,
+                                     target: self,
+                                     selector: #selector(fireTimer),
+                                     userInfo: nil,
+                                     repeats: true)
+        viewModel.timer?.tolerance = 0.5
     }
     
     private func showAlert(path: IndexPath) {
@@ -510,6 +526,9 @@ extension DeviceReadingViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         resetAllTablesAndChartData()
         viewModel.getAnalytesByIdRequested(viewModel.deviceListTableViewViewModels[indexPath.row].serverID)
+        if viewModel.timer == nil {
+            setTimer()
+        }
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
