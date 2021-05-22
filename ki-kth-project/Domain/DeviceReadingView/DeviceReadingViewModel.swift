@@ -192,6 +192,9 @@ final class DeviceReadingViewModel {
                 let alert = UIAlertController(title: "Deleted from database", message: "Server message", preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "I understand", style: .default, handler: nil))
                 self.sendActionToViewController?(.presentView(with: alert))
+                if self.deviceListTableViewViewModels.isEmpty {
+                    self.timer?.invalidate()
+                }
               case .failure(let error):
                 self.sendActionToViewController?(.stopActivityIndicators(message: .deletionFailed, alert: .redWarning))
                 print(error.localizedDescription)
@@ -248,7 +251,8 @@ final class DeviceReadingViewModel {
         yValuesForMain.0.sorted {$0.description < $1.description}.forEach { chartData in
         
             if !chartData.entries.isEmpty {
-                let set1 = LineChartDataSet(entries: chartData.entries, label: "\(chartData.description) - \(chartData.analyte) (Calibrated)")
+                let set1 = LineChartDataSet(entries: chartData.entries,
+                                            label: "\(chartData.description) - \(chartData.analyte) (Slope:\(String(format: "%.1f", chartData.constant)) Constant: \(String(format: "%.1f", chartData.slope))")
                 set1.mode = .stepped
                 set1.drawCirclesEnabled = true
                 set1.lineWidth = 2
@@ -311,7 +315,13 @@ final class DeviceReadingViewModel {
                         chartPoints.append(entry)
                     }
                 }
-                yValues.append(ChartData(entries: chartPoints, description: analyte.description, analyte: analyte.associatedAnalyte))
+                guard let slope = analyte.calibrationParameters.correlationEquationParameters?.slope,
+                let constant = analyte.calibrationParameters.correlationEquationParameters?.constant else { return }
+                yValues.append(ChartData(entries: chartPoints,
+                                         description: analyte.description,
+                                         analyte: analyte.associatedAnalyte,
+                                         slope: slope,
+                                         constant: constant))
             }
         }
         yValuesForMain = (yValues, isForAutoRefresh)
@@ -328,6 +338,8 @@ struct ChartData {
     let entries: [ChartDataEntry]
     let description: String
     let analyte: String
+    let slope: Double
+    let constant: Double
 }
 
 struct Device {

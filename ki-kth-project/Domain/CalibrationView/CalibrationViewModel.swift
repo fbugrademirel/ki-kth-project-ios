@@ -124,7 +124,6 @@ final class CalibrationViewModel {
                     return data.analyte
                 })
                 self.pickerData[1] = validAnalytes
-                print(validAnalytes)
             case .failure(let error):
                 Log.e(error.localizedDescription)
             }
@@ -176,7 +175,7 @@ final class CalibrationViewModel {
     
     func fetchAllAnalytesForDevice(id: String) {
         sendActionToViewController?(.startActivityIndicators(message: .fetching, alertType: .neutralAppColor))
-        DeviceDataAPI().getAllAnalytesForDevice(id) { [weak self] result in
+        DeviceDataAPI().getAllAnalytesForDeviceWithoutMeasurements(id) { [weak self] result in
             switch result {
 
             case .success(let data):
@@ -325,7 +324,7 @@ final class CalibrationViewModel {
     
     func deletionByIdRequested(id: String, path: IndexPath) {
         self.sendActionToViewController?(.startActivityIndicators(message: .deletingFromDatabase, alertType: .neutralAppColor))
-          AnalyteDataAPI().deleteAnalyte(id) { (result) in
+        AnalyteDataAPI().deleteAnalyte(id) { (result) in
               switch result {
               case .success(let data):
                 
@@ -350,6 +349,9 @@ final class CalibrationViewModel {
                 let alert = UIAlertController(title: "Deleted from database", message: "Server message", preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "I understand", style: .default, handler: nil))
                 self.sendActionToViewController?(.presentView(view: alert))
+                if self.analyteListTableViewCellModels.isEmpty {
+                    self.timer?.invalidate()
+                }
               case .failure(let error):
                 self.sendActionToViewController?(.stopActivityIndicators(message: .deletionFailed, alertType: .redWarning))
                 print(error.localizedDescription)
@@ -370,8 +372,8 @@ final class CalibrationViewModel {
         set.mode = .cubicBezier
         set.drawCirclesEnabled = true
         set.lineWidth = 0
-        set.setColor(.systemBlue)
         set.setCircleColor(.systemBlue)
+        set.setColor(.systemBlue)
         set.drawHorizontalHighlightIndicatorEnabled = false
         set.highlightColor = .systemRed
         

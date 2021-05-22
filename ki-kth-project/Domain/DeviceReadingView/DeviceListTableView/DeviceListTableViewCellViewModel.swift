@@ -49,7 +49,7 @@ final class DeviceListTableViewCellViewModel {
     
     func calibratedAnalytesForThisDeviceRequested() {
         
-        DeviceDataAPI().getAllAnalytesForDevice(serverID) { [weak self] result in
+        DeviceDataAPI().getAllAnalytesForDeviceWithoutMeasurements(serverID) { [weak self] result in
             switch result {
             case .success(let data):
                 let sorted = data.sorted {

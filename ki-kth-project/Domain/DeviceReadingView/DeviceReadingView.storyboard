@@ -62,20 +62,20 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="12" translatesAutoresizingMaskIntoConstraints="NO" id="8vc-5s-nU6" userLabel="RegisterItemsStackView">
-                                <rect key="frame" x="23" y="165.5" width="338" height="128.5"/>
+                                <rect key="frame" x="23" y="164" width="338" height="130"/>
                                 <subviews>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Name of device" textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="H4G-9U-2VJ" customClass="IndicatorTextField" customModule="ki_kth_project" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="0.0" width="338" height="18"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="338" height="19.5"/>
                                         <fontDescription key="fontDescription" name="SourceSansPro-Regular" family="Source Sans Pro" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" autocorrectionType="no"/>
                                     </textField>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Device unique ID" textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="Shr-P9-Q6l" customClass="IndicatorTextField" customModule="ki_kth_project" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="30" width="338" height="18.5"/>
+                                        <rect key="frame" x="0.0" y="31.5" width="338" height="18.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" autocorrectionType="no" textContentType="tel"/>
                                     </textField>
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="12" translatesAutoresizingMaskIntoConstraints="NO" id="Hhq-CK-HpK">
-                                        <rect key="frame" x="0.0" y="60.5" width="338" height="32"/>
+                                        <rect key="frame" x="0.0" y="62" width="338" height="32"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="749" text="Select # of MNs for this device" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HVW-Id-fWq">
                                                 <rect key="frame" x="0.0" y="0.0" width="178.5" height="32"/>
@@ -98,7 +98,7 @@
                                         </subviews>
                                     </stackView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7p5-29-d95" customClass="ActivityIndicatorButton" customModule="ki_kth_project" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="104.5" width="338" height="24"/>
+                                        <rect key="frame" x="0.0" y="106" width="338" height="24"/>
                                         <inset key="contentEdgeInsets" minX="6" minY="3" maxX="6" maxY="3"/>
                                         <state key="normal" title="Register">
                                             <color key="titleColor" name="primary"/>

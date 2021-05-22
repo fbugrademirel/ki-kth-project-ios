@@ -42,7 +42,6 @@ final class DeviceReadingViewController: UIViewController {
         if let name = UserDefaults.userName {
             title = "\(name)'s Devices"
         }
-        setTimer()
         setUI()
         viewModel.viewDidLoad()
     }
@@ -50,8 +49,13 @@ final class DeviceReadingViewController: UIViewController {
     // MARK: -TODO: Move expensive operations to the viewDidAppear if you need a smoother first login!
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        setTimer()
         viewModel.reloadTableViewsRequired()
         viewModel.fetchLatestHandledAnalyte(isForRefresh: false)
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        viewModel.timer?.invalidate()
     }
     
     // MARK: - Handle

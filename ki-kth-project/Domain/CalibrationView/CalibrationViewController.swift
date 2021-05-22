@@ -47,11 +47,17 @@ final class CalibrationViewController: UIViewController {
         }
         
         setUI()
-        setTimer()
-        
         if let id = viewModel.deviceID {
             viewModel.viewDidLoad(for: id)
         }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        setTimer()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        viewModel.timer?.invalidate()
     }
     
 // MARK: - IBAction

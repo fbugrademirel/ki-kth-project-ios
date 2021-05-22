@@ -26,7 +26,7 @@ struct AnalyteDataAPI {
     
     // MARK: - Operations
     
-    func calibrateAnalyte(slope: Double, constant: Double, id: String, completion: @escaping (Result<AnalyteDataFetch,Error>) -> Void ) {
+    func calibrateAnalyte(slope: Double, constant: Double, id: String, completion: @escaping (Result<AnalyteCalibrationFetch,Error>) -> Void ) {
     
         let url =  "\(prodUrl)/microneedle/\(id)"
         let addHeader = ["Content-Type": "application/json"]
@@ -42,7 +42,7 @@ struct AnalyteDataAPI {
             switch result {
             case .success(let data):
                 do {
-                    let analyteData = try JSONDecoder().decode(AnalyteDataFetch.self, from: data)
+                    let analyteData = try JSONDecoder().decode(AnalyteCalibrationFetch.self, from: data)
                     DispatchQueue.main.async {
                         completion(.success(analyteData))
                     }
@@ -225,6 +225,16 @@ struct AnalyteDataPost: Codable {
     let associatedAnalyte: String
 }
 
+struct AnalyteCalibrationFetch: Codable {
+    let calibrationParameters: CalibrationParameter
+    let _id: String
+    let description: String
+    let uniqueIdentifier: UUID
+    let associatedAnalyte: String
+    let createdAt: String
+    let updatedAt: String
+}
+
 struct AnalyteDataFetch: Codable {
     let calibrationParameters: CalibrationParameter
     let _id: String
@@ -232,6 +242,16 @@ struct AnalyteDataFetch: Codable {
     let uniqueIdentifier: UUID
     let associatedAnalyte: String
     let measurements: [Measurement]
+    let createdAt: String
+    let updatedAt: String
+}
+
+struct AnalyteDataFetchWithoutMeasurements: Codable {
+    let calibrationParameters: CalibrationParameter
+    let _id: String
+    let description: String
+    let uniqueIdentifier: UUID
+    let associatedAnalyte: String
     let createdAt: String
     let updatedAt: String
 }

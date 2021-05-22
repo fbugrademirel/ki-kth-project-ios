@@ -245,6 +245,40 @@ struct DeviceDataAPI {
         }
     }
     
+    func getAllAnalytesForDeviceWithoutMeasurements(_ id: String, completion: @escaping (Result<[AnalyteDataFetchWithoutMeasurements], Error>) -> Void ) {
+        
+        let url = "\(prodUrl)/onbodydevice/allmicroneedles/\(id)"
+        
+        AuthenticationManager().getAuthToken { result in
+            switch result {
+            case .success(let token):
+                let addHeader = ["Authorization": "Bearer \(token)"]
+                networkingService.dispatchRequest(urlString: url, method: .get, additionalHeaders: addHeader) { result in
+                    switch result {
+                    case .success(let data):
+                        
+                        do {
+                            let device = try JSONDecoder().decode([AnalyteDataFetchWithoutMeasurements].self, from: data)
+                            DispatchQueue.main.async {
+                                completion(.success(device))
+                            }
+                        } catch {
+                            DispatchQueue.main.async {
+                                completion(.failure(error))
+                            }
+                        }
+                    case .failure(let error):
+                        DispatchQueue.main.async {
+                            completion(.failure(error))
+                        }
+                    }
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
     func getAllDevices(with completion: @escaping (Result<[DeviceDataFetch], Error>) -> Void ) {
         
         let url = "\(prodUrl)/user/allonbodydevices"
