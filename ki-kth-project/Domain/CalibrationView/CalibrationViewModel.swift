@@ -66,7 +66,7 @@ final class CalibrationViewModel {
         }
     }
     
-    var yValuesForMainRawDataLine: ([ChartDataEntry], Bool) = ([], false) {
+    var yValuesForMainRawDataLine: ([ChartDataEntry], Bool, Double?) = ([], false, nil) {
         didSet {
             if yValuesForMainRawDataLine.0.isEmpty {
                 timer?.invalidate()
@@ -312,7 +312,7 @@ final class CalibrationViewModel {
                     self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithSuccess, alertType: .greenInfo))
                 }
                 
-                self?.yValuesForMainRawDataLine = (chartPoints, isAutoRefresh)
+                self?.yValuesForMainRawDataLine = (chartPoints, isAutoRefresh, data.calibrationParameters.calibrationTime)
             case .failure(let error):
                 if !isAutoRefresh {
                     self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithFailure,  alertType: .redWarning))
@@ -361,19 +361,32 @@ final class CalibrationViewModel {
     
     private func setDataForMainGraph(isForAutoRefresh: Bool = false) {
         
-        let yValuesForMainRawDataLine = yValuesForMainRawDataLine.0
+        let yValuesForMainRawDataLineEntries = yValuesForMainRawDataLine.0
         
-        if yValuesForMainRawDataLine.isEmpty {
+        if yValuesForMainRawDataLineEntries.isEmpty {
             sendActionToViewController?(.clearChart(for: .mainChartForRawData))
             return
         }
         
-        let set = LineChartDataSet(entries: yValuesForMainRawDataLine, label: "Raw Data of from Server ")
+        let set = LineChartDataSet(entries: yValuesForMainRawDataLineEntries, label: "Raw Data of from Server ")
         set.mode = .cubicBezier
         set.drawCirclesEnabled = true
         set.lineWidth = 0
         set.setCircleColor(.systemBlue)
-        set.setColor(.systemBlue)
+        
+        var circleColors: [NSUIColor] = []
+        
+        if let calibrationTime = yValuesForMainRawDataLine.2 {
+            for each in yValuesForMainRawDataLine.0 {
+                if each.x > calibrationTime {
+                    circleColors.append(.systemGreen)
+                } else {
+                    circleColors.append(.systemBlue)
+                }
+            }
+            set.circleColors = circleColors
+        }
+        
         set.drawHorizontalHighlightIndicatorEnabled = false
         set.highlightColor = .systemRed
         

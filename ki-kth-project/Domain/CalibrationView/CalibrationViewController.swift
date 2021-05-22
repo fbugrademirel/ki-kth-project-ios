@@ -304,7 +304,7 @@ final class CalibrationViewController: UIViewController {
         viewModel.latestHandledAnalyteId = nil
         
         viewModel.concentrationTableViewCellModels = []
-        viewModel.yValuesForMainRawDataLine = ([], false)
+        viewModel.yValuesForMainRawDataLine = ([], false, nil)
         viewModel.yValuesForCalibrationCurve = []
         viewModel.yValuesForLinearRegressionLine = []
     }
