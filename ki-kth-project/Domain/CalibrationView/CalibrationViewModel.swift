@@ -307,7 +307,7 @@ final class CalibrationViewModel {
 
                     return entry
                 }
-                self?.latestHandledAnalyteId = data._id
+                //self?.latestHandledAnalyteId = data._id
                 if !isAutoRefresh {
                     self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithSuccess, alertType: .greenInfo))
                 }

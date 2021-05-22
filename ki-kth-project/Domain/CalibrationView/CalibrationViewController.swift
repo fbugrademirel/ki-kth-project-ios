@@ -206,7 +206,7 @@ final class CalibrationViewController: UIViewController {
 // MARK: - Operations
     
     private func setTimer() {
-        viewModel.timer = Timer.scheduledTimer(timeInterval: 1,
+        viewModel.timer = Timer.scheduledTimer(timeInterval: 5,
                                      target: self,
                                      selector: #selector(fireTimer),
                                      userInfo: nil,
@@ -218,7 +218,8 @@ final class CalibrationViewController: UIViewController {
         AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
         let systemSoundID: SystemSoundID = 1057
         AudioServicesPlaySystemSound (systemSoundID)
-        UIPasteboard.general.string = "\(desc):\(serverID)"
+//        UIPasteboard.general.string = "\(desc):\(serverID)"
+        UIPasteboard.general.string = serverID
         UIView.animate(withDuration: 0.05) {
             self.informationLabel.text = "Analyte copied to clipboard!"
             self.informationLabel.alpha = 1
@@ -353,7 +354,7 @@ final class CalibrationViewController: UIViewController {
             mainChartView.data = data
             mainChartView.fitScreen()
             if !isForRefresh {
-                mainChartView.animate(xAxisDuration: 2)
+                mainChartView.animate(xAxisDuration: 0.5)
             }
         case .calibrationChart:
             calCurveGraphView.data = data
@@ -639,7 +640,9 @@ extension CalibrationViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if tableView.isEqual(analyteListTableView) {
             resetAllTablesAndChartData()
-            viewModel.getAnalyteDataByIdRequested(viewModel.analyteListTableViewCellModels[indexPath.row].serverID, isAutoRefresh: false)
+            let id  = viewModel.analyteListTableViewCellModels[indexPath.row].serverID
+            viewModel.getAnalyteDataByIdRequested(id, isAutoRefresh: false)
+            viewModel.latestHandledAnalyteId = id
             if viewModel.timer == nil {
                 setTimer()
             }

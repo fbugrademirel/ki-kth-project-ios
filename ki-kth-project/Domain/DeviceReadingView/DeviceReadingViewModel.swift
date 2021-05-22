@@ -32,6 +32,7 @@ final class DeviceReadingViewModel {
         didSet {
             if yValuesForMain.0.isEmpty {
                 timer?.invalidate()
+                setDataForMainGraph()
             }
             if yValuesForMain.1 {
                 setDataForMainGraph(isForRefresh: true)
@@ -194,6 +195,7 @@ final class DeviceReadingViewModel {
                 self.sendActionToViewController?(.presentView(with: alert))
                 if self.deviceListTableViewViewModels.isEmpty {
                     self.timer?.invalidate()
+                    self.yValuesForMain = ([], false)
                 }
               case .failure(let error):
                 self.sendActionToViewController?(.stopActivityIndicators(message: .deletionFailed, alert: .redWarning))
@@ -252,7 +254,7 @@ final class DeviceReadingViewModel {
         
             if !chartData.entries.isEmpty {
                 let set1 = LineChartDataSet(entries: chartData.entries,
-                                            label: "\(chartData.description) - \(chartData.analyte) (Slope:\(String(format: "%.1f", chartData.constant)) Constant: \(String(format: "%.1f", chartData.slope))")
+                                            label: "\(chartData.description) - \(chartData.analyte) - Slope:\(String(format: "%.1f", chartData.slope)) Constant: \(String(format: "%.1f", chartData.constant))")
                 set1.mode = .stepped
                 set1.drawCirclesEnabled = true
                 set1.lineWidth = 2

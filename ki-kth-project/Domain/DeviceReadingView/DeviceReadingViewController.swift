@@ -461,7 +461,7 @@ final class DeviceReadingViewController: UIViewController {
     }
     
     private func setTimer() {
-        viewModel.timer = Timer.scheduledTimer(timeInterval: 1,
+        viewModel.timer = Timer.scheduledTimer(timeInterval: 5,
                                      target: self,
                                      selector: #selector(fireTimer),
                                      userInfo: nil,
