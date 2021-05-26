@@ -296,14 +296,11 @@ final class CalibrationViewModel {
                     }
                     return
                 }
-                
-                //let doubleTime = Double(time) /// cast to double
-            
+                            
                 let chartPoints = data.measurements.map { (measurement) -> ChartDataEntry in
                 
                     //This is for 1 . . 2 . . .3 .  .
-                    //let entry = ChartDataEntry(x: Double(measurement.time)! - doubleTime!, y: measurement.value)
-                    let entry = ChartDataEntry(x: Double(measurement.time)!, y: measurement.value)
+                    let entry = ChartDataEntry(x: measurement.time, y: measurement.value)
 
                     return entry
                 }
@@ -373,6 +370,7 @@ final class CalibrationViewModel {
         set.drawCirclesEnabled = true
         set.lineWidth = 0
         set.setCircleColor(.systemBlue)
+        set.setColor(.systemBlue)
         
         var circleColors: [NSUIColor] = []
         

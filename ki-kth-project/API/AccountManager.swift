@@ -44,6 +44,8 @@ public final class AccountManager {
                 Log.s("Account created with the email: \(response.user.email)")
                 AuthenticationManager().setKeyChainTokens(auth: response.token)
                 let user = UserAccountInfo(name: response.user.name, email: response.user.email)
+                UserDefaults.userEmail = response.user.email
+                UserDefaults.userName = response.user.name
                 completion(.success(user))
             case .failure(let error):
                 Log.e(error)

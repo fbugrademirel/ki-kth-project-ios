@@ -425,28 +425,6 @@ final class DeviceReadingViewController: UIViewController {
         return lineChartView
     }
     
-//    private func setView(with: LineChartData) {
-//
-//        let lineChartView = LineChartView()
-//
-//        lineChartView.translatesAutoresizingMaskIntoConstraints = false
-//        lineChartView.backgroundColor = .white
-//        lineChartView.rightAxis.enabled = false
-//        lineChartView.borderLineWidth = 1
-//
-//        let yAxis = lineChartView.leftAxis
-//        yAxis.labelFont = .boldSystemFont(ofSize: 12)
-//        yAxis.setLabelCount(6, force: false)
-//        yAxis.labelTextColor = .darkGray
-//        yAxis.axisLineColor = .darkGray
-//        yAxis.labelPosition = .outsideChart
-//
-//        lineChartView.xAxis.labelPosition = .bottom
-//        lineChartView.xAxis.axisLineColor = .darkGray
-//        lineChartView.xAxis.labelFont = .boldSystemFont(ofSize: 12)
-//        lineChartView.xAxis.setLabelCount(6, force: false)
-//        lineChartView.xAxis.labelTextColor = .black
-//    }
     
     private func resetAllTablesAndChartData() {
         

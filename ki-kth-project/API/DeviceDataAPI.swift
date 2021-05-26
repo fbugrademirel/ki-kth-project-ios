@@ -20,7 +20,7 @@ struct DeviceDataAPI {
     
     let prodUrl = "http://localhost:3000"
     
-//    let prodUrl = "https://ki-kth-project-api.herokuapp.com"
+ //  let prodUrl = "https://ki-kth-project-api.herokuapp.com"
     //let devUrl = "http://localhost:3000"
     
     // MARK: - Operations
@@ -222,7 +222,6 @@ struct DeviceDataAPI {
                 networkingService.dispatchRequest(urlString: url, method: .get, additionalHeaders: addHeader) { result in
                     switch result {
                     case .success(let data):
-                        
                         do {
                             let device = try JSONDecoder().decode([AnalyteDataFetch].self, from: data)
                             DispatchQueue.main.async {

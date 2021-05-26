@@ -121,13 +121,18 @@ final class LoginCredentialsViewModel {
             if let error = error {
                 //This means logout is not successfull
                 Log.e(error.localizedDescription)
-                self.sendActionToViewController?(.stopActivityIndicators)
-                self.sendActionToViewController?(.resetToInitialLoginView)
+                DispatchQueue.main.async {
+                    self.sendActionToViewController?(.stopActivityIndicators)
+                    self.sendActionToViewController?(.resetToInitialLoginView)
+                }
             } else {
                 //This means logout is successfull
                 Log.s("Logout successful")
-                self.sendActionToViewController?(.resetToInitialLoginView)
-                self.sendActionToViewController?(.stopActivityIndicators)
+                
+                DispatchQueue.main.async {
+                    self.sendActionToViewController?(.resetToInitialLoginView)
+                    self.sendActionToViewController?(.stopActivityIndicators)
+                }
             }
         }
     }

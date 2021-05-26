@@ -21,7 +21,7 @@ final class DeviceReadingViewModel {
         case presentQRCode(descriptionAndServerID: String, point: CGPoint)
         case copyAnalyteInfoToClipboard(serverID: String, description: String)
     }
-    
+
     weak var timer: Timer?
 
     var latestHandledAnalyteID: String?
@@ -194,6 +194,7 @@ final class DeviceReadingViewModel {
                 alert.addAction(UIAlertAction(title: "I understand", style: .default, handler: nil))
                 self.sendActionToViewController?(.presentView(with: alert))
                 if self.deviceListTableViewViewModels.isEmpty {
+                    self.latestHandledAnalyteID = nil
                     self.timer?.invalidate()
                     self.yValuesForMain = ([], false)
                 }
@@ -246,7 +247,7 @@ final class DeviceReadingViewModel {
         var dataArray: [LineChartData] = []
         
         if yValuesForMain.0.isEmpty {
-            //sendActionToViewController?(.clearChart(for: .mainChartForRawData))
+            sendActionToViewController?(.updateChartUI(with: [], forRefresh: false))
             return
         }
         
@@ -306,17 +307,24 @@ final class DeviceReadingViewModel {
                 let referenceTime = analyte.calibrationParameters.calibrationTime!
                 var chartPoints: [ChartDataEntry] = []
                 analyte.measurements.forEach { measurement in
-                    if Double(measurement.time)! > referenceTime {
+                    if measurement.time > referenceTime {
                         ///Apply calibration params
                         var y = ((measurement.value) - (analyte.calibrationParameters.correlationEquationParameters?.constant)!) / (analyte.calibrationParameters.correlationEquationParameters?.slope)!
                         
                         y = pow(10, y)
                         // This is for 1 .. 2. ..  . .....
                      //   let entry = ChartDataEntry(x: Double(measurement.time)! - referenceTime, y: y)
-                        let entry = ChartDataEntry(x: Double(measurement.time)!, y: y)
+                        let entry = ChartDataEntry(x: measurement.time, y: y)
                         chartPoints.append(entry)
                     }
                 }
+                
+//                if chartPoints.count > 300 {
+//                    chartPoints.removeFirst(chartPoints.count - 300)
+//                }
+//
+//                chartPoints.sort { $0.x < $1.x }
+                
                 guard let slope = analyte.calibrationParameters.correlationEquationParameters?.slope,
                 let constant = analyte.calibrationParameters.correlationEquationParameters?.constant else { return }
                 yValues.append(ChartData(entries: chartPoints,

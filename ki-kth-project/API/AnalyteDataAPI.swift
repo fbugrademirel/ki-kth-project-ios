@@ -19,7 +19,7 @@ struct AnalyteDataAPI {
     
     let prodUrl = "http://localhost:3000"
     
-  //  let prodUrl = "https://ki-kth-project-api.herokuapp.com"
+   // let prodUrl = "https://ki-kth-project-api.herokuapp.com"
   //  let devUrl = "http://localhost:3000"
     
     private let networkingService = NetworkingService()
@@ -60,7 +60,7 @@ struct AnalyteDataAPI {
     }
     
     
-    func deleteAnalyte(_ id: String, completion: @escaping (Result<AnalyteDataFetch, Error>) -> Void) {
+    func deleteAnalyte(_ id: String, completion: @escaping (Result<AnalyteDataFetchWithoutMeasurements, Error>) -> Void) {
         
         let url =  "\(prodUrl)/microneedle/\(id)"
         
@@ -68,7 +68,7 @@ struct AnalyteDataAPI {
             switch result {
             case .success(let data):
                 do {
-                    let analyte = try JSONDecoder().decode(AnalyteDataFetch.self, from: data)
+                    let analyte = try JSONDecoder().decode(AnalyteDataFetchWithoutMeasurements.self, from: data)
                     DispatchQueue.main.async {
                         completion(.success(analyte))
                     }
@@ -170,7 +170,7 @@ struct AnalyteDataAPI {
     }
         
     
-    func createAnalyte(description: String, owner: String, associatedAnalyte: String, with completion: @escaping (Result<AnalyteDataFetch,Error>) -> Void) {
+    func createAnalyte(description: String, owner: String, associatedAnalyte: String, with completion: @escaping (Result<AnalyteDataFetchWithoutMeasurements,Error>) -> Void) {
         
         let uniqueIdentifier = UUID()
         let analyte = AnalyteDataPost(description: description,
@@ -185,7 +185,7 @@ struct AnalyteDataAPI {
             switch result {
             case .success(let data):
                 do {
-                    let analyteData = try JSONDecoder().decode(AnalyteDataFetch.self, from: data)
+                    let analyteData = try JSONDecoder().decode(AnalyteDataFetchWithoutMeasurements.self, from: data)
                     DispatchQueue.main.async {
                         completion(.success(analyteData))
                     }
@@ -257,7 +257,7 @@ struct AnalyteDataFetchWithoutMeasurements: Codable {
 }
 
 struct Measurement: Codable {
-    let time: String
+    let time: Double
     let value: Double
 }
 
