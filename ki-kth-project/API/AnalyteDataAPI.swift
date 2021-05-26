@@ -13,20 +13,20 @@
 
 import Foundation
 
-
-
 struct AnalyteDataAPI {
     
     // MARK: - Properties
     
-    let prodUrl = "https://ki-kth-project-api.herokuapp.com"
-    let devUrl = "http://localhost:3000"
+    let prodUrl = "http://localhost:3000"
+    
+   // let prodUrl = "https://ki-kth-project-api.herokuapp.com"
+  //  let devUrl = "http://localhost:3000"
     
     private let networkingService = NetworkingService()
     
     // MARK: - Operations
     
-    func calibrateAnalyte(slope: Double, constant: Double, id: String, completion: @escaping (Result<AnalyteDataFetch,Error>) -> Void ) {
+    func calibrateAnalyte(slope: Double, constant: Double, id: String, completion: @escaping (Result<AnalyteCalibrationFetch,Error>) -> Void ) {
     
         let url =  "\(prodUrl)/microneedle/\(id)"
         let addHeader = ["Content-Type": "application/json"]
@@ -42,7 +42,7 @@ struct AnalyteDataAPI {
             switch result {
             case .success(let data):
                 do {
-                    let analyteData = try JSONDecoder().decode(AnalyteDataFetch.self, from: data)
+                    let analyteData = try JSONDecoder().decode(AnalyteCalibrationFetch.self, from: data)
                     DispatchQueue.main.async {
                         completion(.success(analyteData))
                     }
@@ -60,7 +60,7 @@ struct AnalyteDataAPI {
     }
     
     
-    func deleteAnalyte(_ id: String, completion: @escaping (Result<AnalyteDataFetch, Error>) -> Void) {
+    func deleteAnalyte(_ id: String, completion: @escaping (Result<AnalyteDataFetchWithoutMeasurements, Error>) -> Void) {
         
         let url =  "\(prodUrl)/microneedle/\(id)"
         
@@ -68,7 +68,7 @@ struct AnalyteDataAPI {
             switch result {
             case .success(let data):
                 do {
-                    let analyte = try JSONDecoder().decode(AnalyteDataFetch.self, from: data)
+                    let analyte = try JSONDecoder().decode(AnalyteDataFetchWithoutMeasurements.self, from: data)
                     DispatchQueue.main.async {
                         completion(.success(analyte))
                     }
@@ -136,7 +136,41 @@ struct AnalyteDataAPI {
         }
     }
     
-    func createAnalyte(description: String, owner: String, associatedAnalyte: String, with completion: @escaping (Result<AnalyteDataFetch,Error>) -> Void) {
+    func getValidAnalytesList(completion: @escaping (Result<ValidAnalytes, Error>) -> Void) {
+        
+        let url =  "\(prodUrl)/analytenaminglist"
+        
+        AuthenticationManager().getAuthToken { result in
+            switch result {
+            case .success(let token):
+                let addHeaderToken = ["Authorization": "Bearer \(token)"]
+                networkingService.dispatchRequest(urlString: url, method: .get, additionalHeaders: addHeaderToken) { result in
+                    switch result {
+                    case .success(let data):
+                        do {
+                            let listData = try JSONDecoder().decode(ValidAnalytes.self, from: data)
+                            DispatchQueue.main.async {
+                                completion(.success(listData))
+                            }
+                        } catch {
+                            DispatchQueue.main.async {
+                                completion(.failure(error))
+                            }
+                        }
+                    case .failure(let error):
+                        DispatchQueue.main.async {
+                            completion(.failure(error))
+                        }
+                    }
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+        
+    
+    func createAnalyte(description: String, owner: String, associatedAnalyte: String, with completion: @escaping (Result<AnalyteDataFetchWithoutMeasurements,Error>) -> Void) {
         
         let uniqueIdentifier = UUID()
         let analyte = AnalyteDataPost(description: description,
@@ -151,7 +185,7 @@ struct AnalyteDataAPI {
             switch result {
             case .success(let data):
                 do {
-                    let analyteData = try JSONDecoder().decode(AnalyteDataFetch.self, from: data)
+                    let analyteData = try JSONDecoder().decode(AnalyteDataFetchWithoutMeasurements.self, from: data)
                     DispatchQueue.main.async {
                         completion(.success(analyteData))
                     }
@@ -171,6 +205,14 @@ struct AnalyteDataAPI {
 
 // MARK: - Analyte Data Codable
 
+struct ValidAnalytes: Codable {
+    let analytes: [ValidAnalyte]
+}
+
+struct ValidAnalyte: Codable {
+    let analyte: String
+}
+
 struct AnalyteCalibrationPatch: Codable {
     let calibrationParameters: CalibrationParameter
 }
@@ -181,6 +223,16 @@ struct AnalyteDataPost: Codable {
     let uniqueIdentifier: String
     let owner: String
     let associatedAnalyte: String
+}
+
+struct AnalyteCalibrationFetch: Codable {
+    let calibrationParameters: CalibrationParameter
+    let _id: String
+    let description: String
+    let uniqueIdentifier: UUID
+    let associatedAnalyte: String
+    let createdAt: String
+    let updatedAt: String
 }
 
 struct AnalyteDataFetch: Codable {
@@ -194,8 +246,18 @@ struct AnalyteDataFetch: Codable {
     let updatedAt: String
 }
 
+struct AnalyteDataFetchWithoutMeasurements: Codable {
+    let calibrationParameters: CalibrationParameter
+    let _id: String
+    let description: String
+    let uniqueIdentifier: UUID
+    let associatedAnalyte: String
+    let createdAt: String
+    let updatedAt: String
+}
+
 struct Measurement: Codable {
-    let time: String
+    let time: Double
     let value: Double
 }
 

@@ -18,21 +18,29 @@ struct DeviceDataAPI {
     // MARK: - Properties
     private let networkingService = NetworkingService()
     
-    let prodUrl = "https://ki-kth-project-api.herokuapp.com"
-   // let devUrl = "http://localhost:3000"
+    let prodUrl = "http://localhost:3000"
+    
+ //  let prodUrl = "https://ki-kth-project-api.herokuapp.com"
+    //let devUrl = "http://localhost:3000"
     
     // MARK: - Operations
     
-    func login(email: String, password: String, with completion: @escaping (Result<LoginUserDataFetch, Error>) -> Void) {
+    func login(email: String,
+               password: String,
+               with completion: @escaping (Result<LoginUserDataFetch, Error>) -> Void) {
         
         let url = "\(prodUrl)/user/login"
         let login = LoginUserPost(email: email, password: password)
         let addHeader = ["Content-Type": "application/json"]
-        networkingService.dispatchRequest(urlString: url, method: .post, additionalHeaders: addHeader, body: login) { result in
+        networkingService.dispatchRequest(urlString: url,
+                                          method: .post,
+                                          additionalHeaders: addHeader,
+                                          body: login) { result in
             switch result {
             case .success(let data):
                 do {
-                    let loginData = try JSONDecoder().decode(LoginUserDataFetch.self, from: data)
+                    let loginData = try JSONDecoder().decode(LoginUserDataFetch.self,
+                                                             from: data)
                     DispatchQueue.main.async {
                         completion(.success(loginData))
                     }
@@ -77,6 +85,41 @@ struct DeviceDataAPI {
         }
     }
     
+    func updateUserInfo(email: String? = nil, userName: String? = nil, password: String? = nil, completion: @escaping (Result<UpdateUserDataFetch, Error>) -> Void) {
+    
+        let url = "\(prodUrl)/user/me"
+        let updateUser = UpdateUserPost(name: userName, email: email, password: password)
+
+        AuthenticationManager().getAuthToken { result in
+            switch result {
+            case .success(let token):
+                let addHeaderToken = ["Content-Type": "application/json", "Authorization": "Bearer \(token)"]
+                networkingService.dispatchRequest(urlString: url, method: .patch, additionalHeaders: addHeaderToken, body: updateUser) { result in
+                    switch result {
+                    case .success(let data):
+                        do {
+                            let updatedUserData = try JSONDecoder().decode(UpdateUserDataFetch.self, from: data)
+                            DispatchQueue.main.async {
+                                completion(.success(updatedUserData))
+                            }
+                        } catch {
+                            DispatchQueue.main.async {
+                                completion(.failure(error))
+                            }
+                        }
+                    case .failure(let error):
+                        DispatchQueue.main.async {
+                            completion(.failure(error))
+                            print(error)
+                        }
+                    }
+                }
+            case .failure(let error):
+                completion(.failure(error))
+
+            }
+        }
+    }
     
     func logout(completion: @escaping (Error?) -> Void) {
         
@@ -99,10 +142,10 @@ struct DeviceDataAPI {
         }
     }
     
-    func createDevice(name: String, personalID: Int, with completion: @escaping (Result<DeviceDataFetch,Error>) -> Void) {
+    func createDevice(name: String, personalID: Int, numberOfNeedles: Int, with completion: @escaping (Result<DeviceDataFetch,Error>) -> Void) {
         
         let uniqueIdentifier = UUID()
-        let device = DeviceCreationPost (name: name, deviceID: uniqueIdentifier.uuidString, personalID: personalID)
+        let device = DeviceCreationPost (name: name, deviceID: uniqueIdentifier.uuidString, personalID: personalID, intendedNumberOfNeedles: numberOfNeedles)
         let url = "\(prodUrl)/onbodydevice"
                 
         AuthenticationManager().getAuthToken { result in
@@ -179,9 +222,42 @@ struct DeviceDataAPI {
                 networkingService.dispatchRequest(urlString: url, method: .get, additionalHeaders: addHeader) { result in
                     switch result {
                     case .success(let data):
-                        
                         do {
                             let device = try JSONDecoder().decode([AnalyteDataFetch].self, from: data)
+                            DispatchQueue.main.async {
+                                completion(.success(device))
+                            }
+                        } catch {
+                            DispatchQueue.main.async {
+                                completion(.failure(error))
+                            }
+                        }
+                    case .failure(let error):
+                        DispatchQueue.main.async {
+                            completion(.failure(error))
+                        }
+                    }
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    func getAllAnalytesForDeviceWithoutMeasurements(_ id: String, completion: @escaping (Result<[AnalyteDataFetchWithoutMeasurements], Error>) -> Void ) {
+        
+        let url = "\(prodUrl)/onbodydevice/allmicroneedles/\(id)"
+        
+        AuthenticationManager().getAuthToken { result in
+            switch result {
+            case .success(let token):
+                let addHeader = ["Authorization": "Bearer \(token)"]
+                networkingService.dispatchRequest(urlString: url, method: .get, additionalHeaders: addHeader) { result in
+                    switch result {
+                    case .success(let data):
+                        
+                        do {
+                            let device = try JSONDecoder().decode([AnalyteDataFetchWithoutMeasurements].self, from: data)
                             DispatchQueue.main.async {
                                 completion(.success(device))
                             }
@@ -240,6 +316,17 @@ struct DeviceDataAPI {
 
 // MARK: - Device Data Codable
 
+struct UpdateUserPost: Codable {
+    let name: String?
+    let email: String?
+    let password: String?
+}
+
+struct UpdateUserDataFetch: Codable {
+    let name: String
+    let email: String
+}
+
 struct LoginUserPost: Codable {
     let email: String
     let password: String
@@ -270,6 +357,7 @@ struct User: Codable {
 struct DeviceDataFetch: Codable {
     let _id: String
     let name: String
+    let intendedNumberOfNeedles: Int
     let deviceID: UUID
     let personalID: Int
     let createdAt: String
@@ -280,4 +368,5 @@ struct DeviceCreationPost: Codable {
     let name: String
     let deviceID: String
     let personalID: Int
+    let intendedNumberOfNeedles: Int
 }

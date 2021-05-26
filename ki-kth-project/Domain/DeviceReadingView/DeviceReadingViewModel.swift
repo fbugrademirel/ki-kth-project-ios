@@ -14,16 +14,31 @@ final class DeviceReadingViewModel {
         case reloadDeviceListTableView
         case deleteRows(path: IndexPath)
         case presentCalibrationView(info: ViewInfo)
-        case updateChartUI(with: [LineChartData])
+        case updateChartUI(with: [LineChartData], forRefresh: Bool)
         case startActivityIndicators(message: DeviceInformationLabel, alert: DevicePageAlertType)
         case stopActivityIndicators(message: DeviceInformationLabel, alert: DevicePageAlertType)
         case presentView(with: UIAlertController)
-        case resetToInitialLoginView
+        case presentQRCode(descriptionAndServerID: String, point: CGPoint)
+        case copyAnalyteInfoToClipboard(serverID: String, description: String)
     }
+
+    weak var timer: Timer?
+
+    var latestHandledAnalyteID: String?
+    var latestHandledQRCoordinate: CGPoint?
+    var isQRCodeCurrentlyPresented: Bool?
     
-    var yValuesForMain: [ChartData] = [] {
+    var yValuesForMain: ([ChartData], Bool) = ([], false) {
         didSet {
-            setDataForMainGraph()
+            if yValuesForMain.0.isEmpty {
+                timer?.invalidate()
+                setDataForMainGraph()
+            }
+            if yValuesForMain.1 {
+                setDataForMainGraph(isForRefresh: true)
+            } else {
+                setDataForMainGraph()
+            }
         }
     }
     
@@ -42,7 +57,14 @@ final class DeviceReadingViewModel {
     func handleReceivedFromDeviceTableViewCell(action: DeviceListTableViewCellViewModel.ActionToParent) {
         switch action {
         case .presentCalibrationView(info: let info):
-            fetchAndPresentCalibrationView(ViewInfo(patientName: info.patientName, deviceId: info.deviceId))
+            fetchAndPresentCalibrationView(ViewInfo(patientName: info.patientName,
+                                                    deviceId: info.deviceId,
+                                                    intendedNumberOfNeedles: info.intendedNumberOfNeedles))
+        case .qrViewTapped(deviceDescriptionAndServerID: let deviceDescriptionAndServerID, globalPoint: let globalPoint):
+            sendActionToViewController?(.presentQRCode(descriptionAndServerID: deviceDescriptionAndServerID, point: globalPoint))
+            latestHandledQRCoordinate = globalPoint
+        case .qrViewLongPressed(serverID: let serverID, description: let description):
+            sendActionToViewController?(.copyAnalyteInfoToClipboard(serverID: serverID, description: description))
         }
     }
     
@@ -50,39 +72,31 @@ final class DeviceReadingViewModel {
         sendActionToViewController?(.presentCalibrationView(info: info))
     }
     
+    func fetchLatestHandledAnalyte(isForRefresh: Bool) {
+        if let id = latestHandledAnalyteID {
+            getAnalytesByIdRequested(id, isForAutoRefresh: isForRefresh)
+        }
+    }
+    
     func reloadTableViewsRequired() {
         sendActionToViewController?(.reloadDeviceListTableView)
     }
     
-    
-    func logoutRequested() {
-        
-        AccountManager.logout { error in
-            if let error = error {
-                //This means logout is not successfull
-                Log.e(error.localizedDescription)
-            } else {
-                //This means logout is successfull
-                Log.s("Logout successful")
-                self.sendActionToViewController?(.resetToInitialLoginView)
-            }
-        }
-    }
-    
-    func createDeviceRequired(name: String, personalID: Int) {
+    func createDeviceRequired(name: String, personalID: Int, numberOfNeedles: Int) {
         
         sendActionToViewController?(.startActivityIndicators(message: .creating, alert: .neutralAppColor))
 
-        DeviceDataAPI().createDevice(name: name, personalID: personalID) { [weak self] result in
+        DeviceDataAPI().createDevice(name: name, personalID: personalID, numberOfNeedles: numberOfNeedles) { [weak self] result in
             
             switch result {
             case .success(let data):
                 
-                let device = Device(name: data.name, id: data.personalID)
+                let device = Device(name: data.name, id: data.personalID, intendedNumberOfNeedles: data.intendedNumberOfNeedles)
                 
                 let viewModel = DeviceListTableViewCellViewModel(name: device.name,
                                                              id: device.id,
-                                                             serverID: data._id)
+                                                             serverID: data._id,
+                                                             intendedNumberOfNeedles: data.intendedNumberOfNeedles)
                 
                 viewModel.sendActionToParentModel = { [weak self] action in
                     self?.handleReceivedFromDeviceTableViewCell(action: action)
@@ -99,9 +113,13 @@ final class DeviceReadingViewModel {
         }
     }
     
-    func getAnalytesByIdRequested(_ id: String) {
+    func getAnalytesByIdRequested(_ id: String, isForAutoRefresh: Bool = false) {
         
-        sendActionToViewController?(.startActivityIndicators(message: .fetching, alert: .neutralAppColor))
+        if !isForAutoRefresh {
+            sendActionToViewController?(.startActivityIndicators(message: .fetching, alert: .neutralAppColor))
+        }
+        
+        latestHandledAnalyteID = id
         
         DeviceDataAPI().getAllAnalytesForDevice(id) { [weak self] result in
             switch result {
@@ -128,16 +146,32 @@ final class DeviceReadingViewModel {
                     return !data.measurements.isEmpty
                 }
                 
-                self?.setGraphs(with: filtered)
+                var isThereACalibratedOne = false
+                filtered.forEach { analyte in
+                    if analyte.calibrationParameters.isCalibrated {
+                        isThereACalibratedOne = true
+                    }
+                }
                 
+                self?.setGraphs(with: filtered, isForAutoRefresh: isForAutoRefresh)
                 if filtered.isEmpty {
-                    self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithSuccessButEmpty, alert: .greenInfo))
+                    if !isForAutoRefresh {
+                        self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithSuccessButEmpty, alert: .greenInfo))
+                    }
+                } else if(!isThereACalibratedOne){
+                    if !isForAutoRefresh{
+                        self?.sendActionToViewController?(.stopActivityIndicators(message: .noAnalyteIsCalibratedYet, alert: .redWarning))
+                    }
                 } else {
-                    self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithSuccess, alert: .greenInfo))
+                    if !isForAutoRefresh {
+                        self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithSuccess, alert: .greenInfo))
+                    }
                 }
                 
             case .failure(let error):
-                self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithFailure, alert: .redWarning))
+                if !isForAutoRefresh {
+                    self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithFailure, alert: .redWarning))
+                }
                 print(error.localizedDescription)
             }
         }
@@ -150,11 +184,20 @@ final class DeviceReadingViewModel {
           DeviceDataAPI().deleteDeviceByID(id: id) { (result) in
               switch result {
               case .success(_):
+                self.yValuesForMain = ([], false)
+                if self.latestHandledAnalyteID == id {
+                    self.timer?.invalidate()
+                }
                 self.sendActionToViewController?(.deleteRows(path: path))
                 self.sendActionToViewController?(.stopActivityIndicators(message: .deletedWithSuccess, alert: .greenInfo))
                 let alert = UIAlertController(title: "Deleted from database", message: "Server message", preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "I understand", style: .default, handler: nil))
                 self.sendActionToViewController?(.presentView(with: alert))
+                if self.deviceListTableViewViewModels.isEmpty {
+                    self.latestHandledAnalyteID = nil
+                    self.timer?.invalidate()
+                    self.yValuesForMain = ([], false)
+                }
               case .failure(let error):
                 self.sendActionToViewController?(.stopActivityIndicators(message: .deletionFailed, alert: .redWarning))
                 print(error.localizedDescription)
@@ -176,9 +219,12 @@ final class DeviceReadingViewModel {
                 }
                 
                 let fetchedDevices = sorted.map { data -> DeviceListTableViewCellViewModel in
-                    let device = Device(name: data.name, id: data.personalID)
+                    let device = Device(name: data.name, id: data.personalID, intendedNumberOfNeedles: data.intendedNumberOfNeedles)
                     
-                    let viewModel = DeviceListTableViewCellViewModel(name: device.name, id: device.id, serverID: data._id)
+                    let viewModel = DeviceListTableViewCellViewModel(name: device.name,
+                                                                     id: device.id,
+                                                                     serverID: data._id,
+                                                                     intendedNumberOfNeedles: data.intendedNumberOfNeedles)
                     viewModel.sendActionToParentModel = { [weak self] action in
                         self?.handleReceivedFromDeviceTableViewCell(action: action)
                     }
@@ -196,23 +242,41 @@ final class DeviceReadingViewModel {
     }
 
 // MARK: - Operations
-    private func setDataForMainGraph() {
+    private func setDataForMainGraph(isForRefresh: Bool = false) {
         
         var dataArray: [LineChartData] = []
         
-        if yValuesForMain.isEmpty {
-            //sendActionToViewController?(.clearChart(for: .mainChartForRawData))
+        if yValuesForMain.0.isEmpty {
+            sendActionToViewController?(.updateChartUI(with: [], forRefresh: false))
             return
         }
         
-        yValuesForMain.forEach { chartData in
-            
+        yValuesForMain.0.sorted {$0.description < $1.description}.forEach { chartData in
+        
             if !chartData.entries.isEmpty {
-                let set1 = LineChartDataSet(entries: chartData.entries, label: "Calibrated Data for \(chartData.description) - \(chartData.analyte)")
-                set1.mode = .cubicBezier
-               // set1.drawCirclesEnabled = true
-                set1.lineWidth = 5
-                set1.setColor(.systemBlue)
+                let set1 = LineChartDataSet(entries: chartData.entries,
+                                            label: "\(chartData.description) - \(chartData.analyte) - Slope: \(String(format: "%.1f", chartData.slope)) Constant: \(String(format: "%.1f", chartData.constant))")
+                set1.mode = .stepped
+                set1.drawCirclesEnabled = true
+                set1.lineWidth = 2
+                
+                let desc = chartData.analyte
+                
+                if desc.contains("sodium") {
+                    set1.setColor(.systemGreen)
+                } else if desc.contains("potassium") {
+                    set1.setColor(.systemBlue)
+                } else if desc.contains("pH") {
+                    set1.setColor(.systemTeal)
+                } else if desc.contains("chloride") {
+                    set1.setColor(.systemPurple)
+                } else {
+                    set1.setColor(UIColor(red: CGFloat.random(in: 0...1),
+                                          green: CGFloat.random(in: 0...1),
+                                          blue: CGFloat.random(in: 0...1),
+                                          alpha: 1))
+                }
+
                 set1.setCircleColor(.systemBlue)
                 set1.drawValuesEnabled = true
                 set1.drawCirclesEnabled = false
@@ -225,14 +289,14 @@ final class DeviceReadingViewModel {
                 set1.highlightColor = .systemRed
                 
                 let data = LineChartData(dataSet: set1)
-                data.setDrawValues(true)
+                data.setDrawValues(false)
                 dataArray.append(data)
             }
         }
-        sendActionToViewController?(.updateChartUI(with: dataArray))
+        sendActionToViewController?(.updateChartUI(with: dataArray, forRefresh: isForRefresh))
     }
     
-    private func setGraphs(with data: [AnalyteDataFetch]) {
+    private func setGraphs(with data: [AnalyteDataFetch], isForAutoRefresh: Bool) {
         
         var yValues: [ChartData] = []
         
@@ -243,37 +307,55 @@ final class DeviceReadingViewModel {
                 let referenceTime = analyte.calibrationParameters.calibrationTime!
                 var chartPoints: [ChartDataEntry] = []
                 analyte.measurements.forEach { measurement in
-                    if Double(measurement.time)! > referenceTime {
+                    if measurement.time > referenceTime {
                         ///Apply calibration params
                         var y = ((measurement.value) - (analyte.calibrationParameters.correlationEquationParameters?.constant)!) / (analyte.calibrationParameters.correlationEquationParameters?.slope)!
                         
                         y = pow(10, y)
-                        
-                        let entry = ChartDataEntry(x: Double(measurement.time)! - referenceTime, y: y)
+                        // This is for 1 .. 2. ..  . .....
+                     //   let entry = ChartDataEntry(x: Double(measurement.time)! - referenceTime, y: y)
+                        let entry = ChartDataEntry(x: measurement.time, y: y)
                         chartPoints.append(entry)
                     }
                 }
-                yValues.append(ChartData(entries: chartPoints, description: analyte.description, analyte: analyte.associatedAnalyte))
+                
+//                if chartPoints.count > 300 {
+//                    chartPoints.removeFirst(chartPoints.count - 300)
+//                }
+//
+//                chartPoints.sort { $0.x < $1.x }
+                
+                guard let slope = analyte.calibrationParameters.correlationEquationParameters?.slope,
+                let constant = analyte.calibrationParameters.correlationEquationParameters?.constant else { return }
+                yValues.append(ChartData(entries: chartPoints,
+                                         description: analyte.description,
+                                         analyte: analyte.associatedAnalyte,
+                                         slope: slope,
+                                         constant: constant))
             }
         }
-        yValuesForMain = yValues
+        yValuesForMain = (yValues, isForAutoRefresh)
     }
 }
 
 struct ViewInfo {
     let patientName: String
     let deviceId: String
+    let intendedNumberOfNeedles: Int
 }
 
 struct ChartData {
     let entries: [ChartDataEntry]
     let description: String
     let analyte: String
+    let slope: Double
+    let constant: Double
 }
 
 struct Device {
     let name: String
     let id: Int
+    let intendedNumberOfNeedles: Int
 }
 
 
@@ -284,6 +366,7 @@ enum DevicePageAlertType {
 }
 
 enum DeviceInformationLabel: String {
+    case noAnalyteIsCalibratedYet = "There is no calibrated analyte!"
     case calibrationParameterError = "Regression Data is not calculated!"
     case calibratedWithSuccess = "Analyte calibrated with success!"
     case calibratedWithFailure = "Analyte calibration failed!"

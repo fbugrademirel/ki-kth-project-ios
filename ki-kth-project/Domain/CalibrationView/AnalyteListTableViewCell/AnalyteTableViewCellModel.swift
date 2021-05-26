@@ -6,11 +6,13 @@
 //
 
 import Foundation
+import UIKit
 
 final class AnalyteTableViewCellModel {
     
     enum ActionToParent {
-        case toParent
+        case qrViewTapped(analyteDescriptionAndServerID: String, globalPoint: CGPoint)
+        case qrViewLongPressed(serverID: String, description: String)
     }
     
     enum ActionToOwnView{
@@ -32,4 +34,12 @@ final class AnalyteTableViewCellModel {
         self.isCalibrated = isCalibrated
     }
     
+    func qrViewLongPressed() {
+        sendActionToParentModel?(.qrViewLongPressed(serverID: serverID, description: description))
+    }
+    
+    func qrViewTapped(point: CGPoint) {
+        let str = "\(description)\n\(serverID)"
+        sendActionToParentModel?(.qrViewTapped(analyteDescriptionAndServerID: str, globalPoint: point))
+    }
 }

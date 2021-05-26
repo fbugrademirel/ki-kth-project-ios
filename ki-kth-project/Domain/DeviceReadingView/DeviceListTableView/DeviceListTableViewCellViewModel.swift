@@ -5,38 +5,51 @@
 //  Created by Faruk Buğra DEMIREL on 2021-04-28.
 //
 
-import Foundation
+import UIKit
 
 final class DeviceListTableViewCellViewModel {
     
     enum ActionToParent {
         case presentCalibrationView(info: ViewInfoInCell)
+        case qrViewTapped(deviceDescriptionAndServerID: String, globalPoint: CGPoint)
+        case qrViewLongPressed(serverID: String, description: String)
     }
     
     enum ActionToOwnView{
         case showCalibratedAnalytes(analytes: [MicroNeedle])
     }
     
-    let patientName: String
+    let deviceDescription: String
     let patientID: Int
     let serverID: String
+    let intendedNumberOfNeedles: Int
     
     var sendActionToParentModel: ((ActionToParent) -> Void)?
     var sendActionToOwnView: ((ActionToOwnView) -> Void)?
     
-    init(name: String, id: Int, serverID: String) {
-        self.patientName = name
+    init(name: String, id: Int, serverID: String, intendedNumberOfNeedles: Int) {
+        self.deviceDescription = name
         self.patientID = id
         self.serverID = serverID
+        self.intendedNumberOfNeedles = intendedNumberOfNeedles
+    }
+    
+    func qrViewLongPressed() {
+        sendActionToParentModel?(.qrViewLongPressed(serverID: serverID, description: deviceDescription))
+    }
+    
+    func qrViewTapped(point: CGPoint) {
+        let str = "\(deviceDescription)\n\(serverID)"
+        sendActionToParentModel?(.qrViewTapped(deviceDescriptionAndServerID: str, globalPoint: point))
     }
     
     func calibrateViewRequested() {
-        sendActionToParentModel?(.presentCalibrationView(info: ViewInfoInCell(patientName: patientName, deviceId: serverID)))
+        sendActionToParentModel?(.presentCalibrationView(info: ViewInfoInCell(patientName: deviceDescription, deviceId: serverID, intendedNumberOfNeedles: intendedNumberOfNeedles)))
     }
     
     func calibratedAnalytesForThisDeviceRequested() {
         
-        DeviceDataAPI().getAllAnalytesForDevice(serverID) { [weak self] result in
+        DeviceDataAPI().getAllAnalytesForDeviceWithoutMeasurements(serverID) { [weak self] result in
             switch result {
             case .success(let data):
                 let sorted = data.sorted {
@@ -65,4 +78,5 @@ final class DeviceListTableViewCellViewModel {
 struct ViewInfoInCell {
     let patientName: String
     let deviceId: String
+    let intendedNumberOfNeedles: Int
 }

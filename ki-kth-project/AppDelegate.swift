@@ -25,6 +25,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         UINavigationBar.appearance().titleTextAttributes = [NSAttributedString.Key.font: UIFont(name: "SourceSansPro-Bold", size: 24)!,
                                                             NSAttributedString.Key.foregroundColor : UIColor.white]
+        
+        
+        UITabBar.appearance().tintColor = UIColor.white
+        UITabBar.appearance().barTintColor = AppColor.primary
+        
+        UITabBarItem.appearance().setTitleTextAttributes([NSAttributedString.Key.font: UIFont(name: "SourceSansPro-Bold", size: 20)!], for: .normal)
+        UIBarItem.appearance().setTitleTextAttributes([NSAttributedString.Key.font : UIFont(name: "SourceSansPro-Bold", size: 20)! ], for: .highlighted)
+        UIBarButtonItem.appearance().setTitleTextAttributes([NSAttributedString.Key.font : UIFont(name: "SourceSansPro-Bold", size: 20)! ], for: .focused)
+
 
         return true
     }

@@ -12,10 +12,8 @@ final class AnalyteListTableViewCell: UITableViewCell {
     static let nibName = "AnalyteListTableViewCell"
     
     @IBOutlet weak var analyteDescription: UILabel!
-    @IBOutlet weak var analyteUniqueUUID: UILabel!
-    @IBOutlet weak var analyteID: UILabel!
-    @IBOutlet weak var labelStackView: UIStackView!
     @IBOutlet weak var calibrationMark: UIImageView!
+    @IBOutlet weak var qrCodeImageView: UIImageView!
     
     var viewModel: AnalyteTableViewCellModel! {
         didSet {
@@ -32,15 +30,16 @@ final class AnalyteListTableViewCell: UITableViewCell {
     
     private func configure() {
         
+        qrCodeImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(qrCodeImageTapped)))
+        let long = UILongPressGestureRecognizer(target: self, action: #selector(qrCodeImageLongPressed(gesture:)))
+        long.minimumPressDuration = 0.75
+        qrCodeImageView.addGestureRecognizer(long)
+        
         self.analyteDescription.font = UIFont.appFont(placement: .text)
         self.analyteDescription.text = viewModel.description
         
-        self.analyteUniqueUUID.font = UIFont.appFont(placement: .passiveText)
-        self.analyteUniqueUUID.text = viewModel.identifier.uuidString
-        
-        self.analyteID.font = UIFont.appFont(placement: .passiveText)
-        self.analyteID.text = viewModel.serverID
-        
+        qrCodeImageView.image = QRCodeGenerator().generateQRCode(from: viewModel.serverID)
+                
         calibrationMark.image = viewModel.isCalibrated ?
             UIImage(systemName: "checkmark")?.withTintColor(.systemGreen, renderingMode: .alwaysOriginal) :
             UIImage(systemName: "xmark")?.withTintColor(.systemRed, renderingMode: .alwaysOriginal)
@@ -53,17 +52,47 @@ final class AnalyteListTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
-        labelStackView.subviews.forEach {
-            if let label = $0 as? UILabel {
-                label.font = UIFont.appFont(placement: .text)
-            }
-        }
+        
+        analyteDescription.font = UIFont.appFont(placement: .text)
+ 
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state
+    }
+    
+    @objc func qrCodeImageLongPressed(gesture: UIGestureRecognizer) {
+        
+        if let longPress = gesture as? UILongPressGestureRecognizer {
+            if longPress.state == UIGestureRecognizer.State.began {
+                viewModel.qrViewLongPressed()
+            } else {
+                return
+            }
+        }
+    }
+    
+    @objc func qrCodeImageTapped() {
+        viewModel.qrViewTapped(point: getCoordinate(qrCodeImageView))
+    }
+    
+    private func getCoordinate(_ view: UIView) -> CGPoint {
+        var x = view.frame.origin.x
+        var y = view.frame.origin.y
+        var oldView = view
+
+        while let superView = oldView.superview {
+            x += superView.frame.origin.x
+            y += superView.frame.origin.y
+            if superView.next is UIViewController {
+                break //superView is the rootView of a UIViewController
+            }
+            oldView = superView
+        }
+
+        return CGPoint(x: x, y: y)
     }
     
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {

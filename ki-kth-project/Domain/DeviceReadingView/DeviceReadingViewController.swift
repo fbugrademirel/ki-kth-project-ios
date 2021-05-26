@@ -7,40 +7,55 @@
 
 import UIKit
 import Charts
+import AVFoundation
 
 final class DeviceReadingViewController: UIViewController {
 
     var refreshController = UIRefreshControl()
-    
+            
     @IBOutlet weak var deviceListTableView: UITableView!
-    @IBOutlet weak var chartsStackView: UIStackView!
     @IBOutlet weak var scrollView: UIScrollView!
+    @IBOutlet weak var chartsStackView: UIStackView!
+    @IBOutlet weak var calibratedDataGraphsScrollView: UIScrollView!
     @IBOutlet weak var informationLabel: UILabel!
     @IBOutlet weak var deviceNameTextField: IndicatorTextField!
     @IBOutlet weak var personalIDTextField: IndicatorTextField!
     @IBOutlet weak var registerDeviceButton: ActivityIndicatorButton!
     @IBOutlet weak var valueOnTheGraphLabel: UILabel!
+    @IBOutlet weak var dateOfMeasurementLAbel: UILabel!
     @IBOutlet weak var blockViewForCancelling: UIView!
     @IBOutlet weak var registerItemsStackView: UIStackView!
+    @IBOutlet weak var mnSelectNumberLabel: UILabel!
+    @IBOutlet weak var mnNumberIndicatorLabel: UILabel!
+    @IBOutlet weak var mnNumberStepper: UIStepper!
+    @IBOutlet weak var qrImageView: UIImageView!
     
     var viewModel: DeviceReadingViewModel!
     
-    
+    // MARK: -Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         viewModel.sendActionToViewController = { [weak self] action in
             self?.handleReceivedFromViewModel(action: action)
         }
+        if let name = UserDefaults.userName {
+            title = "\(name)'s Devices"
+        }
         setUI()
         viewModel.viewDidLoad()
-        
     }
     
     // MARK: -TODO: Move expensive operations to the viewDidAppear if you need a smoother first login!
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        setTimer()
         viewModel.reloadTableViewsRequired()
+        viewModel.fetchLatestHandledAnalyte(isForRefresh: false)
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        viewModel.timer?.invalidate()
     }
     
     // MARK: - Handle
@@ -53,20 +68,26 @@ final class DeviceReadingViewController: UIViewController {
         case .presentCalibrationView(info: let info):
             let vc = CalibrationViewController.instantiate(with: CalibrationViewModel())
             vc.viewModel.deviceID = info.deviceId
+            vc.viewModel.intendedNumberOfNeedles  = info.intendedNumberOfNeedles
             vc.title = "\(info.patientName)'s Analytes"
             navigationController?.pushViewController(vc, animated: true)
-        case .updateChartUI(with: let data):
-            updateChartUI(with: data)
+        case .updateChartUI(with: let data, forRefresh: let bool):
+            updateChartUI(with: data, isForRefresh: bool)
         case .startActivityIndicators(message: let message, alert: let alert):
             startActivityIndicators(with: message, with: alert)
         case .stopActivityIndicators(message: let message, alert: let alert):
             stopActivityIndicators(with: message, with: alert)
         case .presentView(with: let view):
             present(view, animated: true, completion: nil)
-        case .resetToInitialLoginView:
-            let vc = InitialLoginViewController.instantiate(with: InitialLoginViewModel())
-            navigationController?.setViewControllers([vc], animated: true)
+        case .presentQRCode(descriptionAndServerID: let id, point: let point):
+            presentQRCode(descriptionAndServerID: id, point: point)
+        case .copyAnalyteInfoToClipboard(serverID: let serverID, description: let desc):
+            copyToClipBoardAndShowInfo(serverID: serverID, desc: desc)
         }
+    }
+    
+    @IBAction func stepperPressed(_ sender: UIStepper) {
+        mnNumberIndicatorLabel.text = String(Int(sender.value))
     }
     
     @IBAction func registerButtonPressed(_ sender: Any) {
@@ -75,7 +96,7 @@ final class DeviceReadingViewController: UIViewController {
         }
         guard let name = deviceNameTextField.text else { return }
         guard let id = personalIDTextField.text else { return }
-
+        
         deviceNameTextField.text = ""
         personalIDTextField.text = ""
         
@@ -83,30 +104,45 @@ final class DeviceReadingViewController: UIViewController {
         
         guard let intID = Int(id) else { return }
         
-        viewModel.createDeviceRequired(name: name, personalID: intID)
+        viewModel.createDeviceRequired(name: name, personalID: intID, numberOfNeedles: Int(mnNumberStepper.value))
+    }
+    
+    @objc func fireTimer() {
+        viewModel.fetchLatestHandledAnalyte(isForRefresh: true)
     }
     
     @objc func refButPressed(_ sender: UIButton) {
         viewModel.fetchAllDevicesRequired()
     }
     
-    @objc func logOutPressed(_ sender: UIBarButtonItem ) {
-        
-        let alert = UIAlertController(title: "Signing out...", message: "Are you sure to sign out?", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Logout", style: .destructive) { [weak self] _ in
-            self?.viewModel.logoutRequested()
-        })
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        present(alert, animated: true, completion: nil)
+    @objc func dismissAll() {
+        if let status = viewModel.isQRCodeCurrentlyPresented {
+            if status {
+                dismissQRCode()
+                return
+            }
+        }
+        dismissKeyboard()
     }
-    
+        
     // MARK: - UI
     private func setUI() {
         
-        let barButton = UIBarButtonItem(image: UIImage(systemName:"square.and.arrow.up"), style: .plain, target: self, action: #selector(logOutPressed(_:)))
-        self.navigationItem.rightBarButtonItem  = barButton
-
-        let gesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        mnNumberStepper.wraps = true
+        mnNumberStepper.autorepeat = true
+        mnNumberStepper.maximumValue = 200
+        mnNumberStepper.minimumValue = 1
+        
+        mnSelectNumberLabel.font = UIFont.appFont(placement: .boldText)
+        mnSelectNumberLabel.textColor = AppColor.primary
+        
+        mnNumberIndicatorLabel.font = UIFont.appFont(placement: .boldText)
+        mnNumberIndicatorLabel.textColor = AppColor.primary
+        mnNumberIndicatorLabel.text = String(Int(mnNumberStepper.value))
+        
+        
+        
+        let gesture = UITapGestureRecognizer(target: self, action: #selector(dismissAll))
         blockViewForCancelling.addGestureRecognizer(gesture)
 
         registerDeviceButton.titleLabel?.font = UIFont.appFont(placement: .buttonTitle)
@@ -117,10 +153,14 @@ final class DeviceReadingViewController: UIViewController {
         deviceNameTextField.font = UIFont.appFont(placement: .text)
         deviceNameTextField.delegate = self
         
-        valueOnTheGraphLabel.font = UIFont.appFont(placement: .title)
+        valueOnTheGraphLabel.font = UIFont.appFont(placement: .boldText)
         valueOnTheGraphLabel.text = ""
-        valueOnTheGraphLabel.textColor = .systemRed
+        valueOnTheGraphLabel.textColor = AppColor.primary
         
+        dateOfMeasurementLAbel.font = UIFont.appFont(placement: .boldText)
+        dateOfMeasurementLAbel.text = ""
+        dateOfMeasurementLAbel.textColor = AppColor.primary
+                
         informationLabel.font = UIFont.appFont(placement: .title)
         informationLabel.alpha = 0
         informationLabel.text = ""
@@ -146,6 +186,64 @@ final class DeviceReadingViewController: UIViewController {
 
         self.deviceListTableView.deleteRows(at: [path], with: .fade)
         self.deviceListTableView.endUpdates()
+    }
+    
+    private func copyToClipBoardAndShowInfo(serverID: String, desc: String) {
+        AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
+        let systemSoundID: SystemSoundID = 1057
+        AudioServicesPlaySystemSound (systemSoundID)
+        UIPasteboard.general.string = "\(desc):\(serverID)"
+        UIView.animate(withDuration: 0.05) {
+            self.informationLabel.text = "Analyte copied to clipboard!"
+            self.informationLabel.alpha = 1
+            self.informationLabel.textColor = AppColor.primary
+        } completion: { _ in
+            UIView.animate(withDuration: 1) {
+                self.informationLabel.alpha = 0
+            } completion: { _ in
+                self.informationLabel.text = ""
+            }
+        }
+    }
+    
+    private func presentQRCode(descriptionAndServerID: String, point: CGPoint) {
+
+        self.blockViewForCancelling.isUserInteractionEnabled = true
+        viewModel.isQRCodeCurrentlyPresented = true
+        
+        qrImageView.translatesAutoresizingMaskIntoConstraints = true
+        qrImageView.isHidden = false
+        qrImageView.frame = CGRect(x: point.x, y: point.y, width: 40, height: 40)
+        qrImageView.frame.origin = point
+        qrImageView.layer.cornerRadius = 3
+        print(descriptionAndServerID)
+        qrImageView.image = QRCodeGenerator().generateQRCode(from: descriptionAndServerID)
+        
+
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
+            self.blockViewForCancelling.alpha = 0.95
+            self.qrImageView.frame = CGRect(x: self.view.center.x - 50, y: self.view.center.y - 50, width: 100, height: 100)
+            self.qrImageView.alpha = 1
+        }
+    }
+    
+    private func dismissQRCode() {
+        
+        viewModel.isQRCodeCurrentlyPresented = false
+        self.blockViewForCancelling.isUserInteractionEnabled = false
+        
+        UIView.animate(withDuration: 0.3, delay: 0.01, options: .curveEaseOut) {
+            if let point = self.viewModel.latestHandledQRCoordinate {
+                self.qrImageView.frame = CGRect(x: point.x, y: point.y, width: 40, height: 40)
+            } else {
+                self.qrImageView.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
+            }
+            self.blockViewForCancelling.alpha = 0
+            self.qrImageView.alpha = 0
+        } completion: { _ in
+            self.qrImageView.image = nil
+            self.qrImageView.isHidden = true
+        }
     }
     
     @objc func dismissKeyboard() {
@@ -199,80 +297,154 @@ final class DeviceReadingViewController: UIViewController {
         }
     }
     
-    private func updateChartUI(with entries: [LineChartData]) {
+    private func updateChartUI(with data: [LineChartData], isForRefresh: Bool) {
         
-        entries.forEach { lineChartData in
-            
-            let lineChartView = LineChartView()
-            lineChartView.alpha = 0
-            lineChartView.translatesAutoresizingMaskIntoConstraints = false
-            lineChartView.backgroundColor = .white
-            lineChartView.rightAxis.enabled = false
-            lineChartView.borderLineWidth = 1
-            lineChartView.legend.font = UIFont.appFont(placement: .boldText)
-            
-            let yAxis = lineChartView.leftAxis
-            yAxis.labelFont = UIFont.appFont(placement: .boldText)
-            yAxis.setLabelCount(6, force: false)
-            yAxis.labelTextColor = .darkGray
-            yAxis.axisLineColor = .darkGray
-            yAxis.labelPosition = .outsideChart
+        /// This array will contain the data such as MN#1-Sodium that is already in the ScrollView
+        let existingFilteredData = data.filter { lineChartData in
+           return chartsStackView.arrangedSubviews.contains { view in
+                let lineChartView = view as! LineChartView
+                return lineChartView.lineData?.dataSets[0].label ==  lineChartData.dataSets[0].label
+            }
+        }
 
-            lineChartView.xAxis.labelPosition = .bottom
-            lineChartView.xAxis.axisLineColor = .darkGray
-            lineChartView.xAxis.labelFont = UIFont.appFont(placement: .boldText)
-            lineChartView.xAxis.setLabelCount(6, force: false)
-            lineChartView.xAxis.labelTextColor = .darkGray
+        /// This array will contain the data that is new and be added
+        let nonExistingFilteredData = data.filter { lineChartData in
+           return !chartsStackView.arrangedSubviews.contains { view in
+                let lineChartView = view as! LineChartView
+                return lineChartView.lineData?.dataSets[0].label ==  lineChartData.dataSets[0].label
+            }
+        }
+
+        /// Check the arranged subviews and if they do not contain an existing data type, remove it from the superview
+        chartsStackView.arrangedSubviews.forEach { view in
+            let lineChartView = view as! LineChartView
+            let doesContain = existingFilteredData.contains { lineChartData in
+                return lineChartView.lineData?.dataSets[0].label == lineChartData.dataSets[0].label
+            }
+
+            if !doesContain {
+                lineChartView.removeFromSuperview()
+            }
+        }
+        
+        /// Replace existing data
+        existingFilteredData.forEach { data in
+            chartsStackView.arrangedSubviews.forEach { view in
+                let lineChartView = view as! LineChartView
+                if lineChartView.lineData?.dataSets[0].label == data.dataSets[0].label {
+                    lineChartView.data = data
+                    lineChartView.leftAxis.resetCustomAxisMax()
+                    lineChartView.leftAxis.axisMinimum = 0
+                    lineChartView.leftAxis.resetCustomAxisMax()
+                    lineChartView.leftAxis.axisMaximum = data.yMax * 1.2
+                    lineChartView.notifyDataSetChanged()
+                    lineChartView.fitScreen()
+                    if !isForRefresh {
+                        lineChartView.animate(xAxisDuration: 0.5)
+                    }
+                    lineChartView.delegate = self
+                }
+            }
+        }
+        
+        /// Add non Existing new data to the scroll-view
+        nonExistingFilteredData.forEach { lineChartData in
+            var lineChartView = LineChartView()
+            lineChartView =  configureLineChartView(view: lineChartView, for: lineChartData, isForRefresh: isForRefresh)
+
+            let offset = self.scrollView.contentOffset
             
-            lineChartView.data = lineChartData
-            lineChartView.fitScreen()
-            lineChartView.animate(xAxisDuration: 2)
-            
-            lineChartView.delegate = self
+//            self.chartsStackView.arrangedSubviews.forEach { arrangedSubViews in
+//                arrangedSubViews.removeFromSuperview()
+//            }
             
             DispatchQueue.main.async {
-                self.chartsStackView.addArrangedSubview(lineChartView)
-                lineChartView.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 0.6).isActive = true
-                lineChartView.heightAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 0.6).isActive = true
-                UIView.animate(withDuration: 1, delay: 0, options: .curveEaseIn) {
-                    lineChartView.alpha = 1
-                } 
+                var index = 0
+                if !self.chartsStackView.arrangedSubviews.isEmpty {
+                    index = self.chartsStackView.arrangedSubviews.count;
+                    for (i, each) in self.chartsStackView.arrangedSubviews.enumerated() {
+                        let view = each as! LineChartView
+                        if let labelOfView = view.lineData?.dataSets[0].label,
+                           let labelOfData = lineChartData.dataSets[0].label {
+                            if labelOfView > labelOfData {
+                                index = i
+                                break
+                            }
+                        }
+                    }
+                }
+                
+                self.chartsStackView.insertArrangedSubview(lineChartView, at: index)
+                lineChartView.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 0.5).isActive = true
+                lineChartView.heightAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 0.5).isActive = true
+                                
+                self.scrollView.setContentOffset(offset, animated: false)
             }
         }
     }
     
-    private func setView(with: LineChartData) {
+    private func configureLineChartView(view: LineChartView, for lineChartData: LineChartData, isForRefresh: Bool) -> LineChartView {
         
-        let lineChartView = LineChartView()
-        
+        let lineChartView = view
+        lineChartView.alpha = 1
         lineChartView.translatesAutoresizingMaskIntoConstraints = false
         lineChartView.backgroundColor = .white
         lineChartView.rightAxis.enabled = false
         lineChartView.borderLineWidth = 1
+        lineChartView.legend.font = UIFont.appFont(placement: .boldText)
         
         let yAxis = lineChartView.leftAxis
-        yAxis.labelFont = .boldSystemFont(ofSize: 12)
+        yAxis.labelFont = UIFont.appFont(placement: .boldText)
         yAxis.setLabelCount(6, force: false)
         yAxis.labelTextColor = .darkGray
         yAxis.axisLineColor = .darkGray
         yAxis.labelPosition = .outsideChart
-
+        yAxis.drawZeroLineEnabled = true
+        yAxis.axisMinimum = 0
+        yAxis.axisMaximum = lineChartData.yMax * 1.2
+        yAxis.drawGridLinesEnabled = false
+        
         lineChartView.xAxis.labelPosition = .bottom
         lineChartView.xAxis.axisLineColor = .darkGray
-        lineChartView.xAxis.labelFont = .boldSystemFont(ofSize: 12)
-        lineChartView.xAxis.setLabelCount(6, force: false)
-        lineChartView.xAxis.labelTextColor = .black
+        lineChartView.xAxis.labelFont = UIFont.appFont(placement: .boldText)
+        lineChartView.xAxis.setLabelCount(3, force: true)
+        lineChartView.xAxis.labelTextColor = .darkGray
+        lineChartView.xAxis.granularityEnabled = true
+        lineChartView.xAxis.spaceMax = 100
+        lineChartView.xAxis.avoidFirstLastClippingEnabled = true
+
+        lineChartView.xAxis.valueFormatter = DateValueFormatter()
+        
+        lineChartView.data = lineChartData
+        lineChartView.fitScreen()
+        if !isForRefresh {
+            lineChartView.animate(xAxisDuration: 0.5)
+
+        }
+        lineChartView.delegate = self
+        return lineChartView
     }
+    
     
     private func resetAllTablesAndChartData() {
         
-        viewModel.yValuesForMain = []
+        viewModel.yValuesForMain = ([], false)
         informationLabel.text = ""
         valueOnTheGraphLabel.text = ""
-        chartsStackView.arrangedSubviews.forEach { view in
-            chartsStackView.removeArrangedSubview(view)
-            view.removeFromSuperview()
-        }
+        dateOfMeasurementLAbel.text = ""
+//        chartsStackView.arrangedSubviews.forEach { view in
+//            chartsStackView.removeArrangedSubview(view)
+//            view.removeFromSuperview()
+//        }
+    }
+    
+    private func setTimer() {
+        viewModel.timer = Timer.scheduledTimer(timeInterval: 5,
+                                     target: self,
+                                     selector: #selector(fireTimer),
+                                     userInfo: nil,
+                                     repeats: true)
+        viewModel.timer?.tolerance = 0.5
     }
     
     private func showAlert(path: IndexPath) {
@@ -309,6 +481,8 @@ final class DeviceReadingViewController: UIViewController {
 
 }
 
+// MARK: - ScrollViewDelegate
+
 
 
 // MARK: - TextField Delegate
@@ -334,6 +508,9 @@ extension DeviceReadingViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         resetAllTablesAndChartData()
         viewModel.getAnalytesByIdRequested(viewModel.deviceListTableViewViewModels[indexPath.row].serverID)
+        if viewModel.timer == nil {
+            setTimer()
+        }
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -382,6 +559,11 @@ extension DeviceReadingViewController: ChartViewDelegate {
     
     func chartValueSelected(_ chartView: ChartViewBase, entry: ChartDataEntry, highlight: Highlight) {
         valueOnTheGraphLabel.text = "Concentration: \(String(format:"%.2f" ,entry.y))"
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm:ss"
+        formatter.string(from: Date(timeIntervalSince1970: entry.x))
+        let str = formatter.string(from: Date(timeIntervalSince1970: entry.x))
+        dateOfMeasurementLAbel.text = "Time:\(str)"
     }
     
 }
@@ -398,3 +580,5 @@ extension DeviceReadingViewController: StoryboardInstantiable {
         return viewController
     }
 }
+
+

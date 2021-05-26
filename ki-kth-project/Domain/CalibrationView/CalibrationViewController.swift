@@ -7,23 +7,22 @@
 
 import UIKit
 import Charts
+import AVFoundation
 
 final class CalibrationViewController: UIViewController {
-    
-    let service = NetworkingService()
-    
+        
     var viewModel: CalibrationViewModel!
     
     var refreshControl = UIRefreshControl()
     
     @IBOutlet weak var informationLabel: UILabel!
-    @IBOutlet weak var corCoefficent: UILabel!
+    @IBOutlet weak var corCoefficentLabel: UILabel!
     @IBOutlet weak var mainChartView: LineChartView!
-    @IBOutlet weak var calGraphView1: LineChartView!
-    @IBOutlet weak var calGraphView2: LineChartView!
-    @IBOutlet weak var concentrationTable: UITableView!
+    @IBOutlet weak var calCurveGraphView: LineChartView!
+    @IBOutlet weak var linearCalGraphView: LineChartView!
+    @IBOutlet weak var concentrationTableView: UITableView!
     @IBOutlet weak var analyteListTableView: UITableView!
-    @IBOutlet weak var potential: UILabel!
+    @IBOutlet weak var potentialReadingLabel: UILabel!
     @IBOutlet weak var concTextField: IndicatorTextField!
     @IBOutlet weak var addAnalyteButton: ActivityIndicatorButton!
     @IBOutlet weak var analytesStackView: UIStackView!
@@ -35,8 +34,8 @@ final class CalibrationViewController: UIViewController {
     @IBOutlet weak var blockViewForCancelling: UIView!
     @IBOutlet weak var concentrationElementsStackView: UIStackView!
     @IBOutlet weak var microNeedleHeadersStackView: UIStackView!
-    
     @IBOutlet weak var pickerView: UIPickerView!
+    @IBOutlet weak var qrImageView: UIImageView!
     
     
 // MARK: - Lifecyle
@@ -47,28 +46,28 @@ final class CalibrationViewController: UIViewController {
             self?.handleReceivedFromViewModel(action: action)
         }
         
-        pickerView.dataSource = self
-        pickerView.delegate = self
-        pickerView.setValue(AppColor.primary, forKey: "textColor")
-        
         setUI()
         if let id = viewModel.deviceID {
             viewModel.viewDidLoad(for: id)
         }
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+    override func viewWillAppear(_ animated: Bool) {
+        setTimer()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        viewModel.timer?.invalidate()
     }
     
 // MARK: - IBAction
     @IBAction func addConc(_ sender: UIButton) {
         
-        guard let conc1 = concTextField.text, let pot1 = potential.text?.replacingOccurrences(of: " mV", with: "") else { return }
+        guard let conc1 = concTextField.text, let pot1 = potentialReadingLabel.text?.replacingOccurrences(of: " mV", with: "") else { return }
         
         guard let conc2 = Double(conc1), let pot2 = Double(pot1) else {
             concTextField.indicatesError = true
-            potential.text = "Invalid entry"
+            potentialReadingLabel.text = "Invalid entry"
             return
         }
                 
@@ -94,7 +93,7 @@ final class CalibrationViewController: UIViewController {
     
     @IBAction func drawLinearGraph(_ sender: Any) {
         
-        if let selectedRows = concentrationTable.indexPathsForSelectedRows {
+        if let selectedRows = concentrationTableView.indexPathsForSelectedRows {
 
             var entries: [ChartDataEntry] = []
             
@@ -104,15 +103,15 @@ final class CalibrationViewController: UIViewController {
                 entries.append(ChartDataEntry(x: viewModel.concentrationTableViewCellModels[each.row].concLog, y: viewModel.concentrationTableViewCellModels[each.row].potential))
 
             }
-            viewModel.yValuesForCal2 = entries
+            viewModel.yValuesForLinearRegressionLine = entries
         } else {
-            viewModel.yValuesForCal2 = []
+            viewModel.yValuesForLinearRegressionLine = []
         }
     }
     
     @IBAction func clearSelected(_ sender: UIButton) {
   
-        if let indexPaths = concentrationTable.indexPathsForSelectedRows  {
+        if let indexPaths = concentrationTableView.indexPathsForSelectedRows  {
             let sortedPaths = indexPaths.sorted { $0.row > $1.row }
             for indexPath in sortedPaths {
                 let count = viewModel.concentrationTableViewCellModels.count
@@ -146,27 +145,31 @@ final class CalibrationViewController: UIViewController {
         let entries = viewModel.concentrationTableViewCellModels.map { (solution) -> ChartDataEntry in
             return ChartDataEntry(x: solution.concLog, y: solution.potential)
         }
-        viewModel.yValuesForCal1 = entries
+        viewModel.yValuesForCalibrationCurve = entries
     }
     
     @IBAction func calibrateButtonPressed(_ sender: Any) {
         viewModel.analyteCalibrationRequired()
     }
     
-    @objc func dismissKeyboard() {
-        self.blockViewForCancelling.isUserInteractionEnabled = false
-        analytesStackView.isUserInteractionEnabled = false
-        concentrationElementsStackView.isUserInteractionEnabled = false
-        UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut) {
-            self.blockViewForCancelling.alpha = 0
-        } completion: { _ in
-            self.view.sendSubviewToBack(self.analytesStackView)
-            self.view.sendSubviewToBack(self.concentrationElementsStackView)
-            self.analytesStackView.isUserInteractionEnabled = true
-            self.concentrationElementsStackView.isUserInteractionEnabled = true
+    @objc func dismissAll() {
+        if let status = viewModel.isQRCodeCurrentlyPresented {
+            if status {
+                dismissQRCode()
+                return
+            }
         }
-        concTextField.resignFirstResponder()
+        dismissKeyboard()
     }
+    
+    @objc func fireTimer() {
+        
+        guard let id = viewModel.latestHandledAnalyteId else {
+            return
+        }
+        viewModel.getAnalyteDataByIdRequested(id, isAutoRefresh: true)
+    }
+    
     
 // MARK: - Handle from view model
     func handleReceivedFromViewModel(action :CalibrationViewModel.Action) {
@@ -181,10 +184,14 @@ final class CalibrationViewController: UIViewController {
             makeCorrLabelsVisible(corValue: parameters.rValue,
                                   slope: parameters.slope,
                                   constant: parameters.constant)
+        case .presentQRCode(descriptionAndServerID: let id, point: let point):
+            presentQRCode(descriptionAndServerID: id, point: point)
+        case .copyAnalyteInfoToClipboard(serverID: let serverID, description: let desc):
+            copyToClipBoardAndShowInfo(serverID: serverID, desc: desc)
         case .clearChart(for: let chart):
             clearChart(for: chart)
-        case .updateChartUI(for: let chart, with: let data):
-            updateChart(of: chart, with: data)
+        case .updateChartUI(for: let chart, with: let data, isForAutoRefresh: let bool):
+            updateChart(of: chart, with: data, isForRefresh: bool)
         case .reloadAnayteListTableView:
             updateUIforAnalyteListTableView()
         case .reloadConcentrationListTableView:
@@ -198,6 +205,87 @@ final class CalibrationViewController: UIViewController {
     
 // MARK: - Operations
     
+    private func setTimer() {
+        viewModel.timer = Timer.scheduledTimer(timeInterval: 5,
+                                     target: self,
+                                     selector: #selector(fireTimer),
+                                     userInfo: nil,
+                                     repeats: true)
+        viewModel.timer?.tolerance = 0.5
+    }
+    
+    private func copyToClipBoardAndShowInfo(serverID: String, desc: String) {
+        AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
+        let systemSoundID: SystemSoundID = 1057
+        AudioServicesPlaySystemSound (systemSoundID)
+//        UIPasteboard.general.string = "\(desc):\(serverID)"
+        UIPasteboard.general.string = serverID
+        UIView.animate(withDuration: 0.05) {
+            self.informationLabel.text = "Analyte copied to clipboard!"
+            self.informationLabel.alpha = 1
+            self.informationLabel.textColor = AppColor.primary
+        } completion: { _ in
+            UIView.animate(withDuration: 1) {
+                self.informationLabel.alpha = 0
+            } completion: { _ in
+                self.informationLabel.text = ""
+            }
+        }
+    }
+    
+    private func presentQRCode(descriptionAndServerID: String, point: CGPoint) {
+
+        self.blockViewForCancelling.isUserInteractionEnabled = true
+        viewModel.isQRCodeCurrentlyPresented = true
+        
+        qrImageView.translatesAutoresizingMaskIntoConstraints = true
+        qrImageView.isHidden = false
+        qrImageView.frame = CGRect(x: point.x, y: point.y, width: 40, height: 40)
+        qrImageView.frame.origin = point
+        qrImageView.layer.cornerRadius = 3
+        qrImageView.image = QRCodeGenerator().generateQRCode(from: descriptionAndServerID)
+
+        UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseInOut) {
+            self.blockViewForCancelling.alpha = 0.95
+            self.qrImageView.frame = CGRect(x: self.view.center.x - 50, y: self.view.center.y - 50, width: 100, height: 100)
+            self.qrImageView.alpha = 1
+        }
+    }
+    
+    private func dismissQRCode() {
+        
+        viewModel.isQRCodeCurrentlyPresented = false
+        self.blockViewForCancelling.isUserInteractionEnabled = false
+        
+        UIView.animate(withDuration: 0.3, delay: 0.01, options: .curveEaseOut) {
+            if let point = self.viewModel.latestHandledQRCoordinate {
+                self.qrImageView.frame = CGRect(x: point.x, y: point.y, width: 40, height: 40)
+            } else {
+                self.qrImageView.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
+            }
+            self.blockViewForCancelling.alpha = 0
+            self.qrImageView.alpha = 0
+        } completion: { _ in
+            self.qrImageView.image = nil
+            self.qrImageView.isHidden = true
+        }
+    }
+    
+    private func dismissKeyboard() {
+        self.blockViewForCancelling.isUserInteractionEnabled = false
+        analytesStackView.isUserInteractionEnabled = false
+        concentrationElementsStackView.isUserInteractionEnabled = false
+        UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut) {
+            self.blockViewForCancelling.alpha = 0
+        } completion: { _ in
+            self.view.sendSubviewToBack(self.analytesStackView)
+            self.view.sendSubviewToBack(self.concentrationElementsStackView)
+            self.analytesStackView.isUserInteractionEnabled = true
+            self.concentrationElementsStackView.isUserInteractionEnabled = true
+        }
+        concTextField.resignFirstResponder()
+    }
+    
     private func deleteRows(path: IndexPath) {
         self.analyteListTableView.beginUpdates()
         self.viewModel.analyteListTableViewCellModels.remove(at: path.row)
@@ -208,7 +296,7 @@ final class CalibrationViewController: UIViewController {
     private func resetAllTablesAndChartData() {
         
         informationLabel.text = ""
-        corCoefficent.text = ""
+        corCoefficentLabel.text = ""
         corEquationLabel.text = ""
         
         viewModel.regressionSlope = nil
@@ -216,9 +304,9 @@ final class CalibrationViewController: UIViewController {
         viewModel.latestHandledAnalyteId = nil
         
         viewModel.concentrationTableViewCellModels = []
-        viewModel.yValuesForMain = []
-        viewModel.yValuesForCal1 = []
-        viewModel.yValuesForCal2 = []
+        viewModel.yValuesForMainRawDataLine = ([], false, nil)
+        viewModel.yValuesForCalibrationCurve = []
+        viewModel.yValuesForLinearRegressionLine = []
     }
     
 // MARK: - UI
@@ -226,12 +314,12 @@ final class CalibrationViewController: UIViewController {
         DispatchQueue.main.async {
             
             // Cor Coefficient
-            self.corCoefficent.alpha = 1
-            self.corCoefficent.text = "Correalation Coefficent (r) is \(String(format: "%.4f", corValue))"
+            self.corCoefficentLabel.alpha = 1
+            self.corCoefficentLabel.text = "Correalation Coefficent (r) is \(String(format: "%.4f", corValue))"
             if corValue > 7 {
-                self.corCoefficent.tintColor = .systemGreen
+                self.corCoefficentLabel.tintColor = .systemGreen
             } else {
-                self.corCoefficent.tintColor = .systemRed
+                self.corCoefficentLabel.tintColor = .systemRed
             }
             
             // Cor Equation
@@ -245,40 +333,49 @@ final class CalibrationViewController: UIViewController {
         case .mainChartForRawData:
             mainChartView.clearValues()
         case .calibrationChart:
-            calGraphView1.clearValues()
+            calCurveGraphView.clearValues()
         case .linearRegressionChart:
-            calGraphView2.clearValues()
+            linearCalGraphView.clearValues()
         }
     }
     
     private func updateUIforConcentrationListTableView() {
-        concentrationTable.reloadData()
+        concentrationTableView.reloadData()
     }
 
     private func updateUIforAnalyteListTableView() {
         analyteListTableView.reloadData()
     }
     
-    private func updateChart(of chart: ChartViews, with data: LineChartData) {
+    private func updateChart(of chart: ChartViews, with data: LineChartData, isForRefresh: Bool = false) {
         
         switch chart {
         case .mainChartForRawData:
             mainChartView.data = data
             mainChartView.fitScreen()
-            mainChartView.animate(xAxisDuration: 2)
+            if !isForRefresh {
+                mainChartView.animate(xAxisDuration: 0.5)
+            }
         case .calibrationChart:
-            calGraphView1.data = data
-            calGraphView1.animate(xAxisDuration: 0.1)
+            calCurveGraphView.data = data
+            calCurveGraphView.fitScreen()
+            calCurveGraphView.animate(xAxisDuration: 0.1)
         case .linearRegressionChart:
-            calGraphView2.data = data
-            calGraphView2.animate(xAxisDuration: 0.1)
+            linearCalGraphView.data = data
+            calCurveGraphView.fitScreen()
+            linearCalGraphView.animate(xAxisDuration: 0.1)
         }
     }
     
     private func setUI() {
         
+        //Picker View
+        pickerView.dataSource = self
+        pickerView.delegate = self
+        pickerView.setValue(AppColor.primary, forKey: "textColor")
+        
         //Block View For Cancelling
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissAll))
         blockViewForCancelling.addGestureRecognizer(tapGesture)
         
         
@@ -292,9 +389,9 @@ final class CalibrationViewController: UIViewController {
         informationLabel.textColor = AppColor.primary
         
         // Cor. Coefficient label
-        corCoefficent.alpha = 0
-        corCoefficent.textColor = AppColor.primary
-        corCoefficent.font = UIFont.appFont(placement: .boldText)
+        corCoefficentLabel.alpha = 0
+        corCoefficentLabel.textColor = AppColor.primary
+        corCoefficentLabel.font = UIFont.appFont(placement: .boldText)
         
         //Cor. Equation label
         corEquationLabel.alpha = 0
@@ -358,21 +455,20 @@ final class CalibrationViewController: UIViewController {
             }
         }
         
-        potential.font = UIFont.appFont(placement: .title)
-        potential.textColor = .systemRed
+        potentialReadingLabel.font = UIFont.appFont(placement: .title)
+        potentialReadingLabel.textColor = AppColor.primary
 
-        setView(for: mainChartView)
-        setView(for: calGraphView1)
-        setView(for: calGraphView2)
+        setView(for: mainChartView, viewType: .mainChartForRawData)
+        setView(for: calCurveGraphView, viewType: .calibrationChart)
+        setView(for: linearCalGraphView, viewType: .linearRegressionChart)
     
         mainChartView.delegate = self
         
-        concentrationTable.delegate = self
-        concentrationTable.allowsMultipleSelectionDuringEditing = true
-        concentrationTable.setEditing(true, animated: true)
-        concentrationTable.dataSource = self
-        concentrationTable.register(UINib(nibName: ConcentrationTableViewCell.nibName, bundle: nil), forCellReuseIdentifier: ConcentrationTableViewCell.nibName)
-        
+        concentrationTableView.delegate = self
+        concentrationTableView.allowsMultipleSelectionDuringEditing = true
+        concentrationTableView.setEditing(true, animated: true)
+        concentrationTableView.dataSource = self
+        concentrationTableView.register(UINib(nibName: ConcentrationTableViewCell.nibName, bundle: nil), forCellReuseIdentifier: ConcentrationTableViewCell.nibName)
         
         analyteListTableView.delegate = self
         analyteListTableView.delaysContentTouches = false;
@@ -393,7 +489,7 @@ final class CalibrationViewController: UIViewController {
         analyteListTableView.register(UINib(nibName: AnalyteListTableViewCell.nibName, bundle: nil), forCellReuseIdentifier: AnalyteListTableViewCell.nibName)
     }
     
-    private func setView(for lineChartView: LineChartView) {
+    private func setView(for lineChartView: LineChartView, viewType: ChartViews) {
         lineChartView.translatesAutoresizingMaskIntoConstraints = false
         lineChartView.backgroundColor = .white
         lineChartView.rightAxis.enabled = false
@@ -405,12 +501,19 @@ final class CalibrationViewController: UIViewController {
         yAxis.labelTextColor = .darkGray
         yAxis.axisLineColor = .darkGray
         yAxis.labelPosition = .outsideChart
-
+        //yAxis.axisMinimum = 0
+        
+        if viewType == .mainChartForRawData {
+            lineChartView.xAxis.valueFormatter = DateValueFormatter()
+        }
         lineChartView.xAxis.labelPosition = .bottom
         lineChartView.xAxis.axisLineColor = .darkGray
         lineChartView.xAxis.labelFont = .boldSystemFont(ofSize: 12)
-        lineChartView.xAxis.setLabelCount(6, force: false)
+        lineChartView.xAxis.setLabelCount(3, force: true)
         lineChartView.xAxis.labelTextColor = .black
+        lineChartView.xAxis.labelTextColor = .darkGray
+        lineChartView.xAxis.granularityEnabled = true
+        lineChartView.xAxis.avoidFirstLastClippingEnabled = true
     }
     
     private func startActivityIndicators(with info: InformationLabel, with alert: AnalytePageAlertType){
@@ -515,7 +618,7 @@ extension CalibrationViewController: UITextFieldDelegate {
 extension CalibrationViewController: ChartViewDelegate {
     
     func chartValueSelected(_ chartView: ChartViewBase, entry: ChartDataEntry, highlight: Highlight) {
-        potential.text = "\(String(entry.y)) mV"
+        potentialReadingLabel.text = "\(String(format:"%.1f", entry.y)) mV"
     }
     
 }
@@ -537,12 +640,21 @@ extension CalibrationViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if tableView.isEqual(analyteListTableView) {
             resetAllTablesAndChartData()
-            viewModel.getAnalytesByIdRequested(viewModel.analyteListTableViewCellModels[indexPath.row].serverID)
+            let id  = viewModel.analyteListTableViewCellModels[indexPath.row].serverID
+            viewModel.getAnalyteDataByIdRequested(id, isAutoRefresh: false)
+            viewModel.latestHandledAnalyteId = id
+            if viewModel.timer == nil {
+                setTimer()
+            }
         }
     }
-    
+        
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return true
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 50
     }
 
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath)
@@ -563,7 +675,7 @@ extension CalibrationViewController: UITableViewDelegate {
 extension CalibrationViewController: UITableViewDataSource {
         
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if tableView.isEqual(concentrationTable) {
+        if tableView.isEqual(concentrationTableView) {
             return viewModel.concentrationTableViewCellModels.count
         } else {
             return viewModel.analyteListTableViewCellModels.count
@@ -573,7 +685,7 @@ extension CalibrationViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        if tableView.isEqual(concentrationTable) {
+        if tableView.isEqual(concentrationTableView) {
             let cell = tableView.dequeueReusableCell(withIdentifier: ConcentrationTableViewCell.nibName, for: indexPath) as! ConcentrationTableViewCell
             
             cell.viewModel = viewModel.concentrationTableViewCellModels[indexPath.row]
