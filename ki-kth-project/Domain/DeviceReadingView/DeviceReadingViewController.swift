@@ -333,12 +333,10 @@ final class DeviceReadingViewController: UIViewController {
                 let lineChartView = view as! LineChartView
                 if lineChartView.lineData?.dataSets[0].label == data.dataSets[0].label {
                     lineChartView.data = data
-                    lineChartView.leftAxis.resetCustomAxisMax()
                     lineChartView.leftAxis.axisMinimum = 0
-                    lineChartView.leftAxis.resetCustomAxisMax()
                     lineChartView.leftAxis.axisMaximum = data.yMax * 1.2
                     lineChartView.notifyDataSetChanged()
-                    lineChartView.fitScreen()
+                   // lineChartView.fitScreen()
                     if !isForRefresh {
                         lineChartView.animate(xAxisDuration: 0.5)
                     }

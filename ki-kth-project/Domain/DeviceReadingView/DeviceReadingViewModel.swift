@@ -323,7 +323,7 @@ final class DeviceReadingViewModel {
 //                    chartPoints.removeFirst(chartPoints.count - 300)
 //                }
 //
-//                chartPoints.sort { $0.x < $1.x }
+                chartPoints.sort { $0.x < $1.x }
                 
                 guard let slope = analyte.calibrationParameters.correlationEquationParameters?.slope,
                 let constant = analyte.calibrationParameters.correlationEquationParameters?.constant else { return }
