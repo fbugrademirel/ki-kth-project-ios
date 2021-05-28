@@ -111,9 +111,9 @@ struct AnalyteDataAPI {
         }
     }
     
-    func getAnalyteData(_ id: String, with completion: @escaping (Result<AnalyteDataFetch,Error>) -> Void) {
+    func getAnalyteData(_ id: String, interval: QueryInterval, with completion: @escaping (Result<AnalyteDataFetch,Error>) -> Void) {
         
-        let url =  "\(prodUrl)/microneedle/\(id)?interval=minutes"
+        let url =  "\(prodUrl)/microneedle/\(id)?interval=\(interval)"
         
         networkingService.dispatchRequest(urlString: url, method: .get) { result in
             switch result {

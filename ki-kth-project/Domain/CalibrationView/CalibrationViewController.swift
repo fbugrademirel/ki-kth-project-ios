@@ -36,6 +36,8 @@ final class CalibrationViewController: UIViewController {
     @IBOutlet weak var microNeedleHeadersStackView: UIStackView!
     @IBOutlet weak var pickerView: UIPickerView!
     @IBOutlet weak var qrImageView: UIImageView!
+    @IBOutlet weak var intervalSegmentedControl: UISegmentedControl!
+    @IBOutlet weak var intervalLabel: UILabel!
     
     
 // MARK: - Lifecyle
@@ -152,6 +154,22 @@ final class CalibrationViewController: UIViewController {
         viewModel.analyteCalibrationRequired()
     }
     
+    @objc func segmentedControlValueChanged(_ sender: UISegmentedControl) {
+        
+        guard let id = viewModel.latestHandledAnalyteId else {
+            return
+        }
+        
+        switch intervalSegmentedControl.selectedSegmentIndex {
+        case 0:
+            viewModel.getAnalyteDataByIdRequested(id, interval: .seconds, isAutoRefresh: false)
+        case 1:
+            viewModel.getAnalyteDataByIdRequested(id, interval: .minutes, isAutoRefresh: false)
+        default:
+            break
+        }
+    }
+    
     @objc func dismissAll() {
         if let status = viewModel.isQRCodeCurrentlyPresented {
             if status {
@@ -167,7 +185,14 @@ final class CalibrationViewController: UIViewController {
         guard let id = viewModel.latestHandledAnalyteId else {
             return
         }
-        viewModel.getAnalyteDataByIdRequested(id, isAutoRefresh: true)
+        switch intervalSegmentedControl.selectedSegmentIndex {
+        case 0:
+            viewModel.getAnalyteDataByIdRequested(id, interval: .seconds, isAutoRefresh: true)
+        case 1:
+            viewModel.getAnalyteDataByIdRequested(id, interval: .minutes, isAutoRefresh: true)
+        default:
+            break
+        }
     }
     
     
@@ -368,6 +393,17 @@ final class CalibrationViewController: UIViewController {
     }
     
     private func setUI() {
+        
+        intervalLabel.font = UIFont.appFont(placement: .boldText)
+        intervalLabel.textColor = AppColor.primary
+        
+        intervalSegmentedControl.addTarget(self, action: #selector(segmentedControlValueChanged), for: .valueChanged)
+        
+        intervalSegmentedControl.setTitleTextAttributes([.font: UIFont.appFont(placement: .boldText),
+                                                         .foregroundColor: AppColor.primary!], for: .normal)
+        
+        intervalSegmentedControl.tintColor = AppColor.primary
+        
         
         //Picker View
         pickerView.dataSource = self
@@ -641,7 +677,14 @@ extension CalibrationViewController: UITableViewDelegate {
         if tableView.isEqual(analyteListTableView) {
             resetAllTablesAndChartData()
             let id  = viewModel.analyteListTableViewCellModels[indexPath.row].serverID
-            viewModel.getAnalyteDataByIdRequested(id, isAutoRefresh: false)
+            switch intervalSegmentedControl.selectedSegmentIndex {
+            case 0:
+                viewModel.getAnalyteDataByIdRequested(id, interval: .seconds, isAutoRefresh: false)
+            case 1:
+                viewModel.getAnalyteDataByIdRequested(id, interval: .minutes, isAutoRefresh: false)
+            default:
+                break
+            }
             viewModel.latestHandledAnalyteId = id
             if viewModel.timer == nil {
                 setTimer()

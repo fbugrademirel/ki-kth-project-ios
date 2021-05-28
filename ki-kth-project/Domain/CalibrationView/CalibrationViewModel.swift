@@ -272,13 +272,13 @@ final class CalibrationViewModel {
         }
     }
     
-    func getAnalyteDataByIdRequested(_ id: String, isAutoRefresh: Bool = false) {
+    func getAnalyteDataByIdRequested(_ id: String, interval: QueryInterval, isAutoRefresh: Bool = false) {
         
         if !isAutoRefresh {
             sendActionToViewController?(.startActivityIndicators(message: .fetching, alertType: .neutralAppColor))
         }
 
-        AnalyteDataAPI().getAnalyteData(id) { [weak self] result  in
+        AnalyteDataAPI().getAnalyteData(id, interval: interval) { [weak self] result  in
             switch result {
             case .success(let data):
 
