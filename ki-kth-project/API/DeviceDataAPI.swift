@@ -211,9 +211,9 @@ struct DeviceDataAPI {
         }
     }
     
-    func getAllAnalytesForDevice(_ id: String, completion: @escaping (Result<[AnalyteDataFetch], Error>) -> Void ) {
+    func getAllAnalytesForDevice(_ id: String, interval: QueryInterval, completion: @escaping (Result<[AnalyteDataFetch], Error>) -> Void ) {
         
-        let url = "\(prodUrl)/onbodydevice/allmicroneedles/\(id)"
+        let url = "\(prodUrl)/onbodydevice/allmicroneedles/\(id)/?interval=\(interval.rawValue)"
         
         AuthenticationManager().getAuthToken { result in
             switch result {
@@ -315,6 +315,11 @@ struct DeviceDataAPI {
 }
 
 // MARK: - Device Data Codable
+
+enum QueryInterval: String {
+    case seconds = "seconds"
+    case minutes = "minutes"
+}
 
 struct UpdateUserPost: Codable {
     let name: String?

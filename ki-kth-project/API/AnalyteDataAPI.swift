@@ -113,7 +113,7 @@ struct AnalyteDataAPI {
     
     func getAnalyteData(_ id: String, with completion: @escaping (Result<AnalyteDataFetch,Error>) -> Void) {
         
-        let url =  "\(prodUrl)/microneedle/\(id)"
+        let url =  "\(prodUrl)/microneedle/\(id)?interval=minutes"
         
         networkingService.dispatchRequest(urlString: url, method: .get) { result in
             switch result {
