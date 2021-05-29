@@ -112,6 +112,19 @@
                                     </button>
                                 </subviews>
                             </stackView>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="tIV-2L-Tjq" userLabel="IntervalSegmented">
+                                <rect key="frame" x="365.5" y="127.5" width="145" height="32"/>
+                                <segments>
+                                    <segment title="Seconds"/>
+                                    <segment title="Minutes"/>
+                                </segments>
+                            </segmentedControl>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Data Interval:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="94W-pG-j78">
+                                <rect key="frame" x="259" y="132.5" width="100.5" height="20.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="U4L-id-Swy" userLabel="CalibrationStackView">
                                 <rect key="frame" x="771" y="248.5" width="246" height="449.5"/>
                                 <subviews>
@@ -232,19 +245,6 @@
                                     <constraint firstAttribute="width" constant="200" placeholder="YES" id="wKx-Uv-H1m"/>
                                 </constraints>
                             </imageView>
-                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="tIV-2L-Tjq" userLabel="IntervalSegmented">
-                                <rect key="frame" x="365.5" y="127.5" width="145" height="32"/>
-                                <segments>
-                                    <segment title="Seconds"/>
-                                    <segment title="Minutes"/>
-                                </segments>
-                            </segmentedControl>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Data Interval:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="94W-pG-j78">
-                                <rect key="frame" x="259" y="132.5" width="100.5" height="20.5"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="ZdY-Bv-L1v"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>

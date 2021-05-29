@@ -498,7 +498,7 @@ final class DeviceReadingViewController: UIViewController {
         
         alert.addAction(UIAlertAction(title: "Delete also from cloud", style: .destructive, handler: { _ in
             
-            let alert = UIAlertController(title: "Warning!", message: "This operation will also delete related analytes' of this device", preferredStyle: .alert)
+            let alert = UIAlertController(title: "Warning!", message: "This operation will also delete related analytes and all of their measurements for this device", preferredStyle: .alert)
             
             alert.addAction(UIAlertAction(title: "Confirm", style: .destructive, handler: { _ in
                 self.viewModel.deletionByIdRequested(id: self.viewModel.deviceListTableViewViewModels[path.row].serverID, path: path)

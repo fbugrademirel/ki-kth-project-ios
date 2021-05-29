@@ -593,7 +593,7 @@ final class CalibrationViewController: UIViewController {
         }
     }
     private func showAlert(path: IndexPath) {
-        let alert = UIAlertController(title: "Do you confirm deletion?", message: nil, preferredStyle: .alert)
+        let alert = UIAlertController(title: "Do you confirm deletion? This will delete all the measurements related to this analyte.", message: nil, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Delete only from this device", style: .default, handler: { _ in
 
             self.analyteListTableView.beginUpdates()
