@@ -262,7 +262,7 @@ struct DeviceDataAPI {
     
     func getAllAnalytesForDeviceWithoutMeasurements(_ id: String, completion: @escaping (Result<[AnalyteDataFetchWithoutMeasurements], Error>) -> Void ) {
         
-        let url = "\(prodUrl)/onbodydevice/allmicroneedles/\(id)"
+        let url = "\(prodUrl)/onbodydevice/onlyallmicroneedles/\(id)"
         
         AuthenticationManager().getAuthToken { result in
             switch result {
