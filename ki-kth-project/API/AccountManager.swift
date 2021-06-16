@@ -41,16 +41,12 @@ public final class AccountManager {
         DeviceDataAPI().createAccount(name: name, email: email, password: password) { result in
             switch result {
             case .success(let response):
-                Log.s("Account created with the email: \(response.user.email)")
-                AuthenticationManager().setKeyChainTokens(auth: response.token)
-                let user = UserAccountInfo(name: response.user.name, email: response.user.email)
-                UserDefaults.userEmail = response.user.email
-                UserDefaults.userName = response.user.name
+                Log.s("Account created with the email: \(response.email)")
+                let user = UserAccountInfo(name: response.name, email: response.email)
                 completion(.success(user))
             case .failure(let error):
                 Log.e(error)
                 // MARK: - TODO: Do proper error check!
-                Log.e(error)
                 completion(.failure(.invalidFields))
             }
         }
@@ -73,6 +69,20 @@ public final class AccountManager {
                 UserDefaults.userEmail = nil
                 UserDefaults.userName = nil
                 Log.s("Logout successful!")
+                completion(nil)
+            }
+        }
+    }
+    
+    public static func sendPasswordReset(email: String, completion: @escaping (Error?) -> Void) {
+        
+        DeviceDataAPI().passwordReset(email: email) { error in
+            
+            if let error = error {
+                Log.e(error)
+                completion(error)
+            } else {
+                //This means successfully request sent.
                 completion(nil)
             }
         }

@@ -42,6 +42,25 @@ final class InitialLoginViewModel {
     func createAccountRequested() {
         sendActionToViewController?(.presentCreateAccountViewController)
     }
+    
+    func forgotPasswordResetRequested(email: String) {
+        self.sendActionToViewController?(.startActivityIndicators(message: .requestingPasswordResetLink, alert: .neutralAppColor))
+        AccountManager.sendPasswordReset(email: email) { error in
+            if let error = error {
+                //This means reset operation is not successful
+                Log.e(error.localizedDescription)
+                DispatchQueue.main.async {
+                    self.sendActionToViewController?(.stopActivityIndicators(message: .resetPasswordLinkIsSentFail, alert: .redWarning))
+                }
+            } else {
+                //This means reset link send is successful
+                Log.s("Logout successful")
+                DispatchQueue.main.async {
+                    self.sendActionToViewController?(.stopActivityIndicators(message: .resetPasswordLinkIsSentSuccess, alert: .greenInfo))
+                }
+            }
+        }
+    }
 }
 
 enum InitialLoginInfoLabel: String {
@@ -49,6 +68,11 @@ enum InitialLoginInfoLabel: String {
     case loggedInWithSuccess = "Logged in with success..."
     case loginFail = "Login failed! Invalid email or password!"
     case greetingMessage = "Welcome! Please enter your details to login!"
+    case activationRemainderMessage = "An activation link is sent to your email! Check your mailbox!"
+    case requestingPasswordResetLink = "Requesting password reset link..."
+    case resetPasswordLinkIsSentSuccess = "A reset link is sent to your email adress. Check your mailbox!"
+    case resetPasswordLinkIsSentFail = "Failed!. Email is invalid or account is unsigned."
+
 }
 
 enum InitialLoginAlertType {

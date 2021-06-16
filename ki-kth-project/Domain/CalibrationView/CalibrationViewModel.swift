@@ -272,13 +272,13 @@ final class CalibrationViewModel {
         }
     }
     
-    func getAnalyteDataByIdRequested(_ id: String, isAutoRefresh: Bool = false) {
+    func getAnalyteDataByIdRequested(_ id: String, interval: QueryInterval, isAutoRefresh: Bool = false) {
         
         if !isAutoRefresh {
             sendActionToViewController?(.startActivityIndicators(message: .fetching, alertType: .neutralAppColor))
         }
 
-        AnalyteDataAPI().getAnalyteData(id) { [weak self] result  in
+        AnalyteDataAPI().getAnalyteData(id, interval: interval) { [weak self] result  in
             switch result {
             case .success(let data):
 
@@ -297,13 +297,16 @@ final class CalibrationViewModel {
                     return
                 }
                             
-                let chartPoints = data.measurements.map { (measurement) -> ChartDataEntry in
+                var chartPoints = data.measurements.map { (measurement) -> ChartDataEntry in
                 
                     //This is for 1 . . 2 . . .3 .  .
                     let entry = ChartDataEntry(x: measurement.time, y: measurement.value)
 
                     return entry
                 }
+                
+                chartPoints.sort { $0.x < $1.x }
+                
                 //self?.latestHandledAnalyteId = data._id
                 if !isAutoRefresh {
                     self?.sendActionToViewController?(.stopActivityIndicators(message: .fetchedWithSuccess, alertType: .greenInfo))

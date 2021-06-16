@@ -10,26 +10,43 @@ import Foundation
 final class CreateAccountViewModel {
 
     enum Action {
-        case createAccountSuccessDismissAndContinueToDeviceView(userName: String, email: String)
+        case createAccountSuccessDismissAndSendInfoForActivation
+        case startActivityIndicators(message: CreateAccountInfoLabel, alert: CreateAccountAlertType)
+        case stopActivityIndicators(message: CreateAccountInfoLabel, alert: CreateAccountAlertType)
     }
     var sendActionToViewController: ((Action) -> Void)?
             
     func viewDidLoad() {
        
-   
+        
     }
     
     func createAccountRequested(name: String, email: String, password: String) {
+        sendActionToViewController?(.startActivityIndicators(message: .creatingAccount, alert: .neutralAppColor))
         AccountManager.createAccount(name: name, email: email, password: password) { [weak self] result in
-            
             switch result {
-            case .success(let userInfo):
+            case .success(_):
                 Log.s("Account created!")
-                
-                self?.sendActionToViewController?(.createAccountSuccessDismissAndContinueToDeviceView(userName: userInfo.name, email: userInfo.email))
+                self?.sendActionToViewController?(.stopActivityIndicators(message: .createdWithSuccess, alert: .greenInfo))
+                self?.sendActionToViewController?(.createAccountSuccessDismissAndSendInfoForActivation)
             case .failure(let error):
+                self?.sendActionToViewController?(.stopActivityIndicators(message: .createFailed, alert: .redWarning))
                 Log.e(error)
             }
         }
     }
+}
+
+enum CreateAccountInfoLabel: String {
+    case creatingAccount = "Creating account..."
+    case createdWithSuccess = "Created with success..."
+    case createFailed = "Create account failed!"
+    case greetingMessage = "Welcome! Please enter your details to create account!"
+    case activationRemainderMessage = "An activation link is sent to your email! Check you mailbox!"
+}
+
+enum CreateAccountAlertType {
+    case redWarning
+    case greenInfo
+    case neutralAppColor
 }

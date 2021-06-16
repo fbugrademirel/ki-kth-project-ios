@@ -73,7 +73,7 @@
                                                 </subviews>
                                             </stackView>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Information Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AuN-W5-HIC" userLabel="InformationLabel">
-                                                <rect key="frame" x="256" y="123.5" width="512" height="20.5"/>
+                                                <rect key="frame" x="446" y="123.5" width="132.5" height="20.5"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
@@ -81,7 +81,6 @@
                                         </subviews>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <constraints>
-                                            <constraint firstItem="AuN-W5-HIC" firstAttribute="width" secondItem="tWg-nm-vcH" secondAttribute="width" id="0Nm-DX-zWE"/>
                                             <constraint firstItem="AuN-W5-HIC" firstAttribute="centerX" secondItem="tWg-nm-vcH" secondAttribute="centerX" id="Ch0-7V-LB8"/>
                                             <constraint firstItem="1KZ-RH-xZV" firstAttribute="top" secondItem="tWg-nm-vcH" secondAttribute="bottom" constant="24" id="Eei-MS-3li"/>
                                             <constraint firstItem="AuN-W5-HIC" firstAttribute="bottom" secondItem="tWg-nm-vcH" secondAttribute="top" constant="-6" id="L8c-jz-xav"/>

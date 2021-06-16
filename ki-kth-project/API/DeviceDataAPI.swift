@@ -57,7 +57,7 @@ struct DeviceDataAPI {
         }
     }
     
-    func createAccount(name: String, email: String, password: String, with completion: @escaping (Result<CreateUserDataFetch, Error>) -> Void) {
+    func createAccount(name: String, email: String, password: String, with completion: @escaping (Result<User, Error>) -> Void) {
         
         let url = "\(prodUrl)/user"
         let createUser = CreateUserPost(name: name, email: email, password: password)
@@ -67,7 +67,7 @@ struct DeviceDataAPI {
             switch result {
             case .success(let data):
                 do {
-                    let createUserData = try JSONDecoder().decode(CreateUserDataFetch.self, from: data)
+                    let createUserData = try JSONDecoder().decode(User.self, from: data)
                     DispatchQueue.main.async {
                         completion(.success(createUserData))
                     }
@@ -142,6 +142,22 @@ struct DeviceDataAPI {
         }
     }
     
+    func passwordReset(email: String, completion: @escaping (Error?) -> Void) {
+        
+        let url = "\(prodUrl)/password-reset/\(email)"
+        
+        networkingService.dispatchRequest(urlString: url, method: .post, additionalHeaders: nil, body: nil) { result in
+            switch result {
+            case .success(_):
+                completion(nil)
+            case .failure(let error):
+                completion(error)
+            }
+        }
+    }
+    
+    
+    
     func createDevice(name: String, personalID: Int, numberOfNeedles: Int, with completion: @escaping (Result<DeviceDataFetch,Error>) -> Void) {
         
         let uniqueIdentifier = UUID()
@@ -211,9 +227,9 @@ struct DeviceDataAPI {
         }
     }
     
-    func getAllAnalytesForDevice(_ id: String, completion: @escaping (Result<[AnalyteDataFetch], Error>) -> Void ) {
+    func getAllAnalytesForDevice(_ id: String, interval: QueryInterval, completion: @escaping (Result<[AnalyteDataFetch], Error>) -> Void ) {
         
-        let url = "\(prodUrl)/onbodydevice/allmicroneedles/\(id)"
+        let url = "\(prodUrl)/onbodydevice/allmicroneedles/\(id)/?interval=\(interval.rawValue)"
         
         AuthenticationManager().getAuthToken { result in
             switch result {
@@ -246,7 +262,7 @@ struct DeviceDataAPI {
     
     func getAllAnalytesForDeviceWithoutMeasurements(_ id: String, completion: @escaping (Result<[AnalyteDataFetchWithoutMeasurements], Error>) -> Void ) {
         
-        let url = "\(prodUrl)/onbodydevice/allmicroneedles/\(id)"
+        let url = "\(prodUrl)/onbodydevice/onlyallmicroneedles/\(id)"
         
         AuthenticationManager().getAuthToken { result in
             switch result {
@@ -316,6 +332,11 @@ struct DeviceDataAPI {
 
 // MARK: - Device Data Codable
 
+enum QueryInterval: String {
+    case seconds = "seconds"
+    case minutes = "minutes"
+}
+
 struct UpdateUserPost: Codable {
     let name: String?
     let email: String?
@@ -343,10 +364,10 @@ struct CreateUserPost: Codable {
     let password: String
 }
 
-struct CreateUserDataFetch: Codable {
-    let user: User
-    let token: String
-}
+//struct CreateUserDataFetch: Codable {
+//    let user: User
+//    let token: String
+//}
 
 struct User: Codable {
     let name: String

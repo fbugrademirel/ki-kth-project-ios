@@ -136,7 +136,7 @@ class InitialLoginViewController: UIViewController {
                 self.informationLabel.textColor = AppColor.primary
             }
 
-            UIView.animate(withDuration: 2, animations: {
+            UIView.animate(withDuration: 3, animations: {
                 self.informationLabel.alpha = 0
             })
             self.informationLabel.text = info.rawValue
@@ -225,7 +225,15 @@ extension InitialLoginViewController: UITextViewDelegate {
 
         switch url.absoluteString {
         case "Forgot":
-            print("Forgot")
+            
+            if emailTextField.text == "" {
+                emailTextField.indicatesError = true
+                return false
+            }
+            
+            if let text = emailTextField.text {
+                viewModel.forgotPasswordResetRequested(email: text)
+            }
         case "CreateAccount":
             viewModel.createAccountRequested()
         default:

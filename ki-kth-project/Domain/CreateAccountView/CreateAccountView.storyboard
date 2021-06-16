@@ -65,18 +65,27 @@
                                     </button>
                                 </subviews>
                             </stackView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Information Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="drQ-5J-zS9">
+                                <rect key="frame" x="446" y="173.5" width="132.5" height="20.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="arP-Xy-uNk" firstAttribute="width" secondItem="vDu-zF-Fre" secondAttribute="width" multiplier="0.5" id="Ceq-3l-QOF"/>
                             <constraint firstItem="arP-Xy-uNk" firstAttribute="top" secondItem="vDu-zF-Fre" secondAttribute="top" constant="200" id="J9S-ng-R4I"/>
+                            <constraint firstItem="arP-Xy-uNk" firstAttribute="top" secondItem="drQ-5J-zS9" secondAttribute="bottom" constant="6" id="dWe-Mg-s6G"/>
                             <constraint firstItem="arP-Xy-uNk" firstAttribute="centerX" secondItem="vDu-zF-Fre" secondAttribute="centerX" id="leq-cO-orL"/>
+                            <constraint firstItem="drQ-5J-zS9" firstAttribute="centerX" secondItem="arP-Xy-uNk" secondAttribute="centerX" id="pmA-zr-zXC"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="createAccountButton" destination="M4o-2V-W3a" id="CZi-Or-IKA"/>
                         <outlet property="emailTextField" destination="Hly-Yq-9ku" id="ZRS-ag-vhe"/>
+                        <outlet property="informationLabel" destination="drQ-5J-zS9" id="g81-dC-Izt"/>
                         <outlet property="nameTextField" destination="0zD-Co-Shz" id="S33-oD-iwq"/>
                         <outlet property="passwordTextField" destination="vKv-Vk-SFT" id="SQd-Rw-hDy"/>
                         <outlet property="reenterPasswordTextField" destination="XLq-gc-XJ7" id="hLT-kJ-0rI"/>

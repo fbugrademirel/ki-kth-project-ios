@@ -72,9 +72,9 @@ final class DeviceReadingViewModel {
         sendActionToViewController?(.presentCalibrationView(info: info))
     }
     
-    func fetchLatestHandledAnalyte(isForRefresh: Bool) {
+    func fetchLatestHandledAnalyte(interval: QueryInterval, isForRefresh: Bool) {
         if let id = latestHandledAnalyteID {
-            getAnalytesByIdRequested(id, isForAutoRefresh: isForRefresh)
+            getAnalytesByIdRequested(id, interval: interval,  isForAutoRefresh: isForRefresh)
         }
     }
     
@@ -113,7 +113,7 @@ final class DeviceReadingViewModel {
         }
     }
     
-    func getAnalytesByIdRequested(_ id: String, isForAutoRefresh: Bool = false) {
+    func getAnalytesByIdRequested(_ id: String, interval: QueryInterval, isForAutoRefresh: Bool = false) {
         
         if !isForAutoRefresh {
             sendActionToViewController?(.startActivityIndicators(message: .fetching, alert: .neutralAppColor))
@@ -121,7 +121,7 @@ final class DeviceReadingViewModel {
         
         latestHandledAnalyteID = id
         
-        DeviceDataAPI().getAllAnalytesForDevice(id) { [weak self] result in
+        DeviceDataAPI().getAllAnalytesForDevice(id, interval: interval) { [weak self] result in
             switch result {
             case .success(let data):
                 let sorted = data.sorted {
@@ -323,7 +323,7 @@ final class DeviceReadingViewModel {
 //                    chartPoints.removeFirst(chartPoints.count - 300)
 //                }
 //
-//                chartPoints.sort { $0.x < $1.x }
+                chartPoints.sort { $0.x < $1.x }
                 
                 guard let slope = analyte.calibrationParameters.correlationEquationParameters?.slope,
                 let constant = analyte.calibrationParameters.correlationEquationParameters?.constant else { return }

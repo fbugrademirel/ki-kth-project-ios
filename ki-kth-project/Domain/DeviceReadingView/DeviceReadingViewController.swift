@@ -29,6 +29,8 @@ final class DeviceReadingViewController: UIViewController {
     @IBOutlet weak var mnNumberIndicatorLabel: UILabel!
     @IBOutlet weak var mnNumberStepper: UIStepper!
     @IBOutlet weak var qrImageView: UIImageView!
+    @IBOutlet weak var intervalSegmentedControl: UISegmentedControl!
+    @IBOutlet weak var dataIntervalLabel: UILabel!
     
     var viewModel: DeviceReadingViewModel!
     
@@ -51,7 +53,14 @@ final class DeviceReadingViewController: UIViewController {
         super.viewWillAppear(animated)
         setTimer()
         viewModel.reloadTableViewsRequired()
-        viewModel.fetchLatestHandledAnalyte(isForRefresh: false)
+        switch intervalSegmentedControl.selectedSegmentIndex {
+        case 0:
+            viewModel.fetchLatestHandledAnalyte(interval: .seconds, isForRefresh: false)
+        case 1:
+            viewModel.fetchLatestHandledAnalyte(interval: .minutes, isForRefresh: false)
+        default:
+            break
+        }
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -107,8 +116,27 @@ final class DeviceReadingViewController: UIViewController {
         viewModel.createDeviceRequired(name: name, personalID: intID, numberOfNeedles: Int(mnNumberStepper.value))
     }
     
+    @objc func segmentedControlValueChanged(_ sender: UISegmentedControl) {
+        switch sender.selectedSegmentIndex {
+        case 0:
+            viewModel.fetchLatestHandledAnalyte(interval: .seconds, isForRefresh: false)
+        case 1:
+            viewModel.fetchLatestHandledAnalyte(interval: .minutes, isForRefresh: false)
+        default:
+            break
+        }
+    }
+    
     @objc func fireTimer() {
-        viewModel.fetchLatestHandledAnalyte(isForRefresh: true)
+        
+        switch intervalSegmentedControl.selectedSegmentIndex {
+        case 0:
+            viewModel.fetchLatestHandledAnalyte(interval: .seconds, isForRefresh: true)
+        case 1:
+            viewModel.fetchLatestHandledAnalyte(interval: .minutes, isForRefresh: true)
+        default:
+            break
+        }
     }
     
     @objc func refButPressed(_ sender: UIButton) {
@@ -127,6 +155,18 @@ final class DeviceReadingViewController: UIViewController {
         
     // MARK: - UI
     private func setUI() {
+        
+        dataIntervalLabel.font = UIFont.appFont(placement: .boldText)
+        dataIntervalLabel.textColor = AppColor.primary
+        
+        
+        intervalSegmentedControl.addTarget(self, action: #selector(segmentedControlValueChanged), for: .valueChanged)
+        
+        intervalSegmentedControl.setTitleTextAttributes([.font: UIFont.appFont(placement: .boldText),
+                                                         .foregroundColor: AppColor.primary!], for: .normal)
+        
+        intervalSegmentedControl.tintColor = AppColor.primary
+
         
         mnNumberStepper.wraps = true
         mnNumberStepper.autorepeat = true
@@ -333,12 +373,10 @@ final class DeviceReadingViewController: UIViewController {
                 let lineChartView = view as! LineChartView
                 if lineChartView.lineData?.dataSets[0].label == data.dataSets[0].label {
                     lineChartView.data = data
-                    lineChartView.leftAxis.resetCustomAxisMax()
                     lineChartView.leftAxis.axisMinimum = 0
-                    lineChartView.leftAxis.resetCustomAxisMax()
                     lineChartView.leftAxis.axisMaximum = data.yMax * 1.2
                     lineChartView.notifyDataSetChanged()
-                    lineChartView.fitScreen()
+                   // lineChartView.fitScreen()
                     if !isForRefresh {
                         lineChartView.animate(xAxisDuration: 0.5)
                     }
@@ -460,7 +498,7 @@ final class DeviceReadingViewController: UIViewController {
         
         alert.addAction(UIAlertAction(title: "Delete also from cloud", style: .destructive, handler: { _ in
             
-            let alert = UIAlertController(title: "Warning!", message: "This operation will also delete related analytes' of this device", preferredStyle: .alert)
+            let alert = UIAlertController(title: "Warning!", message: "This operation will also delete related analytes and all of their measurements for this device", preferredStyle: .alert)
             
             alert.addAction(UIAlertAction(title: "Confirm", style: .destructive, handler: { _ in
                 self.viewModel.deletionByIdRequested(id: self.viewModel.deviceListTableViewViewModels[path.row].serverID, path: path)
@@ -507,7 +545,16 @@ extension DeviceReadingViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         resetAllTablesAndChartData()
-        viewModel.getAnalytesByIdRequested(viewModel.deviceListTableViewViewModels[indexPath.row].serverID)
+        
+        switch intervalSegmentedControl.selectedSegmentIndex {
+        case 0:
+            viewModel.getAnalytesByIdRequested(viewModel.deviceListTableViewViewModels[indexPath.row].serverID, interval: .seconds)
+        case 1:
+            viewModel.getAnalytesByIdRequested(viewModel.deviceListTableViewViewModels[indexPath.row].serverID, interval: .minutes)
+        default:
+            break
+        }
+        
         if viewModel.timer == nil {
             setTimer()
         }
